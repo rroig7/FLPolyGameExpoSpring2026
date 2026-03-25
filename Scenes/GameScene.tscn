@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://c1c7lhj7yfvoa"]
+
+[ext_resource type="PackedScene" uid="uid://bfufcoh1de0wb" path="res://Assets/Igloo/Igloo.tscn" id="2_4bvgx"]
+[ext_resource type="PackedScene" uid="uid://bah4d6kdjyri3" path="res://Assets/ScaleMan/PenguinScale.tscn" id="4_jwv4s"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kilg5"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_x6js8"]
+sky_material = SubResource("ProceduralSkyMaterial_kilg5")
+
+[sub_resource type="Environment" id="Environment_lg2j6"]
+background_mode = 2
+sky = SubResource("Sky_x6js8")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_3mbwn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4bvgx"]
+albedo_color = Color(0, 1, 1, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_3mbwn"]
+material = SubResource("StandardMaterial3D_4bvgx")
+
+[node name="Node3D" type="Node3D" unique_id=1443708347]
+
+[node name="Lighting" type="Node" parent="." unique_id=642880331]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting" unique_id=1538182498]
+environment = SubResource("Environment_lg2j6")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting" unique_id=1597123748]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Enviroment" type="Node" parent="." unique_id=1792310154]
+
+[node name="Floor" type="MeshInstance3D" parent="Enviroment" unique_id=1313550903]
+transform = Transform3D(35, 0, 0, 0, 1, 0, 0, 0, 35, 0, 0, 0)
+mesh = SubResource("PlaneMesh_3mbwn")
+
+[node name="Floor2" type="MeshInstance3D" parent="Enviroment" unique_id=448520781]
+transform = Transform3D(30, 0, 0, 0, 1, 0, 0, 0, 30, 0, -0.9352174, 0)
+mesh = SubResource("CylinderMesh_3mbwn")
+
+[node name="ScaleMans" type="Node" parent="." unique_id=328017783]
+
+[node name="Scale_man2" parent="ScaleMans" unique_id=1302540239 instance=ExtResource("4_jwv4s")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 27.257755, 0, 0.29219007)
+
+[node name="Enviroment_Props" type="Node" parent="." unique_id=1928541942]
+
+[node name="Igloo" parent="Enviroment_Props" unique_id=2106285624 instance=ExtResource("2_4bvgx")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.045, 0, -30)
+
+[node name="Igloo2" parent="Enviroment_Props" unique_id=1544909289 instance=ExtResource("2_4bvgx")]
+transform = Transform3D(-2, 0, -1.7484555e-07, 0, 2, 0, 1.7484555e-07, 0, -2, -0.045, 0, 30)
+
+[node name="Igloo3" parent="Enviroment_Props" unique_id=1861032247 instance=ExtResource("2_4bvgx")]
+transform = Transform3D(-8.742278e-08, 0, 2, 0, 2, 0, -2, 0, -8.742278e-08, -30, 0, 0)
+
+[node name="Igloo4" parent="Enviroment_Props" unique_id=1597983875 instance=ExtResource("2_4bvgx")]
+transform = Transform3D(-8.742278e-08, 0, -2, 0, 2, 0, 2, 0, -8.742278e-08, 30, 0, 0)
