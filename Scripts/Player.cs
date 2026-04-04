@@ -9,8 +9,8 @@ public partial class Player : BaseNetworkedPlayer
 	public enum PlayerAbilities {ABILITY1, ABILITY2, ABILITY3}
 
 
-    public void SlowStart()
-    {
+	public void SlowStart()
+	{
 		if(!MyId.IsLocal)
 		{
 		}
@@ -20,7 +20,7 @@ public partial class Player : BaseNetworkedPlayer
 			PlayerCam.SetTarget(this);
 			playerCam = PlayerCam;
 		}
-    }
+	}
 
 	public void SetCamera(Camera3D cam)
 	{

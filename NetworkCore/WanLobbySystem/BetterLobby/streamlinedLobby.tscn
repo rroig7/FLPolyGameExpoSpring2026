@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqwx3aiwdkvb6"]
+
+[ext_resource type="Script" uid="uid://buq7bi58l3fu1" path="res://NetworkCore/WanLobbySystem/BetterLobby/LobbyStreamlined.cs" id="1_m856b"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_m856b")
+PublicIP = "127.0.0.1"
+PrivateIP = "127.0.0.1"
+PortMinimum = 9000

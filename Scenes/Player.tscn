@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dqt54rh3b3x66"]
+
+[ext_resource type="Script" uid="uid://bfw5hdcj0yn71" path="res://Scripts/Player.cs" id="1_rpqav"]
+[ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_kyqiw"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_kyqiw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_kyqiw"]
+size = Vector3(0.8, 0.2, 0.5)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gntrk"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gntrk"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="Player" type="CharacterBody3D" unique_id=617917819]
+script = ExtResource("1_rpqav")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1608544703]
+mesh = SubResource("CapsuleMesh_kyqiw")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D" unique_id=824225894]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49825144, 0.2902277)
+mesh = SubResource("BoxMesh_kyqiw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=825879414]
+shape = SubResource("CapsuleShape3D_gntrk")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=486744588]
+replication_config = SubResource("SceneReplicationConfig_gntrk")
+script = ExtResource("2_kyqiw")
