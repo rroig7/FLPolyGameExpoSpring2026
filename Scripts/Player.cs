@@ -120,6 +120,6 @@ public partial class Player : BaseNetworkedPlayer
 
 		_isDashing         = true;
 		_dashDurationTimer = dashDuration;
-		Velocity           = -Basis.Z * dashSpeed;
+		Velocity           = Basis.Z * dashSpeed;
 	}
 }
