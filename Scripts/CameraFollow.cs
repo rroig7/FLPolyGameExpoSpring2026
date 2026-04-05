@@ -37,7 +37,7 @@ public partial class CameraFollow : Camera3D
 		if(!GenericCore.Instance.IsServer)
 			Target = target;
 		
-		LoadingScreen.Hide();
+		//LoadingScreen.Hide();
 	}
 
 	public override void _Process(double delta) 
@@ -61,9 +61,9 @@ public partial class CameraFollow : Camera3D
 		}
 	}
 
-    public override void _Input(InputEvent @event)
-    {
-        if(@event is InputEventMouseMotion mouseMove)
+	public override void _Input(InputEvent @event)
+	{
+		if(@event is InputEventMouseMotion mouseMove)
 		{
 			//Should work, target will  be null when game is over or a player DCs
 			if(IsInstanceValid(Target))
@@ -84,7 +84,7 @@ public partial class CameraFollow : Camera3D
 			}
 		}
 
-	    if (@event is InputEventKey keyEvent && keyEvent.Pressed)
+		if (@event is InputEventKey keyEvent && keyEvent.Pressed)
 		{
 			if (keyEvent.Keycode == Key.T)
 			{
@@ -95,6 +95,12 @@ public partial class CameraFollow : Camera3D
 					Input.MouseMode = Input.MouseModeEnum.Captured;
 			}
 		}
-    }
+	}
 
+	public float GetFacingYaw()
+	{
+		// The camera sits at swivelAngle behind the target, so it faces the opposite direction
+		var radians = Mathf.DegToRad(swivelAngle + 180f);
+		return Mathf.Atan2(Mathf.Cos(radians), Mathf.Sin(radians));
+	}
 }

@@ -4,68 +4,122 @@ using System;
 [GlobalClass]
 public partial class Player : BaseNetworkedPlayer
 {
-	Camera3D playerCam;
+	CameraFollow playerCam;
 	public bool isLocal => MyId.IsLocal;
-	public enum PlayerAbilities {ABILITY1, ABILITY2, ABILITY3}
+	public enum PlayerAbilities { ABILITY1, ABILITY2, ABILITY3 }
 
+	// --- Dash settings ---
+	[Export] float dashSpeed    = 20f;
+	[Export] float dashDuration = 0.15f;
+	[Export] float dashCooldown = 1.0f;
+
+	float _dashCooldownTimer = 0f;
+	float _dashDurationTimer = 0f;
+	bool  _isDashing         = false;
+
+	public override void _Ready()
+	{
+		base._Ready();
+		MyId.NetIDReady += SlowStart;
+	}
 
 	public void SlowStart()
 	{
-		if(!MyId.IsLocal)
-		{
-		}
-		else
-		{
-			var PlayerCam = GetTree().GetFirstNodeInGroup("PLAYERCAMERA") as CameraFollow;
-			PlayerCam.SetTarget(this);
-			playerCam = PlayerCam;
-		}
+		if (!MyId.IsLocal) return;
+		TryAssignCamera();
+		Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
 
-	public void SetCamera(Camera3D cam)
+	private void TryAssignCamera()
 	{
-		playerCam = cam;
+		var cam = GetTree().GetFirstNodeInGroup("PLAYERCAMERA") as CameraFollow;
+		GD.Print($"Player: PLAYERCAMERA found = {cam != null}");
+		if (cam != null)
+		{
+			cam.SetTarget(this);
+			playerCam = cam;
+			GD.Print("Player: Camera assigned successfully.");
+		}
 	}
 
+	public void SetCamera(Camera3D cam) => playerCam = cam as CameraFollow;
+
+	// -------------------------------------------------------
 
 	public override void LocalProcess(float delta)
 	{
-		var input = Input.GetVector("Left", "Right", "Forward", "Back");
+		if (_dashCooldownTimer > 0f)
+			_dashCooldownTimer -= delta;
 
-		if(playerCam != null)
+		if (playerCam == null)
 		{
-			//GD.PushWarning("Input Reccieved locally, pushing to server");
-			Rpc(MethodName.ProcessInput, new Vector3(input.X, 0, input.Y), -playerCam.Basis.Z);
+			TryAssignCamera();
+			return;
+		}
+
+		// Derive character yaw from the camera's swivel angle so the
+		// character faces the same direction the camera is looking
+		float camYaw = playerCam.GetFacingYaw();
+		Rpc(MethodName.ProcessMouseLook, camYaw);
+
+		var input = Input.GetVector("Left", "Right", "Forward", "Back");
+		Rpc(MethodName.ProcessInput, new Vector3(input.X, 0, input.Y));
+
+		if (Input.IsActionJustPressed("Dash") && _dashCooldownTimer <= 0f && input != Vector2.Zero)
+		{
+			_dashCooldownTimer = dashCooldown;
+			Rpc(MethodName.ProcessDash);
 		}
 	}
 
-	//------ Remote Calls ------\\
-
-	/// <summary>
-	/// Server processes user input and applies velocity to player
-	/// </summary>
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-	void ProcessInput(Vector3 playerInput, Vector3 playerCam)
+	public override void ServerProcess(float delta)
 	{
-		if(GenericCore.Instance.IsServer)
+		if (_isDashing)
 		{
-			if(playerInput.LengthSquared() > 0)
+			_dashDurationTimer -= delta;
+			if (_dashDurationTimer <= 0f)
 			{
-				//GD.Print(Vector3.Forward.Dot(playerInput));
-
-				var angDiff = Vector3.Forward.SignedAngleTo(playerInput, Vector3.Up);
-				GD.Print(Mathf.RadToDeg(angDiff));
-				
-				//This works as you think it does..possibly
-				var correctedDir = playerCam.Rotated(Vector3.Up, angDiff);
-				GD.Print($"PlayerInput Dir: {playerInput}, CorrectedDir: {correctedDir}");
-
-				
-				LinearVelocity = correctedDir * baseSpeed;				
+				_isDashing = false;
+				Velocity = Vector3.Zero;
 			}
-			else
-				LinearVelocity = Vector3.Zero;
-			
 		}
+	}
+
+	// -------------------------------------------------------
+	//  Remote Calls
+	// -------------------------------------------------------
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+	void ProcessMouseLook(float yaw)
+	{
+		Rotation = new Vector3(0, yaw, 0);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
+	void ProcessInput(Vector3 playerInput)
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		if (_isDashing) return;
+
+		if (playerInput.LengthSquared() > 0)
+		{
+			Velocity = (-Basis.Z * playerInput.Z + -Basis.X * playerInput.X).Normalized() * baseSpeed;
+		}
+		else
+			Velocity = Vector3.Zero;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void ProcessDash()
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		if (_isDashing) return;
+
+		_isDashing         = true;
+		_dashDurationTimer = dashDuration;
+		Velocity           = -Basis.Z * dashSpeed;
 	}
 }

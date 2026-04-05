@@ -1,12 +1,19 @@
 [gd_scene format=3 uid="uid://nsjin1m5p7kp"]
 
+[ext_resource type="Script" uid="uid://do2ep11bssdcg" path="res://Scripts/TestScene.cs" id="1_5lt6y"]
+[ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="1_b5ayd"]
+[ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
+
 [sub_resource type="BoxMesh" id="BoxMesh_0r02p"]
 size = Vector3(10, 0.2, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_b5ayd"]
 size = Vector3(10, 0.2, 10)
 
-[node name="Node3D" type="Node3D" unique_id=2078605398]
+[node name="TestScene" type="Node3D" unique_id=2078605398 node_paths=PackedStringArray("PlayerSpawner", "SpawnPoint")]
+script = ExtResource("1_5lt6y")
+PlayerSpawner = NodePath("MultiplayerSpawner")
+SpawnPoint = NodePath("SpawnPoint")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=2085783760]
 
@@ -15,3 +22,22 @@ mesh = SubResource("BoxMesh_0r02p")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1389004837]
 shape = SubResource("BoxShape3D_b5ayd")
+
+[node name="SpawnPoint" type="Node3D" parent="." unique_id=1258090954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=2122061902]
+_spawnable_scenes = PackedStringArray("uid://dqt54rh3b3x66")
+spawn_path = NodePath("..")
+script = ExtResource("1_b5ayd")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1570241713]
+transform = Transform3D(1, 0, 0, 0, 0.7453015, 0.66672766, 0, -0.66672766, 0.7453014, 0, 4.9691157, 4.3438277)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1310418211 groups=["PLAYERCAMERA"]]
+transform = Transform3D(1, 0, 0, 0, 0.94542193, 0.3258487, 0, -0.3258487, 0.94542193, 0, 4.001159, 7.9017577)
+script = ExtResource("3_8k7wh")
+radius = 5.0
+YOffset = 2.0
+swivelSpeed = 100.0
+smoothingSpeed = 3.0
