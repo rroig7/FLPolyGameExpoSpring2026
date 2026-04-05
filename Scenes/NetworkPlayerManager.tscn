@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://chrro2jpws6el"]
+
+[ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="1_k28jr"]
+[ext_resource type="Script" uid="uid://byki1a455w5g8" path="res://Scripts/NetworkPlayerManager.cs" id="1_wv0xt"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_wv0xt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_itrf0"]
+bg_color = Color(0.3201083, 0.48287237, 0.7384613, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.27611014, 0.22981027, 0.689225, 1)
+
+[sub_resource type="Theme" id="Theme_l0rlt"]
+default_font_size = 30
+
+[sub_resource type="LabelSettings" id="LabelSettings_7l00a"]
+font_size = 30
+
+[node name="NetworkPlayerManager" type="Control" unique_id=2127080030]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wv0xt")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1740679586]
+replication_config = SubResource("SceneReplicationConfig_wv0xt")
+script = ExtResource("1_k28jr")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1912154378]
+custom_minimum_size = Vector2(600, 325)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_itrf0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1314661709]
+layout_mode = 2
+size_flags_vertical = 4
+theme = SubResource("Theme_l0rlt")
+theme_override_constants/separation = 10
+
+[node name="NameContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=238280094]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="PanelContainer/VBoxContainer/NameContainer" unique_id=1246648633]
+layout_mode = 2
+text = "Name: "
+label_settings = SubResource("LabelSettings_7l00a")
+
+[node name="NameInput" type="LineEdit" parent="PanelContainer/VBoxContainer/NameContainer" unique_id=147044531]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ReadyButton" type="Button" parent="PanelContainer/VBoxContainer" unique_id=832291601]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Ready"

@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://bhaj04sfwyyrv"]
+
+[ext_resource type="Script" uid="uid://n2h3r5cr70se" path="res://NetworkCore/GenericCore.cs" id="1_ul1ws"]
+[ext_resource type="PackedScene" uid="uid://nsjin1m5p7kp" path="res://Scenes/TestScene.tscn" id="2_bousw"]
+
+[sub_resource type="Theme" id="Theme_ul1ws"]
+default_font_size = 50
+
+[sub_resource type="Theme" id="Theme_bousw"]
+default_font_size = 50
+
+[node name="TestGameRoot" type="Node" unique_id=1127935270]
+script = ExtResource("1_ul1ws")
+_portMaximum = 7010
+_portMinimum = 7000
+_localPort = 7000
+_serverAddress = "127.0.0.1"
+_maxConnections = 4
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=1129308110]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.53436923, 0.54496837, 1, 1)
+
+[node name="HostButton" type="Button" parent="CanvasLayer" unique_id=1263757268]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -15.5
+offset_right = 51.0
+offset_bottom = 15.5
+grow_vertical = 2
+theme = SubResource("Theme_ul1ws")
+text = "HOST"
+
+[node name="ClientButton" type="Button" parent="CanvasLayer" unique_id=1664112812]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -43.0
+offset_top = -15.5
+offset_bottom = 15.5
+grow_horizontal = 0
+grow_vertical = 2
+theme = SubResource("Theme_bousw")
+text = "JOIN"
+
+[node name="TestScene" parent="." unique_id=2078605398 node_paths=PackedStringArray("MyCanvas") instance=ExtResource("2_bousw")]
+MyCanvas = NodePath("../CanvasLayer")
+
+[connection signal="pressed" from="CanvasLayer/HostButton" to="." method="CreateLocalGame"]
+[connection signal="pressed" from="CanvasLayer/ClientButton" to="." method="JoinGame"]
