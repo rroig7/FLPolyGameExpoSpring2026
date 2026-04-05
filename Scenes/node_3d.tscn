@@ -1,12 +1,15 @@
-[gd_scene format=3 uid="uid://d4a6mtiftnuj0"]
+[gd_scene format=3 uid="uid://bqfvpseynkkxy"]
+
+[ext_resource type="Script" uid="uid://b7kfx26cm0gg0" path="res://Scripts/ChasingEnemy.cs" id="1_bi5fs"]
+[ext_resource type="PackedScene" path="res://Scenes/Player.tscn" id="2_okq71"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkdvt"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7q7q3"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lj6qe"]
 albedo_color = Color(0.82604355, 0, 0.11804021, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_vkdvt"]
-material = SubResource("StandardMaterial3D_7q7q3")
+material = SubResource("StandardMaterial3D_lj6qe")
 
 [sub_resource type="BoxMesh" id="BoxMesh_7q7q3"]
 size = Vector3(100, 1, 100)
@@ -25,13 +28,16 @@ transform = Transform3D(1, 0, 0, 0, 0.8416333, 0.5400494, 0, -0.5400494, 0.84163
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=309045527]
 transform = Transform3D(1, 0, 0, 0, 0.59727526, 0.8020363, 0, -0.8020363, 0.59727526, 1.1920929e-06, 13.576516, 8.26368)
 
-[node name="BossCube" type="RigidBody3D" parent="." unique_id=1114595980]
+[node name="BossCube" type="CharacterBody3D" parent="." unique_id=948747361]
+script = ExtResource("1_bi5fs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BossCube" unique_id=351349594]
 shape = SubResource("BoxShape3D_vkdvt")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="BossCube" unique_id=1751910859]
 mesh = SubResource("BoxMesh_vkdvt")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="BossCube" unique_id=225161459]
 
 [node name="Platform" type="StaticBody3D" parent="." unique_id=1169516600]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.8070974, 0)
@@ -42,3 +48,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vkdvt")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Platform" unique_id=2077949070]
 shape = SubResource("BoxShape3D_bi5fs")
+
+[node name="Player" parent="." unique_id=617917819 instance=ExtResource("2_okq71")]
+transform = Transform3D(2.9802322e-08, 0, -1, 0, 1, 0, 1, 0, 2.9802322e-08, 3.977798, 1.0589081, 0.22385597)

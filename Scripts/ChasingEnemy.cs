@@ -13,9 +13,16 @@ public partial class ChasingEnemy : BaseNetworkedEnemy
 	public override void _Ready() {
 		MyId.NetIDReady += SlowStart;
 	}
-
+	
+	
+	
 	public async void SlowStart()
 	{
+
+		if (GenericCore.Instance == null)
+		{
+			await ToSignal(GetTree().CreateTimer(.5), SceneTreeTimer.SignalName.Timeout);
+		}
 		//Some Spawn Animation
 		//await ToSignal(Animator, AnimationPlayer.SignalName.AnimationFinished);
 
