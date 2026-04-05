@@ -27,7 +27,7 @@ properties/4/path = NodePath("MultiplayerSynchronizer:OwnerId")
 properties/4/spawn = true
 properties/4/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("MyId")]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("MyId") groups=["players"]]
 script = ExtResource("1_rpqav")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 2.0
