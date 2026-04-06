@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://daf4by0o1a6uu"]
+
+[ext_resource type="PackedScene" uid="uid://baxaf14kk8k7a" path="res://Assets/I.C.E_BLOCKS/GLB/IceBlock_01.glb" id="1_uyg7f"]
+
+[node name="IceBlock01_" unique_id=137161104 instance=ExtResource("1_uyg7f")]

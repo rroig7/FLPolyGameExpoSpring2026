@@ -53,6 +53,7 @@ theme = SubResource("Theme_bousw")
 text = "JOIN"
 
 [node name="TestScene" parent="." unique_id=2078605398 node_paths=PackedStringArray("MyCanvas") instance=ExtResource("2_bousw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0042586327, 4.7683716e-07, -0.0001411438)
 MyCanvas = NodePath("../CanvasLayer")
 
 [connection signal="pressed" from="CanvasLayer/HostButton" to="." method="CreateLocalGame"]

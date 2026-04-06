@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://llvbpwviookl"]
+
+[ext_resource type="PackedScene" uid="uid://gsw3nx03yise" path="res://Assets/I.C.E_BLOCKS/GLB/IceBlock_06.glb" id="1_t56ih"]
+
+[node name="IceBlock06_" unique_id=507739466 instance=ExtResource("1_t56ih")]
+
+[node name="IceBlock_06" parent="." index="0" unique_id=1721134802]
+transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, 0.99999994, 0, -0.99999994, -3.5762787e-07, -5.941556, -1.3177123, 1.1167887)

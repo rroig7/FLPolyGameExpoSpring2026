@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://c1c7lhj7yfvoa"]
 
 [ext_resource type="PackedScene" uid="uid://bfufcoh1de0wb" path="res://Assets/Igloo/Igloo.tscn" id="2_4bvgx"]
+[ext_resource type="PackedScene" uid="uid://dqt54rh3b3x66" path="res://Scenes/Player.tscn" id="3_3mbwn"]
 [ext_resource type="PackedScene" uid="uid://bah4d6kdjyri3" path="res://Assets/ScaleMan/PenguinScale.tscn" id="4_jwv4s"]
+[ext_resource type="PackedScene" uid="uid://daf4by0o1a6uu" path="res://Assets/I.C.E_BLOCKS/IceBlock01_.tscn" id="4_lohlh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kilg5"]
+sky_top_color = Color(0.19474682, 0.38486814, 0.55847836, 1)
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+sky_energy_multiplier = 0.0
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 
 [sub_resource type="Sky" id="Sky_x6js8"]
@@ -15,6 +19,62 @@ background_mode = 2
 sky = SubResource("Sky_x6js8")
 tonemap_mode = 2
 glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.35791326, 0.4088019, 0.4491557, 1)
+fog_sun_scatter = 0.05
+fog_density = 0.03
+
+[sub_resource type="Gradient" id="Gradient_lohlh"]
+offsets = PackedFloat32Array(0, 0.5652174, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.9863598, 0.9863598, 0.9863598, 1, 0.98039216, 0.98039216, 0.98039216, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_kilg5"]
+gradient = SubResource("Gradient_lohlh")
+
+[sub_resource type="Curve" id="Curve_x6js8"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.13414635, 1), -1.4633175, -1.4633175, 0, 0, Vector2(1, 0.43820232), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_lg2j6"]
+curve = SubResource("Curve_x6js8")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y30xb"]
+emission_shape = 3
+emission_box_extents = Vector3(40, 1, 40)
+direction = Vector3(1, -1, 0)
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, -3, 0)
+radial_accel_min = -4.0000024
+radial_accel_max = 3.9999976
+tangential_accel_min = -8.000002
+tangential_accel_max = 7.9999976
+damping_max = 4.0
+scale_min = 0.5
+scale_curve = SubResource("CurveTexture_lg2j6")
+color = Color(0.9297146, 0.9297147, 0.9297146, 1)
+color_ramp = SubResource("GradientTexture1D_kilg5")
+
+[sub_resource type="Gradient" id="Gradient_xhjei"]
+offsets = PackedFloat32Array(0.3309859, 0.6197183)
+colors = PackedColorArray(1, 1, 1, 1, 0.25882354, 0.25882354, 0.25882354, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_6vvcf"]
+gradient = SubResource("Gradient_xhjei")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cr6v8"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_6vvcf")
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_f43ej"]
+material = SubResource("StandardMaterial3D_cr6v8")
+size = Vector2(0.8, 0.8)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_3mbwn"]
 
@@ -33,7 +93,18 @@ environment = SubResource("Environment_lg2j6")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting" unique_id=1597123748]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+light_color = Color(0.49329728, 0.59636587, 0.7133206, 1)
+light_specular = 0.0
 shadow_enabled = true
+
+[node name="Snow-Particle" type="GPUParticles3D" parent="Lighting" unique_id=16954297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
+visible = false
+amount = 5000
+lifetime = 3.5
+visibility_aabb = AABB(-65.29054, -43.33671, -78.531456, 151.94841, 45.136, 161.07376)
+process_material = SubResource("ParticleProcessMaterial_y30xb")
+draw_pass_1 = SubResource("QuadMesh_f43ej")
 
 [node name="Enviroment" type="Node" parent="." unique_id=1792310154]
 
@@ -56,10 +127,51 @@ transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 27.257755, 0, 0.2921900
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.045, 0, -30)
 
 [node name="Igloo2" parent="Enviroment_Props" unique_id=1544909289 instance=ExtResource("2_4bvgx")]
-transform = Transform3D(-2, 0, -1.7484555e-07, 0, 2, 0, 1.7484555e-07, 0, -2, -0.045, 0, 30)
+transform = Transform3D(-2, 0, -1.7484555e-07, 0, 2, 0, 1.7484555e-07, 0, -2, -0.045, -0.013971448, 30)
 
 [node name="Igloo3" parent="Enviroment_Props" unique_id=1861032247 instance=ExtResource("2_4bvgx")]
 transform = Transform3D(-8.742278e-08, 0, 2, 0, 2, 0, -2, 0, -8.742278e-08, -30, 0, 0)
 
 [node name="Igloo4" parent="Enviroment_Props" unique_id=1597983875 instance=ExtResource("2_4bvgx")]
 transform = Transform3D(-8.742278e-08, 0, -2, 0, 2, 0, 2, 0, -8.742278e-08, 30, 0, 0)
+
+[node name="Player" parent="." unique_id=617917819 instance=ExtResource("3_3mbwn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.212, 0, 26.256)
+
+[node name="IceBlocks" type="Node" parent="." unique_id=1506276995]
+
+[node name="IceBlock01_" parent="IceBlocks" unique_id=137161104 instance=ExtResource("4_lohlh")]
+transform = Transform3D(4.2690935, 0, 0, 0, 2.5494218, 0, 0, 0, 2.2810555, 48.076492, 0, -5.4335327)
+
+[node name="IceBlock01_2" parent="IceBlocks" unique_id=1264567019 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-1.1049228, 0, -2.2033303, 0, 2.5494215, 0, 4.123627, 0, -0.59038067, 48.076492, 0, 6.7774734)
+
+[node name="IceBlock01_3" parent="IceBlocks" unique_id=716245543 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-1.1049228, 0, -2.2033303, 0, 2.5494215, 0, 4.123627, 0, -0.59038067, 43.076492, 1, 21.777473)
+
+[node name="IceBlock01_5" parent="IceBlocks" unique_id=182583777 instance=ExtResource("4_lohlh")]
+transform = Transform3D(2.9712899, 0, 2.1106248, 0, 2.5494213, 0, -2.9712894, 0, 2.1106255, 14.076492, 2, 34.777473)
+
+[node name="IceBlock01_6" parent="IceBlocks" unique_id=1978533848 instance=ExtResource("4_lohlh")]
+transform = Transform3D(2.9712899, 0, 2.1106248, 0, 2.5494213, 0, -2.9712894, 0, 2.1106255, -2.9235077, 0, 39.777473)
+
+[node name="IceBlock01_7" parent="IceBlocks" unique_id=98886842 instance=ExtResource("4_lohlh")]
+transform = Transform3D(4.058857, 0, -0.7725431, 0, 2.549421, 0, 1.0875679, 0, 2.8831675, -19.923508, 0, 31.777473)
+
+[node name="IceBlock01_8" parent="IceBlocks" unique_id=440178761 instance=ExtResource("4_lohlh")]
+transform = Transform3D(3.639072, 0, 1.4924369, 0, 2.549421, 0, -2.1010184, 0, 2.5849776, -32.923508, 3, 22.777473)
+
+[node name="IceBlock01_9" parent="IceBlocks" unique_id=1367845066 instance=ExtResource("4_lohlh")]
+transform = Transform3D(2.1010184, 0, -2.5849779, 0, 2.549421, 0, 3.6390717, 0, 1.4924369, -41.923508, 3, 9.777473)
+
+[node name="IceBlock01_10" parent="IceBlocks" unique_id=1456580424 instance=ExtResource("4_lohlh")]
+transform = Transform3D(2.1010184, 0, -2.5849779, 0, 2.549421, 0, 3.6390717, 0, 1.4924369, -41.923508, 3, -8.222527)
+
+[node name="IceBlock01_11" parent="IceBlocks" unique_id=1944783282 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-2.9712896, 0, -2.1106248, 0, 2.5494208, 0, 2.9712892, 0, -2.1106257, -32.923508, 1, -21.222527)
+
+[node name="IceBlock01_12" parent="IceBlocks" unique_id=1080648028 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-2.1010191, 0, -2.5849771, 0, 2.5494208, 0, 3.639071, 0, -1.4924378, -25.923508, 4, -31.222527)
+
+[node name="IceBlock01_4" parent="IceBlocks" unique_id=490203088 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-1.1049228, 0, -2.2033303, 0, 2.5494215, 0, 4.123627, 0, -0.59038067, 31.076492, 1, 28.777473)
