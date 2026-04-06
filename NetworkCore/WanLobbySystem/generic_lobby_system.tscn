@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://dufyvricl5qqi"]
+
+[ext_resource type="Script" uid="uid://buq7bi58l3fu1" path="res://NetworkCore/WanLobbySystem/BetterLobby/LobbyStreamlined.cs" id="1_nacce"]
+[ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="2_nacce"]
+[ext_resource type="Script" uid="uid://n2h3r5cr70se" path="res://NetworkCore/GenericCore.cs" id="3_nacce"]
+
+[node name="AbsoluteRoot" type="Node" unique_id=1695034636]
+
+[node name="GenericLobbySystem" type="CanvasLayer" parent="." unique_id=1822693811 node_paths=PackedStringArray("AgentSpawner", "GameNameBox")]
+script = ExtResource("1_nacce")
+PublicIP = "68.155.153.211"
+PrivateIP = "10.1.1.4"
+PortMinimum = 7000
+AgentSpawner = NodePath("HBoxContainer/ColorRect2/ActiveGames/ActiveGames/MultiplayerSpawner")
+GameNameBox = NodePath("HBoxContainer/ColorRect/MarginContainer/LeftMenu/GameName")
+MaxGameTime = 60.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GenericLobbySystem" unique_id=199765664]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="GenericLobbySystem/HBoxContainer" unique_id=700996078]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0.6, 0, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect" unique_id=90489072]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.005
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -4.0
+offset_right = 0.13000488
+offset_bottom = -4.0
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="LeftMenu" type="VBoxContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer" unique_id=511234590]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu" unique_id=1187495790]
+layout_mode = 2
+text = "REALLY COOL LOBBY SYSTEM"
+horizontal_alignment = 1
+
+[node name="GameName" type="TextEdit" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu" unique_id=1199488657]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+placeholder_text = "Enter Game Name"
+
+[node name="Button" type="Button" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu" unique_id=1688881356]
+layout_mode = 2
+text = "Create Game"
+
+[node name="ColorRect2" type="ColorRect" parent="GenericLobbySystem/HBoxContainer" unique_id=1226690038]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.03529412, 1, 0.050980393, 1)
+
+[node name="ActiveGames" type="MarginContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect2" unique_id=822375401]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ActiveGames" type="VBoxContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect2/ActiveGames" unique_id=1396015201]
+layout_mode = 2
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="GenericLobbySystem/HBoxContainer/ColorRect2/ActiveGames/ActiveGames" unique_id=1281370961]
+_spawnable_scenes = PackedStringArray("uid://cs7s4kaurdy11")
+spawn_path = NodePath("..")
+script = ExtResource("2_nacce")
+SpawnInexZeroOnConnect = true
+
+[node name="GameRoot" type="Node" parent="." unique_id=1886203548]
+script = ExtResource("3_nacce")
+_portMaximum = 7010
+_portMinimum = 7001
+_localPort = 7001
+_serverAddress = "127.0.0.1"
+_maxConnections = 4
+
+[node name="CanvasLayer" type="CanvasLayer" parent="GameRoot" unique_id=1300822085]
+
+[node name="GridContainer" type="GridContainer" parent="GameRoot/CanvasLayer" unique_id=989047771]
+custom_minimum_size = Vector2(600, 325)
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="GameRoot/CanvasLayer/GridContainer" unique_id=2068706235]
+_spawnable_scenes = PackedStringArray("uid://chrro2jpws6el")
+spawn_path = NodePath("..")
+script = ExtResource("2_nacce")
+
+[node name="MainGameSpace" type="Node3D" parent="GameRoot" unique_id=992161965]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="GameRoot/MainGameSpace" unique_id=354280455]
+_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp")
+spawn_path = NodePath("..")
+script = ExtResource("2_nacce")
+
+[connection signal="pressed" from="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu/Button" to="GenericLobbySystem" method="CreatNewGameServer"]
