@@ -4,83 +4,70 @@ using System;
 public partial class CameraFollow : Camera3D
 {
 	[Export] Control LoadingScreen;
-	[Export] float radius;
-	[Export] float YOffset;
-	[Export] float swivelSpeed;
-	[Export] float smoothingSpeed;
+	[Export] float radius       = 8f;
+	[Export] float YOffset      = 4f;
+	[Export] float pitchAngle   = 25f;   // degrees downward; tweak in Inspector
+	[Export] float swivelSpeed  = 0.3f;  // degrees per pixel of mouse movement
+	[Export] float smoothingSpeed = 8f;
 	Node3D Target;
-	float swivelAngle = 270;
-	float MaxAngle = 360;
+	float swivelAngle = 270f;
+	const float MaxAngle = 360f;
 
-	public override void _Ready() {
-		
-		/* This was with spawn eggs, however, server doesn't replicate spawn to clients
-		if(GenericCore.Instance.IsServer)
-		{
-			//QueueFree();
-			return;
-		}
-		
-		var player = GetTree().GetFirstNodeInGroup("PLAYER") as Player;
-
-		if(player.isLocal)
-		{
-			Target = player;
-			player.SetCamera(this);			
-		}
-		else { QueueFree(); }
-		*/
-	}
+	// -------------------------------------------------------------------
+	// Public API
+	// -------------------------------------------------------------------
 
 	public void SetTarget(Node3D target)
 	{
-		if(!GenericCore.Instance.IsServer)
+		if (!GenericCore.Instance.IsServer)
 			Target = target;
-		
-		//LoadingScreen.Hide();
 	}
 
-	public override void _Process(double delta) 
+	// -------------------------------------------------------------------
+	// Per-frame update
+	// -------------------------------------------------------------------
+
+	public override void _Process(double delta)
 	{
-		if(IsInstanceValid(Target))
-		{
-			//Compute the direction and magnitude of the offset on the XZ, apply Y offset
-			var radianSwivelAngle = Mathf.DegToRad(swivelAngle);
-			Vector3 completeOffset = new(Mathf.Cos(radianSwivelAngle), 0f, Mathf.Sin(radianSwivelAngle));
-			completeOffset *= radius;
-			completeOffset.Y = YOffset;
+		if (!IsInstanceValid(Target)) return;
 
-			//Apply the offset to the current position of the tatget and ensure camera is looking at target
-			var TargetPosition = completeOffset + Target.GlobalPosition;
-			var LerpPosition = GlobalPosition.Lerp(TargetPosition, smoothingSpeed * (float)delta);
-			var TargetDir = (Target.GlobalPosition - LerpPosition).Normalized();
-			TargetDir.Y = 0;
-			
-			Basis = Basis.LookingAt(TargetDir, Vector3.Up);
-			GlobalPosition = LerpPosition;			
-		}
+		float radSwivel = Mathf.DegToRad(swivelAngle);
+		float radPitch  = Mathf.DegToRad(pitchAngle);
+
+		// Horizontal offset on XZ plane
+		Vector3 flatDir = new(Mathf.Cos(radSwivel), 0f, Mathf.Sin(radSwivel));
+
+		// Lift the offset point upward by radius * sin(pitch), pull it
+		// outward by radius * cos(pitch) so the true distance stays = radius.
+		Vector3 offset = flatDir * (radius * Mathf.Cos(radPitch));
+		offset.Y = YOffset + radius * Mathf.Sin(radPitch);
+
+		Vector3 targetPos  = Target.GlobalPosition + offset;
+		Vector3 lerpPos    = GlobalPosition.Lerp(targetPos, smoothingSpeed * (float)delta);
+
+		// Look directly at the player from the lerped position (full 3-D direction,
+		// no Y-zeroing) so the camera pitches down naturally.
+		Vector3 lookDir = (Target.GlobalPosition - lerpPos).Normalized();
+
+		GlobalPosition = lerpPos;
+		Basis = Basis.LookingAt(lookDir, Vector3.Up);
 	}
+
+	// -------------------------------------------------------------------
+	// Input – mouse swivel & cursor toggle
+	// -------------------------------------------------------------------
 
 	public override void _Input(InputEvent @event)
 	{
-		if(@event is InputEventMouseMotion mouseMove)
+		if (@event is InputEventMouseMotion mouseMove && IsInstanceValid(Target))
 		{
-			//Should work, target will  be null when game is over or a player DCs
-			if(IsInstanceValid(Target))
+			// Use the event's own relative movement.  swivelSpeed is now
+			// "degrees per pixel", so no delta scaling is needed – the
+			// relative value is already pixel-space and frame-independent.
+			float dx = mouseMove.Relative.X;
+			if (Mathf.Abs(dx) > 0f)
 			{
-				var deltaTime = (float)GetProcessDeltaTime();
-				Vector2 mouseVel;
-				mouseVel = mouseMove.Relative;
-
-				//Did the user move their mouse
-				if(mouseVel.LengthSquared() > 0)
-				{
-					var xDir = (mouseVel.X > 0) ? 1 : -1;
-					var yDir = (mouseVel.Y > 0) ? 1 : -1;
-
-					swivelAngle = (swivelAngle + (swivelSpeed * xDir)) % MaxAngle;
-					if(swivelAngle < 0) swivelAngle = MaxAngle; 
-				}
+				swivelAngle = ((swivelAngle + dx * swivelSpeed) % MaxAngle + MaxAngle) % MaxAngle;
 			}
 		}
 
@@ -88,19 +75,25 @@ public partial class CameraFollow : Camera3D
 		{
 			if (keyEvent.Keycode == Key.T)
 			{
-				if(Input.MouseMode == Input.MouseModeEnum.Captured)
-					Input.MouseMode = Input.MouseModeEnum.Visible;
-				
-				else
-					Input.MouseMode = Input.MouseModeEnum.Captured;
+				Input.MouseMode = Input.MouseMode == Input.MouseModeEnum.Captured
+					? Input.MouseModeEnum.Visible
+					: Input.MouseModeEnum.Captured;
 			}
 		}
 	}
 
+	// -------------------------------------------------------------------
+	// Helpers
+	// -------------------------------------------------------------------
+
+	/// <summary>
+	/// Returns the yaw (in radians) the character should face so it looks
+	/// in the same direction as the camera.
+	/// </summary>
 	public float GetFacingYaw()
 	{
-		// The camera sits at swivelAngle behind the target, so it faces the opposite direction
-		var radians = Mathf.DegToRad(swivelAngle + 180f);
+		// Camera sits swivelAngle *behind* the target → character faces opposite.
+		float radians = Mathf.DegToRad(swivelAngle + 180f);
 		return Mathf.Atan2(Mathf.Cos(radians), Mathf.Sin(radians));
 	}
 }
