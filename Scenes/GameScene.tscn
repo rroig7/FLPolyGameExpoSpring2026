@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://dqt54rh3b3x66" path="res://Scenes/Player.tscn" id="3_3mbwn"]
 [ext_resource type="PackedScene" uid="uid://bah4d6kdjyri3" path="res://Assets/ScaleMan/PenguinScale.tscn" id="4_jwv4s"]
 [ext_resource type="PackedScene" uid="uid://daf4by0o1a6uu" path="res://Assets/I.C.E_BLOCKS/IceBlock01_.tscn" id="4_lohlh"]
+[ext_resource type="PackedScene" uid="uid://d0kabuncnxt8d" path="res://Assets/I.C.E_BLOCKS/IceBlock03_.tscn" id="5_kilg5"]
+[ext_resource type="PackedScene" uid="uid://ptl76tm620su" path="res://Assets/Titanic/Titanic.tscn" id="6_kilg5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kilg5"]
 sky_top_color = Color(0.19474682, 0.38486814, 0.55847836, 1)
@@ -109,7 +111,7 @@ draw_pass_1 = SubResource("QuadMesh_f43ej")
 [node name="Enviroment" type="Node" parent="." unique_id=1792310154]
 
 [node name="Floor" type="MeshInstance3D" parent="Enviroment" unique_id=1313550903]
-transform = Transform3D(35, 0, 0, 0, 1, 0, 0, 0, 35, 0, 0, 0)
+transform = Transform3D(56.587444, 0, 0, 0, 1, 0, 0, 0, 45.68044, 0, 0, 0)
 mesh = SubResource("PlaneMesh_3mbwn")
 
 [node name="Floor2" type="MeshInstance3D" parent="Enviroment" unique_id=448520781]
@@ -173,5 +175,38 @@ transform = Transform3D(-2.9712896, 0, -2.1106248, 0, 2.5494208, 0, 2.9712892, 0
 [node name="IceBlock01_12" parent="IceBlocks" unique_id=1080648028 instance=ExtResource("4_lohlh")]
 transform = Transform3D(-2.1010191, 0, -2.5849771, 0, 2.5494208, 0, 3.639071, 0, -1.4924378, -25.923508, 4, -31.222527)
 
+[node name="IceBlock01_13" parent="IceBlocks" unique_id=650516295 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-2.1010191, 0, -2.5849771, 0, 2.5494208, 0, 3.639071, 0, -1.4924378, -8.923508, 1, -39.222527)
+
+[node name="IceBlock01_15" parent="IceBlocks" unique_id=1443346907 instance=ExtResource("4_lohlh")]
+transform = Transform3D(2.9712899, 0, 2.1106248, 0, 2.549421, 0, -2.9712887, 0, 2.1106257, 5.0764923, 1, -41.222527)
+
+[node name="IceBlock01_14" parent="IceBlocks" unique_id=1554410623 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-4.058857, 0, -0.7725422, 0, 2.5494213, 0, 1.0875671, 0, -2.8831682, 22.076492, 1, -38.222527)
+
+[node name="IceBlock01_16" parent="IceBlocks" unique_id=1033456392 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-3.639071, 0, 1.4924377, 0, 2.5494213, 0, -2.101019, 0, -2.5849771, 32.076492, 4, -26.222527)
+
+[node name="IceBlock01_17" parent="IceBlocks" unique_id=1714920893 instance=ExtResource("4_lohlh")]
+transform = Transform3D(-3.639071, 0, 1.4924377, 0, 2.5494213, 0, -2.101019, 0, -2.5849771, 39.076492, 4, -11.222527)
+
 [node name="IceBlock01_4" parent="IceBlocks" unique_id=490203088 instance=ExtResource("4_lohlh")]
 transform = Transform3D(-1.1049228, 0, -2.2033303, 0, 2.5494215, 0, 4.123627, 0, -0.59038067, 31.076492, 1, 28.777473)
+
+[node name="IceBlock03_" parent="IceBlocks" unique_id=2088803090 instance=ExtResource("5_kilg5")]
+transform = Transform3D(0.8660254, 0, 0.5, -0.12940952, 0.9659258, 0.22414386, -0.4829629, -0.25881904, 0.83651626, 24, 0, -27)
+
+[node name="IceBlock03_2" parent="IceBlocks" unique_id=1020091621 instance=ExtResource("5_kilg5")]
+transform = Transform3D(0.24236245, 0.24999997, -0.9374221, -0.12940952, 0.96592575, 0.22414383, 0.9615162, 0.066987306, 0.2664565, 24, 0, -10)
+
+[node name="IceBlock01_18" parent="IceBlocks" unique_id=1244566812 instance=ExtResource("4_lohlh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.420847, 1.2499754, -18.140629)
+
+[node name="IceBlock01_19" parent="IceBlocks" unique_id=1407900875 instance=ExtResource("4_lohlh")]
+transform = Transform3D(0.37591702, 0, -0.9266533, 0, 1, 0, 0.9266533, 0, 0.37591702, 19.27667, 1.2499754, -20.19207)
+
+[node name="Titanic" parent="IceBlocks" unique_id=147546188 instance=ExtResource("6_kilg5")]
+transform = Transform3D(0.007181051, 0.003827079, 0.0058125695, -0.0047031892, 0.008824966, 1.1641532e-10, -0.005129572, -0.0027337617, 0.008137198, -0.9558697, -33.707714, -15.84473)
+
+[node name="Titanic2" parent="IceBlocks" unique_id=1575964239 instance=ExtResource("6_kilg5")]
+transform = Transform3D(0.0065953834, -0.0047660205, 0.0058125695, 0.005857076, 0.008105224, 4.656613e-10, -0.0047112177, 0.003404467, 0.008137199, 14.648611, -9.9859295, -26.991325)
