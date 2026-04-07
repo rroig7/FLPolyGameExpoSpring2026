@@ -78,7 +78,7 @@ public partial class CameraFollow : Camera3D
 					var xDir = (mouseVel.X > 0) ? 1 : -1;
 					var yDir = (mouseVel.Y > 0) ? 1 : -1;
 
-					swivelAngle = (swivelAngle + (swivelSpeed * xDir * deltaTime)) % MaxAngle;
+					swivelAngle = (swivelAngle + (swivelSpeed * xDir)) % MaxAngle;
 					if(swivelAngle < 0) swivelAngle = MaxAngle; 
 				}
 			}

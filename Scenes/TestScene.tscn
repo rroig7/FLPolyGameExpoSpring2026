@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://nsjin1m5p7kp"]
+[gd_scene format=3 uid="uid://mwfw7rn1p2ys"]
 
 [ext_resource type="Script" uid="uid://do2ep11bssdcg" path="res://Scripts/TestScene.cs" id="1_5lt6y"]
 [ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="1_b5ayd"]
@@ -11,7 +11,6 @@ PlayerSpawner = NodePath("MultiplayerSpawner")
 SpawnPoint = NodePath("SpawnPoint")
 
 [node name="SpawnPoint" type="Node3D" parent="." unique_id=1258090954]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=2122061902]
 _spawnable_scenes = PackedStringArray("uid://dqt54rh3b3x66")
@@ -23,7 +22,7 @@ transform = Transform3D(1, 0, 0, 0, 0.94542193, 0.3258487, 0, -0.3258487, 0.9454
 script = ExtResource("3_8k7wh")
 radius = 5.0
 YOffset = 2.0
-swivelSpeed = 100.0
+swivelSpeed = 1.0
 smoothingSpeed = 3.0
 
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]
