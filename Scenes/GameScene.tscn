@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://daf4by0o1a6uu" path="res://Assets/I.C.E_BLOCKS/IceBlock01_.tscn" id="4_lohlh"]
 [ext_resource type="PackedScene" uid="uid://d0kabuncnxt8d" path="res://Assets/I.C.E_BLOCKS/IceBlock03_.tscn" id="5_kilg5"]
 [ext_resource type="PackedScene" uid="uid://ptl76tm620su" path="res://Assets/Titanic/Titanic.tscn" id="6_kilg5"]
+[ext_resource type="AudioStream" uid="uid://vmgw7gd4ab01" path="res://Assets/Music/Blizzard Sound.mp3" id="11_6vvcf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kilg5"]
 sky_top_color = Color(0.19474682, 0.38486814, 0.55847836, 1)
@@ -238,3 +239,8 @@ transform = Transform3D(0.007181051, 0.003827079, 0.0058125695, -0.0047031892, 0
 
 [node name="Titanic2" parent="IceBlocks" unique_id=1575964239 instance=ExtResource("6_kilg5")]
 transform = Transform3D(0.0065953834, -0.0047660205, 0.0058125695, 0.005857076, 0.008105224, 4.656613e-10, -0.0047112177, 0.003404467, 0.008137199, 14.648611, -9.9859295, -26.991325)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=813862561]
+stream = ExtResource("11_6vvcf")
+volume_db = -15.0
+autoplay = true
