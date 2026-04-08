@@ -43,7 +43,7 @@ swivelSpeed = 100.0
 smoothingSpeed = 3.0
 
 [node name="BossCube" parent="." unique_id=842654904 node_paths=PackedStringArray("patrolPoints") instance=ExtResource("4_iufkg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.098, 1, -3.169)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.098, 5.5256157, -8.02611)
 patrolPoints = [NodePath("../Node3D/Marker3D"), NodePath("../Node3D/Marker3D2"), NodePath("../Node3D/Marker3D3"), NodePath("../Node3D/Marker3D4")]
 
 [node name="Area3D" type="Area3D" parent="." unique_id=2069016497]
