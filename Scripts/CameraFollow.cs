@@ -3,15 +3,23 @@ using System;
 
 public partial class CameraFollow : Camera3D
 {
-	[Export] Control LoadingScreen;
-	[Export] float radius       = 8f;
-	[Export] float YOffset      = 4f;
-	[Export] float pitchAngle   = 25f;   // degrees downward; tweak in Inspector
-	[Export] float swivelSpeed  = 0.3f;  // degrees per pixel of mouse movement
-	[Export] float smoothingSpeed = 8f;
+	[Export] public Control LoadingScreen;
+
+	[ExportGroup("Orbit")]
+	[Export] float radius        = 8f;
+	[Export] float YOffset       = 2f;   // pivot height above player origin
+	[Export] float swivelSpeed   = 0.25f; // degrees per pixel (horizontal)
+	[Export] float pitchSpeed    = 0.20f; // degrees per pixel (vertical)
+	[Export] float pitchMin      = -20f;  // degrees (look up limit)
+	[Export] float pitchMax      =  60f;  // degrees (look down limit)
+	[Export] float smoothingSpeed = 12f;
+
+	[ExportGroup("Collision")]
+	[Export] float collisionMargin = 0.3f; // pull-in buffer so cam doesn't clip
+
 	Node3D Target;
-	float swivelAngle = 270f;
-	const float MaxAngle = 360f;
+	float swivelAngle = 270f; // horizontal, degrees
+	float pitchAngle  =  20f; // vertical,   degrees (positive = looking down)
 
 	// -------------------------------------------------------------------
 	// Public API
@@ -23,6 +31,12 @@ public partial class CameraFollow : Camera3D
 			Target = target;
 	}
 
+	public float GetFacingYaw()
+	{
+		float radians = Mathf.DegToRad(swivelAngle + 180f);
+		return Mathf.Atan2(Mathf.Cos(radians), Mathf.Sin(radians));
+	}
+
 	// -------------------------------------------------------------------
 	// Per-frame update
 	// -------------------------------------------------------------------
@@ -31,44 +45,52 @@ public partial class CameraFollow : Camera3D
 	{
 		if (!IsInstanceValid(Target)) return;
 
-		float radSwivel = Mathf.DegToRad(swivelAngle);
-		float radPitch  = Mathf.DegToRad(pitchAngle);
+		// --- 1. Compute the pivot point (at player's head height) ---------
+		Vector3 pivot = Target.GlobalPosition + Vector3.Up * YOffset;
 
-		// Horizontal offset on XZ plane
-		Vector3 flatDir = new(Mathf.Cos(radSwivel), 0f, Mathf.Sin(radSwivel));
+		// --- 2. Desired camera offset in spherical coordinates ------------
+		//   swivelAngle rotates around Y
+		//   pitchAngle  tilts up/down (positive = camera above, looking down)
+		float radYaw   = Mathf.DegToRad(swivelAngle);
+		float radPitch = Mathf.DegToRad(pitchAngle);
 
-		// Lift the offset point upward by radius * sin(pitch), pull it
-		// outward by radius * cos(pitch) so the true distance stays = radius.
-		Vector3 offset = flatDir * (radius * Mathf.Cos(radPitch));
-		offset.Y = YOffset + radius * Mathf.Sin(radPitch);
+		Vector3 desiredOffset = new(
+			Mathf.Cos(radYaw)   * Mathf.Cos(radPitch),
+			Mathf.Sin(radPitch),
+			Mathf.Sin(radYaw)   * Mathf.Cos(radPitch)
+		);
+		desiredOffset *= radius;
 
-		Vector3 targetPos  = Target.GlobalPosition + offset;
-		Vector3 lerpPos    = GlobalPosition.Lerp(targetPos, smoothingSpeed * (float)delta);
+		Vector3 desiredPos = pivot + desiredOffset;
 
-		// Look directly at the player from the lerped position (full 3-D direction,
-		// no Y-zeroing) so the camera pitches down naturally.
-		Vector3 lookDir = (Target.GlobalPosition - lerpPos).Normalized();
+		// --- 3. Collision – raycast from pivot toward desired position -----
+		Vector3 finalPos = GetCollisionSafePosition(pivot, desiredPos);
 
-		GlobalPosition = lerpPos;
-		Basis = Basis.LookingAt(lookDir, Vector3.Up);
+		// --- 4. Smooth camera position ------------------------------------
+		GlobalPosition = GlobalPosition.Lerp(finalPos, smoothingSpeed * (float)delta);
+
+		// --- 5. Always look at the STABLE pivot, not the lerping position -
+		//   This is the key fix for vertical jitter: we never derive the
+		//   look direction from GlobalPosition (which is mid-lerp and
+		//   changes every frame), we always aim at the fixed pivot point.
+		LookAt(pivot, Vector3.Up);
 	}
 
 	// -------------------------------------------------------------------
-	// Input – mouse swivel & cursor toggle
+	// Input
 	// -------------------------------------------------------------------
 
 	public override void _Input(InputEvent @event)
 	{
 		if (@event is InputEventMouseMotion mouseMove && IsInstanceValid(Target))
 		{
-			// Use the event's own relative movement.  swivelSpeed is now
-			// "degrees per pixel", so no delta scaling is needed – the
-			// relative value is already pixel-space and frame-independent.
+			// Horizontal swivel – degrees per pixel, no delta scaling needed
 			float dx = mouseMove.Relative.X;
-			if (Mathf.Abs(dx) > 0f)
-			{
-				swivelAngle = ((swivelAngle + dx * swivelSpeed) % MaxAngle + MaxAngle) % MaxAngle;
-			}
+			swivelAngle = ((swivelAngle + dx * swivelSpeed) % 360f + 360f) % 360f;
+
+			// Vertical pitch – clamp so camera stays within comfortable range
+			float dy = mouseMove.Relative.Y;
+			pitchAngle = Mathf.Clamp(pitchAngle + dy * pitchSpeed, pitchMin, pitchMax);
 		}
 
 		if (@event is InputEventKey keyEvent && keyEvent.Pressed)
@@ -83,17 +105,37 @@ public partial class CameraFollow : Camera3D
 	}
 
 	// -------------------------------------------------------------------
-	// Helpers
+	// Collision helper
 	// -------------------------------------------------------------------
 
 	/// <summary>
-	/// Returns the yaw (in radians) the character should face so it looks
-	/// in the same direction as the camera.
+	/// Casts a ray from <paramref name="pivot"/> toward <paramref name="desired"/>.
+	/// Returns the desired position if clear, or pulls the camera back to just
+	/// in front of the hit surface so it never phases through geometry.
 	/// </summary>
-	public float GetFacingYaw()
+	private Vector3 GetCollisionSafePosition(Vector3 pivot, Vector3 desired)
 	{
-		// Camera sits swivelAngle *behind* the target → character faces opposite.
-		float radians = Mathf.DegToRad(swivelAngle + 180f);
-		return Mathf.Atan2(Mathf.Cos(radians), Mathf.Sin(radians));
+		var spaceState = GetWorld3D().DirectSpaceState;
+
+		var query = PhysicsRayQueryParameters3D.Create(
+			pivot,
+			desired,
+			// Bitmask: layers 1 + 2 (world/static + rigidbodies). Adjust to match your collision layers.
+			collisionMask: 0b11
+		);
+		// Exclude the player's physics body so the ray doesn't immediately
+		// hit the character it's orbiting around.
+		if (Target is CollisionObject3D playerCol)
+			query.Exclude = new Godot.Collections.Array<Rid> { playerCol.GetRid() };
+
+		var result = spaceState.IntersectRay(query);
+
+		if (result.Count == 0)
+			return desired; // clear line of sight – use the full radius
+
+		// Pull back to just in front of the hit surface
+		Vector3 hitPos    = result["position"].AsVector3();
+		Vector3 hitNormal = result["normal"].AsVector3();
+		return hitPos + hitNormal * collisionMargin;
 	}
 }
