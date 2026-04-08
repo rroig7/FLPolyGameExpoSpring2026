@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://bomgoj5cimfhd" path="res://Scripts/Enemy2.cs" id="1_7j2nt"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_jfpgj"]
-[ext_resource type="PackedScene" uid="uid://dkmbj0jxsn6pw" path="res://Scenes/Muzzle.tscn" id="3_jfpgj"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vkdvt"]
 size = Vector3(10, 10, 10)
@@ -64,6 +63,3 @@ script = ExtResource("2_jfpgj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1968873893]
 shape = SubResource("SphereShape3D_7j2nt")
-
-[node name="Muzzle" parent="." unique_id=1302948055 instance=ExtResource("3_jfpgj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.8735404)

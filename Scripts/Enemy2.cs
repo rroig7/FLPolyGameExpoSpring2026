@@ -29,6 +29,8 @@ public partial class Enemy2 : CharacterBody3D
 	private Player targetPlayer = null;
 	private Vector3 lastPatrolTarget;
 
+	private bool _isDying = false;
+
 	public override void _Ready()
 	{
 		navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
@@ -40,12 +42,18 @@ public partial class Enemy2 : CharacterBody3D
 			patrolPoints = pointParent.GetChildren().OfType<Marker3D>().ToArray();
 		}
 
+		// If myId wasn't assigned in the editor, try to find it as a child.
+		// NetID always names itself "MultiplayerSynchronizer" in _EnterTree.
+		if (myId == null)
+			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
+
 		ChoosePatrolPoint();
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (!myId.IsNetworkReady) return;
+		if (myId == null || !myId.IsNetworkReady) return;
+		if (_isDying) return;
 
 		if (GenericCore.Instance.IsServer)
 		{
@@ -168,7 +176,6 @@ public partial class Enemy2 : CharacterBody3D
 		float currentY = Velocity.Y;
 		Velocity = new Vector3(direction.X * moveSpeed, currentY, direction.Z * moveSpeed);
 
-		// only rotate if the direction has meaningful horizontal movement
 		Vector3 flatDirection = new Vector3(direction.X, 0, direction.Z).Normalized();
 		if (flatDirection.Length() > 0.1f)
 		{
@@ -193,16 +200,27 @@ public partial class Enemy2 : CharacterBody3D
 	public void OnHitByBullet()
 	{
 		if (!GenericCore.Instance.IsServer) return;
+		if (_isDying) return;
+		_isDying = true;
 
-		if (myId.ReplicationConfig != null)
+		// Fallback: find myId by child name if the export wasn't wired in the editor.
+		// NetID always names itself "MultiplayerSynchronizer" in _EnterTree.
+		if (myId == null)
+			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
+
+		if (myId != null && IsInstanceValid(myId))
 		{
-			try
-			{
-				myId.ReplicationConfig = null;
-			}
-			catch { }
-		}
+			myId.ProcessMode = ProcessModeEnum.Disabled;
 
-		GenericCore.Instance.MainNetworkCore.NetDestroyObject(myId);
+			try { myId.ReplicationConfig = null; } catch { }
+
+			myId.Rpc(NetID.MethodName.ManualDelete);
+		}
+		else
+		{
+			// No NetID found at all — just free locally as a last resort.
+			GD.PushWarning("Enemy2.OnHitByBullet: no valid NetID found, freeing locally only.");
+			QueueFree();
+		}
 	}
 }

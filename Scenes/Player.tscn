@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://dqt54rh3b3x66"]
 
 [ext_resource type="Script" uid="uid://bfw5hdcj0yn71" path="res://Scripts/Player.cs" id="1_rpqav"]
-[ext_resource type="PackedScene" uid="uid://tuiqvodtfmrk" path="res://Scenes/SnowBullet.tscn" id="2_dewec"]
+[ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_dewec"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_kyqiw"]
-[ext_resource type="PackedScene" uid="uid://dkmbj0jxsn6pw" path="res://Scenes/Muzzle.tscn" id="3_gntrk"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_kyqiw"]
 
@@ -50,6 +49,5 @@ shape = SubResource("CapsuleShape3D_gntrk")
 replication_config = SubResource("SceneReplicationConfig_gntrk")
 script = ExtResource("2_kyqiw")
 
-[node name="Muzzle" parent="." unique_id=1302948055 instance=ExtResource("3_gntrk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2215168)
-script = null
+[node name="Muzzle" type="Node3D" parent="." unique_id=54158534]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5682076, 0.5351485, 1.1233056)

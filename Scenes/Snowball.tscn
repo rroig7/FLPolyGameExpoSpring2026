@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c73y4jqgjuev"]
+
+[ext_resource type="Script" uid="uid://faoqta4o6eta" path="res://Scripts/SnowBullet.cs" id="1_yjm6l"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_3stbu"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_v7qr8"]
+
+[node name="Snowball" type="CharacterBody3D" unique_id=346927955]
+script = ExtResource("1_yjm6l")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=404153181]
+mesh = SubResource("SphereMesh_3stbu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1682615180]
+shape = SubResource("SphereShape3D_v7qr8")
