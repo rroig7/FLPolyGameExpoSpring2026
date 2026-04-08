@@ -9,24 +9,27 @@ radius = 0.15527344
 height = 0.7774658
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gntrk"]
-properties/0/path = NodePath(".:position")
+properties/0/path = NodePath(".:rotation")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
+properties/1/path = NodePath("MultiplayerSynchronizer:IsNetworkReady")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath("MultiplayerSynchronizer:IsNetworkReady")
+properties/2/path = NodePath("MultiplayerSynchronizer:IsSynced")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath("MultiplayerSynchronizer:IsSynced")
+properties/3/path = NodePath("MultiplayerSynchronizer:OwnerId")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath("MultiplayerSynchronizer:OwnerId")
+properties/4/path = NodePath(".:scale")
 properties/4/spawn = true
 properties/4/replication_mode = 1
-properties/5/path = NodePath(".:scale")
+properties/5/path = NodePath(".:SyncVelocity")
 properties/5/spawn = true
 properties/5/replication_mode = 1
+properties/6/path = NodePath(".:SyncPosition")
+properties/6/spawn = true
+properties/6/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("MyId")]
 floor_max_angle = 1.5707964

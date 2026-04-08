@@ -8,6 +8,20 @@ public partial class Player : BaseNetworkedPlayer
 	public bool isLocal => MyId.IsLocal;
 	public enum PlayerAbilities { ABILITY1, ABILITY2, ABILITY3 }
 
+	[Export]
+	public Vector3 SyncVelocity
+	{
+		get => Velocity;
+		set => Velocity = value;
+	}
+
+	[Export]
+	public Vector3 SyncPosition
+	{
+		get => GlobalPosition;
+		set => OnServerPositionReceived(value);  // intercept the snap
+	}
+
 	// --- Dash settings ---
 	[Export] float dashSpeed    = 20f;
 	[Export] float dashDuration = 0.15f;

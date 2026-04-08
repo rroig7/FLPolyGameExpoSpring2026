@@ -20,10 +20,8 @@ script = ExtResource("1_b5ayd")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1310418211 groups=["PLAYERCAMERA"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.001159, 7.9017577)
 script = ExtResource("3_8k7wh")
-radius = 2.0
+radius = 1.5
 YOffset = 1.0
-pitchAngle = 0.0
 swivelSpeed = 0.2
-smoothingSpeed = 4.0
 
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]
