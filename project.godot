@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 project/assembly_name="FLPolyGameExpo2026"
 
+[global_group]
+
+TurretFOV="The Turret's FOV (area that can see the player)"
+
 [input]
 
 Left={

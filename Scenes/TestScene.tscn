@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://do2ep11bssdcg" path="res://Scripts/TestScene.cs" id="1_5lt6y"]
 [ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="1_b5ayd"]
 [ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
-[ext_resource type="PackedScene" uid="uid://b1p3cox5ob4mr" path="res://Scenes/BossEnemy.tscn" id="4_iufkg"]
+[ext_resource type="PackedScene" uid="uid://capcy13bjlkrr" path="res://Scenes/Turret.tscn" id="5_0f5h7"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_iufkg"]
 size = Vector3(30, 1, 30)
@@ -42,10 +42,6 @@ YOffset = 2.0
 swivelSpeed = 100.0
 smoothingSpeed = 3.0
 
-[node name="BossCube" parent="." unique_id=842654904 node_paths=PackedStringArray("patrolPoints") instance=ExtResource("4_iufkg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.098, 5.5256157, -8.02611)
-patrolPoints = [NodePath("../Node3D/Marker3D"), NodePath("../Node3D/Marker3D2"), NodePath("../Node3D/Marker3D3"), NodePath("../Node3D/Marker3D4")]
-
 [node name="Area3D" type="Area3D" parent="." unique_id=2069016497]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1864109419]
@@ -75,3 +71,6 @@ shape = SubResource("BoxShape3D_b5ayd")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/StaticBody3D" unique_id=1138686602]
 mesh = SubResource("BoxMesh_0r02p")
+
+[node name="Turret" parent="." unique_id=1336070727 instance=ExtResource("5_0f5h7")]
+transform = Transform3D(-2, 0, 1.7484555e-07, 0, 2, 0, -1.7484555e-07, 0, -2, -9.074654, 0.19999987, -12.330762)
