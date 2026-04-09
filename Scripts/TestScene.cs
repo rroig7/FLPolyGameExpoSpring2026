@@ -18,7 +18,7 @@ public partial class TestScene : Node3D
 			await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout);
 		}
 
-		Multiplayer.PeerConnected += (long id) => OnPeerConnected(id);
+		Multiplayer.PeerConnected += OnPeerConnected;
 
 		GD.Print("Level: Ready. Awaiting connections.");
 	}

@@ -3,7 +3,6 @@ using System;
 
 public partial class CameraFollow : Camera3D
 {
-	[Export] Control LoadingScreen;
 	[Export] float radius;
 	[Export] float YOffset;
 	[Export] float swivelSpeed;
@@ -37,7 +36,8 @@ public partial class CameraFollow : Camera3D
 		if(!GenericCore.Instance.IsServer)
 			Target = target;
 		
-		//LoadingScreen.Hide();
+		var LS = GetTree().GetFirstNodeInGroup("LoadingScreen") as Control; 
+		LS?.Hide();
 	}
 
 	public override void _Process(double delta) 
@@ -78,7 +78,7 @@ public partial class CameraFollow : Camera3D
 					var xDir = (mouseVel.X > 0) ? 1 : -1;
 					var yDir = (mouseVel.Y > 0) ? 1 : -1;
 
-					swivelAngle = (swivelAngle + (swivelSpeed * xDir * deltaTime)) % MaxAngle;
+					swivelAngle = (swivelAngle + (swivelSpeed * xDir)) % MaxAngle;
 					if(swivelAngle < 0) swivelAngle = MaxAngle; 
 				}
 			}

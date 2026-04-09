@@ -25,6 +25,7 @@ public partial class Player : BaseNetworkedPlayer
 
 	public void SlowStart()
 	{
+		GD.Print($"Player: SlowStart called. IsLocal={MyId.IsLocal}, IsServer={GenericCore.Instance.IsServer}");
 		if (!MyId.IsLocal) return;
 		TryAssignCamera();
 		Input.MouseMode = Input.MouseModeEnum.Captured;

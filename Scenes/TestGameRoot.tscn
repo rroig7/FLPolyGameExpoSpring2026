@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://bhaj04sfwyyrv"]
 
 [ext_resource type="Script" uid="uid://n2h3r5cr70se" path="res://NetworkCore/GenericCore.cs" id="1_ul1ws"]
-[ext_resource type="PackedScene" uid="uid://nsjin1m5p7kp" path="res://Scenes/TestScene.tscn" id="2_bousw"]
+[ext_resource type="Script" uid="uid://dyi38axdfgo8m" path="res://Scripts/GameMaster.cs" id="2_bousw"]
+[ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="3_5ftxa"]
 
 [sub_resource type="Theme" id="Theme_ul1ws"]
 default_font_size = 50
@@ -9,17 +10,42 @@ default_font_size = 50
 [sub_resource type="Theme" id="Theme_bousw"]
 default_font_size = 50
 
-[node name="TestGameRoot" type="Node" unique_id=1127935270]
+[sub_resource type="LabelSettings" id="LabelSettings_bousw"]
+font_size = 64
+
+[node name="TestGameRoot" type="Node" unique_id=1127935270 node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_ul1ws")
-_portMaximum = 7010
-_portMinimum = 7000
+MainNetworkCore = NodePath("Main Spawner")
+_portMaximum = 7000
+_portMinimum = 7010
 _localPort = 7000
 _serverAddress = "127.0.0.1"
 _maxConnections = 4
 
+[node name="GameMaster" type="Node" parent="." unique_id=1902878242]
+script = ExtResource("2_bousw")
+TotalRoundLength = 1.0
+BossSpawn = 0.5
+SuddenDeath = 0.75
+
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=1129308110]
+[node name="NPM Spawner" type="MultiplayerSpawner" parent="CanvasLayer" unique_id=124614511]
+_spawnable_scenes = PackedStringArray("uid://chrro2jpws6el")
+spawn_path = NodePath("../Lobby UI/VBoxContainer")
+script = ExtResource("3_5ftxa")
+SpawnInexZeroOnConnect = true
+
+[node name="Lobby UI" type="Control" parent="CanvasLayer" unique_id=1167481812]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Lobby UI" unique_id=1129308110]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -27,33 +53,96 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.53436923, 0.54496837, 1, 1)
 
-[node name="HostButton" type="Button" parent="CanvasLayer" unique_id=1263757268]
+[node name="Buttons" type="Control" parent="CanvasLayer/Lobby UI" unique_id=1725437401]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HostButton" type="Button" parent="CanvasLayer/Lobby UI/Buttons" unique_id=1263757268]
+layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_top = -15.5
-offset_right = 51.0
-offset_bottom = 15.5
+offset_top = 265.5
+offset_right = 141.0
+offset_bottom = 342.5
 grow_vertical = 2
 theme = SubResource("Theme_ul1ws")
 text = "HOST"
 
-[node name="ClientButton" type="Button" parent="CanvasLayer" unique_id=1664112812]
+[node name="ClientButton" type="Button" parent="CanvasLayer/Lobby UI/Buttons" unique_id=1664112812]
+layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -43.0
-offset_top = -15.5
-offset_bottom = 15.5
+offset_left = 995.0
+offset_top = 265.5
+offset_right = 1112.0
+offset_bottom = 342.5
 grow_horizontal = 0
 grow_vertical = 2
 theme = SubResource("Theme_bousw")
 text = "JOIN"
 
-[node name="TestScene" parent="." unique_id=2078605398 node_paths=PackedStringArray("MyCanvas") instance=ExtResource("2_bousw")]
-MyCanvas = NodePath("../CanvasLayer")
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Lobby UI" unique_id=1532125644]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.56
+anchor_top = 0.0050000004
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -0.11999512
+offset_top = -0.24000025
+offset_bottom = 2.0
+mouse_filter = 2
 
-[connection signal="pressed" from="CanvasLayer/HostButton" to="." method="CreateLocalGame"]
-[connection signal="pressed" from="CanvasLayer/ClientButton" to="." method="JoinGame"]
+[node name="Loading Screen" type="Control" parent="CanvasLayer" unique_id=1711164017 groups=["LoadingScreen"]]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Loading Screen" unique_id=1547931307]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="CanvasLayer/Loading Screen" unique_id=1436960480]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.17114586
+anchor_top = 0.3290988
+anchor_right = 0.81
+anchor_bottom = 0.58300006
+offset_left = -0.16001892
+offset_top = -0.25601196
+offset_right = -0.12005615
+offset_bottom = 0.21600342
+text = "Loading..."
+label_settings = SubResource("LabelSettings_bousw")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
+_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66")
+spawn_path = NodePath("../Level")
+script = ExtResource("3_5ftxa")
+
+[node name="Level" type="Node3D" parent="." unique_id=405944009]
+
+[connection signal="GameStartTrigger" from="GameMaster" to="CanvasLayer/Lobby UI" method="hide"]
+[connection signal="GameStartTrigger" from="GameMaster" to="CanvasLayer/Loading Screen" method="show"]
+[connection signal="pressed" from="CanvasLayer/Lobby UI/Buttons/HostButton" to="." method="CreateLocalGame"]
+[connection signal="pressed" from="CanvasLayer/Lobby UI/Buttons/HostButton" to="CanvasLayer/Lobby UI/Buttons" method="hide"]
+[connection signal="pressed" from="CanvasLayer/Lobby UI/Buttons/ClientButton" to="." method="JoinGame"]
+[connection signal="pressed" from="CanvasLayer/Lobby UI/Buttons/ClientButton" to="CanvasLayer/Lobby UI/Buttons" method="hide"]
