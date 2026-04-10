@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dqt54rh3b3x66"]
 
 [ext_resource type="Script" uid="uid://bfw5hdcj0yn71" path="res://Scripts/Player.cs" id="1_rpqav"]
+[ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_dewec"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_kyqiw"]
 [ext_resource type="PackedScene" uid="uid://bk2q30hrnqy0m" path="res://Assets/FuckingPenguin/FuckingPenguin.glb" id="3_gntrk"]
 
@@ -31,9 +32,12 @@ properties/6/path = NodePath(".:SyncPosition")
 properties/6/spawn = true
 properties/6/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("MyId")]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "HUD", "MyId")]
 floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
+SnowBulletScene = ExtResource("2_dewec")
+_muzzle = NodePath("Muzzle")
+HUD = NodePath("HUD")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
 
@@ -47,3 +51,45 @@ script = ExtResource("2_kyqiw")
 
 [node name="FuckingPenguin" parent="." unique_id=1565179669 instance=ExtResource("3_gntrk")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.42324185, 0)
+
+[node name="Muzzle" type="Node3D" parent="." unique_id=2096701833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19521835, 0.5851183, 0.38866067)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=199841574]
+visible = false
+
+[node name="Crosshair" type="Control" parent="HUD" unique_id=613684786]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="HUD/Crosshair" unique_id=514406054]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -5.0
+offset_right = 1.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect2" type="ColorRect" parent="HUD/Crosshair" unique_id=999212313]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -1.0
+offset_right = 5.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

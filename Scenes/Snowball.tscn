@@ -2,9 +2,18 @@
 
 [ext_resource type="Script" uid="uid://qnd88ryr7s2o" path="res://Scripts/SnowBullet.cs" id="1_v7qr8"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v7qr8"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.75
+
 [sub_resource type="SphereMesh" id="SphereMesh_yjm6l"]
+material = SubResource("StandardMaterial3D_v7qr8")
+radius = 0.1
+height = 0.2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_x0bju"]
+radius = 0.1
 
 [node name="Snowball" type="CharacterBody3D" unique_id=996059330]
 script = ExtResource("1_v7qr8")

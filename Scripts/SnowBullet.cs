@@ -74,14 +74,14 @@ public partial class SnowBullet : CharacterBody3D
 		GodotObject collider = collision.GetCollider();
 		GD.Print($"SnowBullet: hit {(collider as Node)?.Name ?? "unknown"}");
 
-        if (collider is Node hitNode && hitNode.IsInGroup("enemies"))
-        {
-            hitNode.Call("OnHitByBullet");
-        }
-        else if (collider is Player player && player.GetMultiplayerAuthority() != ShooterId)
-        {
-            GD.Print($"SnowBullet: hit player {player.Name}");
-        }
+		if (collider is Node hitNode && hitNode.IsInGroup("enemies"))
+		{
+			hitNode.Call("OnHitByBullet");
+		}
+		else if (collider is Player player && player.GetMultiplayerAuthority() != ShooterId)
+		{
+			GD.Print($"SnowBullet: hit player {player.Name}");
+		}
 
 		// Tell every client to destroy their copy of this bullet at the impact
 		// position so the visual disappears exactly where the hit happened
