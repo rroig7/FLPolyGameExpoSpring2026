@@ -128,7 +128,7 @@ public partial class Turret : Node3D
 		bullet.RotationDegrees = rot;
 		// DO NOT TOUCH THIS CODE HOLY FUCK
 		
-		GetTree().CurrentScene.AddChild(bullet);
+		GetTree().Root.AddChild(bullet);
 	}
 
 	// ── FOV callbacks ─────────────────────────────────────────────────────────
