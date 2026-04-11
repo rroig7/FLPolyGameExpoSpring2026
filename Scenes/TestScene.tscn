@@ -72,5 +72,14 @@ shape = SubResource("BoxShape3D_b5ayd")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/StaticBody3D" unique_id=1138686602]
 mesh = SubResource("BoxMesh_0r02p")
 
-[node name="Turret" parent="." unique_id=1336070727 instance=ExtResource("5_0f5h7")]
-transform = Transform3D(-2, 0, 1.7484555e-07, 0, 2, 0, -1.7484555e-07, 0, -2, -9.074654, 0.19999987, -12.330762)
+[node name="Turret2" parent="." unique_id=1336070727 instance=ExtResource("5_0f5h7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.012932, 0.15000132, 9.15006)
+
+[node name="Turret" parent="." unique_id=1217573501 instance=ExtResource("5_0f5h7")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -8.766941, 0.15000132, -9.995514)
+
+[node name="Turret3" parent="." unique_id=925316980 instance=ExtResource("5_0f5h7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.753144, 0.15000036, 10.198244)
+
+[node name="Turret4" parent="." unique_id=1099280628 instance=ExtResource("5_0f5h7")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 8.577616, 0.15000132, -10.008944)

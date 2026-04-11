@@ -1,8 +1,7 @@
 [gd_scene format=3 uid="uid://capcy13bjlkrr"]
 
 [ext_resource type="Material" uid="uid://dskdn3ka6oec6" path="res://Materials/TurretColor.tres" id="1_8m3st"]
-[ext_resource type="Script" uid="uid://c6e4ah60gwy8r" path="res://Scripts/Turret.cs" id="1_i4wwf"]
-[ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_64uvh"]
+[ext_resource type="Script" uid="uid://q8q0ok1tglc3" path="res://Scripts/Turret.cs" id="1_i4wwf"]
 [ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_tljqb"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_i4wwf"]
@@ -36,7 +35,6 @@ size = Vector3(5.561, 5.311295, 1)
 size = Vector3(1, 0.83703613, 1)
 
 [node name="Turret" type="CharacterBody3D" unique_id=1336070727 node_paths=PackedStringArray("Muzzle")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 script = ExtResource("1_i4wwf")
 BulletScene = ExtResource("2_tljqb")
 Muzzle = NodePath("TurretHead/Muzzle")
@@ -70,7 +68,6 @@ mesh = SubResource("CylinderMesh_i4wwf")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1953318797]
 replication_config = SubResource("SceneReplicationConfig_i4wwf")
-script = ExtResource("2_64uvh")
 
 [node name="TurretFOV" type="Area3D" parent="." unique_id=1003731732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58052105, -0.79471636)
