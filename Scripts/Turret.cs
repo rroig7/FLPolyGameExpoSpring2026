@@ -17,6 +17,8 @@ public partial class Turret : Node3D
 	private Node3D _currentTarget;
 	private float _fireCooldown = 0f;
 	private bool _isAcquiring = false; // true while rotating toward a new target
+	
+	[Export] public uint CollisionMask = 1;
 
 	public override void _Ready()
 	{
@@ -82,7 +84,21 @@ public partial class Turret : Node3D
 	
 	private void AimAt(Node3D target, float delta)
 	{
-		Vector3 toTarget = target.GlobalPosition - TurretHead.GlobalPosition;
+		// Cast a ray from the turret toward the target, get the actual hit point
+		PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
+			TurretHead.GlobalPosition,
+			target.GlobalPosition,
+			CollisionMask
+		);
+
+		var result = GetWorld3D().DirectSpaceState.IntersectRay(query);
+
+		// Use the hit point if we hit something, otherwise aim at the target directly
+		Vector3 aimPoint = result.Count > 0
+			? (Vector3)result["position"]
+			: target.GlobalPosition;
+
+		Vector3 toTarget = aimPoint - TurretHead.GlobalPosition;
 		toTarget.Y = 0f;
 
 		if (toTarget.IsZeroApprox())
