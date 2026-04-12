@@ -342,6 +342,7 @@ public partial class GenericCore : Node
 	/// </summary>
 	private void OnServerDisconnected()
 	{
+		DisconnectFromGame();
 		Multiplayer.MultiplayerPeer = null;
 		_peers.Clear();
 		EmitSignalServerDisconnected();

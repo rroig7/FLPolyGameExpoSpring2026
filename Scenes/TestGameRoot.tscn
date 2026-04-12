@@ -16,17 +16,18 @@ font_size = 64
 [node name="TestGameRoot" type="Node" unique_id=1127935270 node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_ul1ws")
 MainNetworkCore = NodePath("Main Spawner")
-_portMaximum = 7000
-_portMinimum = 7010
+_portMaximum = 7010
+_portMinimum = 7000
 _localPort = 7000
 _serverAddress = "127.0.0.1"
 _maxConnections = 4
 
-[node name="GameMaster" type="Node" parent="." unique_id=1902878242]
+[node name="GameMaster" type="Node" parent="." unique_id=1902878242 node_paths=PackedStringArray("NPMSpawner")]
 script = ExtResource("2_bousw")
 TotalRoundLength = 1.0
 BossSpawn = 0.5
 SuddenDeath = 0.75
+NPMSpawner = NodePath("../CanvasLayer/NPM Spawner")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
 
@@ -54,6 +55,7 @@ grow_vertical = 2
 color = Color(0.53436923, 0.54496837, 1, 1)
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Lobby UI" unique_id=1725437401]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0

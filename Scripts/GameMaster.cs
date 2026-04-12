@@ -32,6 +32,13 @@ public partial class GameMaster : Node
 	[Export] float SuddenDeath;
 	float SuddenDeathTime => SuddenDeath * 60;
 
+	/// <summary>
+	/// Duration of the end screen in seconds
+	/// </summary>
+	[Export] float EndScreenDuration = 10f;
+
+	[Export] NetworkCore NPMSpawner;
+
 	List<NetworkPlayerManager> Players = new();
 
 	[Signal] public delegate void GameStartTriggerEventHandler();
@@ -47,6 +54,16 @@ public partial class GameMaster : Node
 		if(Instance != this && Instance != null) {QueueFree(); return; }
 
 		Instance = this;
+
+		///Rpc(MethodName.SpawnNPM, GenericCore.Instance._peers[1]["NetID"]);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void SpawnNPM(int id)
+	{
+		if(GenericCore.Instance.IsServer)
+			NPMSpawner.NetCreateObject(0, Vector3.Zero, Quaternion.Identity, id);
+
 	}
 	
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -66,14 +83,24 @@ public partial class GameMaster : Node
 		GameActive = true;
 	}
 
-	void GameEnd()
+	async void GameEnd()
 	{
 		GameActive = false;
 		EmitSignal(SignalName.GameEndTrigger);
 
 		//Display end game screen across all clients
-		//Interact with GenericCore to shut down the game server
+
 		GD.PushWarning("Game Ended");
+
+		await ToSignal(GlobalTimers.Instance.OneShotTimer(EndScreenDuration), Timer.SignalName.Timeout);
+
+		//I don't think we ever "disconnect" from the lobby system
+		GenericCore.Instance.DisconnectFromGame();
+		
+		//Unsure if this is needed
+		// GenericCore.Instance.SetIP(LobbyStreamlined.Instance.PublicIP);
+		// GenericCore.Instance.SetPort(LobbyStreamlined.Instance.PortMinimum.ToString());
+		// GenericCore.Instance.JoinGame();
 	}
 
 	void SpawnBoss()
