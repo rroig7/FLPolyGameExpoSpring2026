@@ -19,3 +19,5 @@ mono_crash.*.json
 .idea/*
 
 .DS_Store
+
+FLPolyGameExpo2026.csproj.old.*
