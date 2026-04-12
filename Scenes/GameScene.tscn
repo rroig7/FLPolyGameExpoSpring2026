@@ -120,6 +120,9 @@ shader_parameter/refractive_index = 0.1
 [sub_resource type="CylinderMesh" id="CylinderMesh_6vvcf"]
 material = SubResource("ShaderMaterial_124qp")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_f43ej"]
+size = Vector3(110, 0.2, 100)
+
 [node name="Node3D" type="Node3D" unique_id=1443708347]
 
 [node name="Lighting" type="Node" parent="." unique_id=642880331]
@@ -143,13 +146,19 @@ draw_pass_1 = SubResource("QuadMesh_f43ej")
 
 [node name="Enviroment" type="Node" parent="." unique_id=1792310154]
 
-[node name="Floor" type="MeshInstance3D" parent="Enviroment" unique_id=1313550903]
+[node name="StaticBody3D" type="StaticBody3D" parent="Enviroment" unique_id=405068119]
+
+[node name="Floor" type="MeshInstance3D" parent="Enviroment/StaticBody3D" unique_id=1313550903]
 transform = Transform3D(55, 0, 0, 0, 1, 0, 0, 0, 55, 0, 0, 0)
 mesh = SubResource("PlaneMesh_y30xb")
 
-[node name="Floor2" type="MeshInstance3D" parent="Enviroment" unique_id=1861691520]
+[node name="Floor2" type="MeshInstance3D" parent="Enviroment/StaticBody3D" unique_id=1861691520]
 transform = Transform3D(15, 0, 0, 0, 1.710087, 0, 0, 0, 15, 0, -1.6594743, 0)
 mesh = SubResource("CylinderMesh_6vvcf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Enviroment/StaticBody3D" unique_id=608570151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+shape = SubResource("BoxShape3D_f43ej")
 
 [node name="ScaleMans" type="Node" parent="." unique_id=328017783]
 

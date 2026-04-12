@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_dewec"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_kyqiw"]
 [ext_resource type="PackedScene" uid="uid://bk2q30hrnqy0m" path="res://Assets/FuckingPenguin/FuckingPenguin.glb" id="3_gntrk"]
+[ext_resource type="PackedScene" uid="uid://b31jlpgk0cqgo" path="res://Scenes/UltimateIndicator.tscn" id="5_5ixxa"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gntrk"]
 radius = 0.15527344
@@ -32,11 +33,13 @@ properties/6/path = NodePath(".:SyncPosition")
 properties/6/spawn = true
 properties/6/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "HUD", "MyId")]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "MyId")]
 floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
 SnowBulletScene = ExtResource("2_dewec")
 _muzzle = NodePath("Muzzle")
+UltimateRadius = 6.0
+UltimateIndicator = NodePath("UltimateIndicator")
 HUD = NodePath("HUD")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
@@ -93,3 +96,6 @@ offset_right = 5.0
 offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="UltimateIndicator" parent="." unique_id=134195759 instance=ExtResource("5_5ixxa")]
+visible = false
