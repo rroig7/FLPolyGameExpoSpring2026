@@ -69,6 +69,7 @@ public partial class NetworkPlayerManager : Control
 
 	void SpawnPlayer()
 	{
+		GD.PushWarning($"Spawning player for {PlayerName} with NetID {MyNetID.OwnerId}");
 		Character = GenericCore.Instance.MainNetworkCore.NetCreateObject(1, Vector3.Zero, Quaternion.Identity, MyNetID.OwnerId) as Player;
 	}
 

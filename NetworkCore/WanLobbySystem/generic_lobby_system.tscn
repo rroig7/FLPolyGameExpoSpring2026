@@ -13,7 +13,7 @@ PrivateIP = "127.0.0.1"
 PortMinimum = 7000
 AgentSpawner = NodePath("HBoxContainer/ColorRect2/ActiveGames/ActiveGames/MultiplayerSpawner")
 GameNameBox = NodePath("HBoxContainer/ColorRect/MarginContainer/LeftMenu/GameName")
-MaxGameTime = 90.0
+MaxGameTime = 900.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GenericLobbySystem" unique_id=199765664]
 anchors_preset = 15
@@ -93,18 +93,6 @@ SpawnInexZeroOnConnect = true
 
 [node name="TestGameRoot" parent="." unique_id=1127935270 instance=ExtResource("3_nacce")]
 
-[node name="GameMaster" parent="TestGameRoot" index="0" unique_id=1902878242]
-BossSpawn = 0.0
-SuddenDeath = 0.0
-
-[node name="CanvasLayer" parent="TestGameRoot" index="1" unique_id=328034693]
-layer = 0
-
-[node name="Main Spawner" parent="TestGameRoot" index="2" unique_id=1218732796]
-_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp")
-
 [connection signal="pressed" from="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu/Button" to="GenericLobbySystem" method="CreatNewGameServer"]
 [connection signal="ServerDisconnected" from="TestGameRoot" to="TestGameRoot/CanvasLayer/Lobby UI" method="show"]
 [connection signal="ServerDisconnected" from="TestGameRoot" to="TestGameRoot/CanvasLayer/Loading Screen" method="hide"]
-
-[editable path="TestGameRoot"]

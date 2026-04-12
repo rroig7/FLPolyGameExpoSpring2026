@@ -54,16 +54,7 @@ public partial class GameMaster : Node
 		if(Instance != this && Instance != null) {QueueFree(); return; }
 
 		Instance = this;
-
-		///Rpc(MethodName.SpawnNPM, GenericCore.Instance._peers[1]["NetID"]);
-	}
-
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void SpawnNPM(int id)
-	{
-		if(GenericCore.Instance.IsServer)
-			NPMSpawner.NetCreateObject(0, Vector3.Zero, Quaternion.Identity, id);
-
+		GenericCore.Instance.ServerDisconnected += Reconnect;
 	}
 	
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -74,6 +65,7 @@ public partial class GameMaster : Node
 		if(!GenericCore.Instance.IsServer) return;
 
 		GenericCore.Instance.MainNetworkCore.NetCreateObject(0, Vector3.Zero, Quaternion.Identity);
+		GD.PushWarning($"Vars: {TotalRoundLength}, {BossSpawn}, {SuddenDeath}. \nTimes: {RoundTime}, {BossTime}, {SuddenDeathTime}");
 
 		GlobalTimers.Instance.OneShotTimer(RoundTime).Timeout += GameEnd;
 		GlobalTimers.Instance.OneShotTimer(BossTime).Timeout += SpawnBoss;
@@ -81,6 +73,12 @@ public partial class GameMaster : Node
 
 		GD.PushWarning("Game Started");
 		GameActive = true;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void ReturnToLobby()
+	{
+		GenericCore.Instance.DisconnectFromGame();
 	}
 
 	async void GameEnd()
@@ -94,14 +92,13 @@ public partial class GameMaster : Node
 
 		await ToSignal(GlobalTimers.Instance.OneShotTimer(EndScreenDuration), Timer.SignalName.Timeout);
 
+		Rpc("ReturnToLobby");
+
 		//I don't think we ever "disconnect" from the lobby system
-		GenericCore.Instance.DisconnectFromGame();
-		
-		//Unsure if this is needed
-		// GenericCore.Instance.SetIP(LobbyStreamlined.Instance.PublicIP);
-		// GenericCore.Instance.SetPort(LobbyStreamlined.Instance.PortMinimum.ToString());
-		// GenericCore.Instance.JoinGame();
+		LobbyStreamlined.Instance.DisconnectFromLobbySystem();
 	}
+
+	
 
 	void SpawnBoss()
 	{
@@ -135,5 +132,31 @@ public partial class GameMaster : Node
 	{
 		GD.PushWarning($"{Players.Count}");
 		if(Players.All(p => p.IsReady) && Players.Count >= minPlayerCount) Rpc("GameStart");
+	}
+
+	async void Reconnect()
+	{
+		Input.MouseMode = Input.MouseModeEnum.Visible;
+		if(!GameActive) {GenericCore.Instance.DisconnectFromGame(); return;}
+
+		GD.PushWarning("Attempting to reconnect to server...");
+		
+		for(int i = 0; i < 10; i++)
+		{
+			if(GenericCore.Instance.IsGenericCoreConnected)
+			{
+				if(GenericCore.Instance.JoinGame() == Error.Ok)
+				{
+					GD.PushWarning("Reconnected to server!");
+					return;
+				}
+				else
+				{
+					GD.PushWarning("Failed to reconnect to server, retrying...");
+					await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+				}
+			}
+		}
+
 	}
 }

@@ -2,7 +2,6 @@
 
 [ext_resource type="Shader" uid="uid://b1u3h8e2i7477" path="res://Assets/Shaders/GameScene.gdshader" id="1_x6js8"]
 [ext_resource type="Texture2D" uid="uid://dqua068vnmtp8" path="res://Assets/Shaders/Shader_Texture/Ice003_2K-JPG_Color.jpg" id="2_xhjei"]
-[ext_resource type="PackedScene" uid="uid://dqt54rh3b3x66" path="res://Scenes/Player.tscn" id="3_3mbwn"]
 [ext_resource type="Texture2D" uid="uid://dwlfj1b0orpsl" path="res://Assets/Shaders/Shader_Texture/Ice003_2K-JPG_NormalDX.jpg" id="3_6vvcf"]
 [ext_resource type="PackedScene" uid="uid://bp3um8cntn01l" path="res://Assets/Igloo/IGLOO_BASE.tscn" id="3_lg2j6"]
 [ext_resource type="Texture2D" uid="uid://bn1fuqfnhamuf" path="res://Assets/Shaders/Shader_Texture/Ice002_2K-JPG_Displacement.jpg" id="4_cr6v8"]
@@ -178,9 +177,6 @@ transform = Transform3D(-1.3113416e-07, 0, -3.5, 0, 4, 0, 2.9999998, 0, -1.52989
 
 [node name="Igloo5" parent="Enviroment_Props" unique_id=933804116 instance=ExtResource("3_lg2j6")]
 transform = Transform3D(-1.3113416e-07, 0, 3.5, 0, 4, 0, -2.9999998, 0, -1.5298986e-07, -38.5, 1.3, 4.5896957e-07)
-
-[node name="Player" parent="." unique_id=617917819 instance=ExtResource("3_3mbwn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.212, 0, 26.256)
 
 [node name="IceBlocks" type="Node" parent="." unique_id=1506276995]
 

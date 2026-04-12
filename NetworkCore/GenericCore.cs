@@ -313,6 +313,9 @@ public partial class GenericCore : Node
 		EmitSignalClientDisconnected(id);
 		if (!Multiplayer.IsServer()) return;
 
+		if(_peers.Count == 1)
+			OnServerDisconnected();
+		
 	}
 
 	/// <summary>
@@ -342,7 +345,7 @@ public partial class GenericCore : Node
 	/// </summary>
 	private void OnServerDisconnected()
 	{
-		DisconnectFromGame();
+		GD.PushWarning("Server Disconnected!");
 		Multiplayer.MultiplayerPeer = null;
 		_peers.Clear();
 		EmitSignalServerDisconnected();

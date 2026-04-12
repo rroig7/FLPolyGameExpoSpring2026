@@ -65,7 +65,7 @@ public partial class LobbyStreamlined : Node
 		AgentSpawner.SpawnFunction = new Callable(this, nameof(SpawnAgent));
 		bool isGameServer = false;
 
-		GD.Print($"Command Line Arguments: {args}");
+		GD.Print($"Command Line Arguments: {string.Join(", ", args)}");
 
 		foreach (string arg in args)
 		{

@@ -30,6 +30,7 @@ SuddenDeath = 0.75
 NPMSpawner = NodePath("../CanvasLayer/NPM Spawner")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
+layer = 0
 
 [node name="NPM Spawner" type="MultiplayerSpawner" parent="CanvasLayer" unique_id=124614511]
 _spawnable_scenes = PackedStringArray("uid://chrro2jpws6el")
