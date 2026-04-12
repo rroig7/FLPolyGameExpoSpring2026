@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://capcy13bjlkrr"]
+
+[ext_resource type="Material" uid="uid://dskdn3ka6oec6" path="res://Materials/TurretColor.tres" id="1_8m3st"]
+[ext_resource type="Script" uid="uid://q8q0ok1tglc3" path="res://Scripts/Turret.cs" id="1_i4wwf"]
+[ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_tljqb"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_i4wwf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tljqb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_64uvh"]
+material = ExtResource("1_8m3st")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_i4wwf"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("MultiplayerSynchronizer:IsNetworkReady")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("MultiplayerSynchronizer:IsSynced")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath("MultiplayerSynchronizer:OwnerId")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tljqb"]
+size = Vector3(5.561, 5.311295, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_64uvh"]
+size = Vector3(1, 0.83703613, 1)
+
+[node name="Turret" type="CharacterBody3D" unique_id=1336070727 node_paths=PackedStringArray("Muzzle")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+script = ExtResource("1_i4wwf")
+BulletScene = ExtResource("2_tljqb")
+Muzzle = NodePath("TurretHead/Muzzle")
+
+[node name="TurretHead" type="Node3D" parent="." unique_id=429960256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50764906, 0)
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="TurretHead" unique_id=1539699584]
+transform = Transform3D(0.1, 0, 0, 0, -6.993822e-09, -0.1, 0, 0.16, -4.371139e-09, 0, 0.111438096, -0.31297696)
+material_override = ExtResource("1_8m3st")
+mesh = SubResource("CylinderMesh_i4wwf")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="TurretHead" unique_id=726032498]
+transform = Transform3D(0.4, 0, 0, 0, 0.35, 0, 0, 0, 0.52, 0, 0.09683275, -0.052371338)
+material_override = ExtResource("1_8m3st")
+mesh = SubResource("BoxMesh_tljqb")
+
+[node name="Muzzle" type="Node3D" parent="TurretHead" unique_id=1127508369]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0077872276, 0.117611945, -0.47632542)
+
+[node name="TurretBase" type="Node3D" parent="." unique_id=1557450699]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TurretBase" unique_id=38848015]
+transform = Transform3D(1, 0, 0, 0, 0.099999964, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_64uvh")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="TurretBase" unique_id=757600610]
+transform = Transform3D(0.1, 0, 0, 0, 0.24000001, 0, 0, 0, 0.1, 0, 0.2628157, 0)
+material_override = ExtResource("1_8m3st")
+mesh = SubResource("CylinderMesh_i4wwf")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1953318797]
+replication_config = SubResource("SceneReplicationConfig_i4wwf")
+
+[node name="TurretFOV" type="Area3D" parent="." unique_id=1003731732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58052105, -0.79471636)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TurretFOV" unique_id=323324034]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.0076171756, -5.9604645e-08, -1.8656032)
+shape = SubResource("BoxShape3D_tljqb")
+
+[node name="TurretHitbox" type="CollisionShape3D" parent="." unique_id=1293028976]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36716253, 0)
+shape = SubResource("BoxShape3D_64uvh")

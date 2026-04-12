@@ -15,5 +15,9 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 
-.idea
+.idea/
 .idea/*
+
+.DS_Store
+
+FLPolyGameExpo2026.csproj.old.*
