@@ -6,7 +6,6 @@ public partial class Player : BaseNetworkedPlayer
 {
 	CameraFollow playerCam;
 	public bool isLocal => MyId.IsLocal;
-	public enum PlayerAbilities { ABILITY1, ABILITY2, ABILITY3 }
 
 	[Export]
 	public Vector3 SyncVelocity
@@ -22,6 +21,13 @@ public partial class Player : BaseNetworkedPlayer
 		set => OnServerPositionReceived(value);  // intercept the snap
 	}
 
+	// --- HP Settings ---
+	[Export] public float MaxHp = 100f;
+	[Export] public float CurrentHp = 100f;
+	[Export] public float RespawnDelay = 3f;
+	
+	private bool _isDead = false;
+
 	// --- Dash settings ---
 	[Export] float dashSpeed    = 20f;
 	[Export] float dashDuration = 0.15f;
@@ -33,11 +39,21 @@ public partial class Player : BaseNetworkedPlayer
 
 	// --- Bullet Settings ---
 	[Export] public PackedScene SnowBulletScene;
+	[Export] public float BulletDamage = 20f;
 	[Export] public float FireRate = 0.2f;
 	[Export] public float shootTimer = 0f;
 	[Export] public Node3D _muzzle;
 
 	private int _bulletCounter = 0;
+
+	// --- Ultimate Settings ---
+	[Export] public float UltimateCooldown = 30f;
+	[Export] public float UltimateRadius   = 8f;
+	[Export] public float UltimateDamage   = 100f;
+	[Export] public Node3D UltimateIndicator;
+
+	private float _ultimateTimer   = 0f;
+	private bool  _isAimingUltimate = false;
 
 	// --- HUD Settings ---
 	[Export] CanvasLayer HUD;
@@ -45,6 +61,8 @@ public partial class Player : BaseNetworkedPlayer
 	public override void _Ready()
 	{
 		base._Ready();
+		CurrentHp = MaxHp;
+		_ultimateTimer = UltimateCooldown;
 		MyId.NetIDReady += SlowStart;
 	}
 
@@ -56,6 +74,9 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (HUD != null)
 			HUD.Visible = true;
+
+		if (UltimateIndicator != null)
+			UltimateIndicator.Visible = false;
 	}
 
 	private void TryAssignCamera()
@@ -76,11 +97,16 @@ public partial class Player : BaseNetworkedPlayer
 
 	public override void LocalProcess(float delta)
 	{
+		if (_isDead) return;
+
 		if (_dashCooldownTimer > 0f)
 			_dashCooldownTimer -= delta;
 
 		if (shootTimer > 0f)
 			shootTimer -= delta;
+
+		if (_ultimateTimer > 0f)
+			_ultimateTimer -= delta;
 
 		if (playerCam == null)
 		{
@@ -88,29 +114,54 @@ public partial class Player : BaseNetworkedPlayer
 			return;
 		}
 
-		// Derive character yaw from the camera's swivel angle so the
-		// character faces the same direction the camera is looking
 		float camYaw = playerCam.GetFacingYaw();
 		Rpc(MethodName.ProcessMouseLook, camYaw);
 
+		// Movement and dash always available, even while aiming ultimate
 		var input = Input.GetVector("Left", "Right", "Forward", "Back");
 		Rpc(MethodName.ProcessInput, new Vector3(input.X, 0, input.Y));
 
+		if (Input.IsActionJustPressed("Dash") && _dashCooldownTimer <= 0f && input != Vector2.Zero)
+		{
+			_dashCooldownTimer = dashCooldown;
+			Rpc(MethodName.ProcessDash);
+		}
+
+		if (_isAimingUltimate)
+		{
+			UpdateUltimateIndicator();
+
+			if (Input.IsActionJustPressed("shoot"))
+			{
+				GD.Print("Ultimate: confirm input received");
+				ConfirmUltimate();
+			}
+
+			if (Input.IsActionJustPressed("cancel_ability") ||
+				Input.IsActionJustPressed("ui_cancel"))
+				CancelUltimate();
+
+			return;
+		}
+
 		if (Input.IsActionJustPressed("shoot") && shootTimer <= 0f)
 		{
-			Vector3 aimPoint  = GetCrosshairAimPoint();
-			Vector3 aimDir    = (_muzzle.GlobalPosition.DirectionTo(aimPoint)).Normalized();
-			// Fall back gracefully if muzzle and aimPoint coincide
+			Vector3 aimPoint = GetCrosshairAimPoint();
+			Vector3 aimDir   = _muzzle.GlobalPosition.DirectionTo(aimPoint).Normalized();
 			if (aimDir == Vector3.Zero) aimDir = -_muzzle.GlobalTransform.Basis.Z;
 
 			Rpc(MethodName.ProcessBlicky, aimDir);
 			shootTimer = FireRate;
 		}
 
-		if (Input.IsActionJustPressed("Dash") && _dashCooldownTimer <= 0f && input != Vector2.Zero)
+		if (Input.IsActionJustPressed("ultimate") && _ultimateTimer <= 0f)
 		{
-			_dashCooldownTimer = dashCooldown;
-			Rpc(MethodName.ProcessDash);
+			GD.Print($"Ultimate: entering aim mode, timer={_ultimateTimer}");
+			EnterUltimateAiming();
+		}
+		else if (Input.IsActionJustPressed("ultimate"))
+		{
+			GD.Print($"Ultimate: on cooldown, timer={_ultimateTimer}");
 		}
 	}
 
@@ -205,7 +256,7 @@ public partial class Player : BaseNetworkedPlayer
 
 		var bullet = SnowBulletScene.Instantiate<SnowBullet>();
 		bullet.IsAuthoritative = GenericCore.Instance.IsServer;
-		bullet.ShooterId       = GetMultiplayerAuthority();
+		bullet.ShooterId       = (int)MyId.OwnerId;
 		bullet.BulletId        = bulletId;
 
 		// Authority must be the server (1) so the bullet's Rpc(DestroyOnClient)
@@ -218,6 +269,139 @@ public partial class Player : BaseNetworkedPlayer
 		bullet.GlobalTransform = t;
 
 		GetTree().CurrentScene.AddChild(bullet);
+	}
+
+	/// <summary>
+	/// Client → Server. Server validates then broadcasts the effect to all peers.
+	/// </summary>
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void ProcessUltimate(Vector3 center)
+	{
+		GD.Print($"ProcessUltimate: called, IsServer={GenericCore.Instance.IsServer}, center={center}");
+		if (!GenericCore.Instance.IsServer) return;
+
+		var spaceState = GetWorld3D().DirectSpaceState;
+		var shape = new SphereShape3D();
+		shape.Radius = UltimateRadius;
+
+		var query = new PhysicsShapeQueryParameters3D();
+		query.Shape        = shape;
+		query.Transform    = new Transform3D(Basis.Identity, center);
+		query.CollisionMask = 0b11;
+		query.Exclude      = new Godot.Collections.Array<Rid> { GetRid() };
+
+		var results = spaceState.IntersectShape(query);
+		GD.Print($"ProcessUltimate: found {results.Count} colliders in range");
+
+		foreach (var hit in results)
+		{
+			var collider = ((Godot.Collections.Dictionary)hit)["collider"].As<GodotObject>();
+			GD.Print($"ProcessUltimate: collider={collider}, type={collider?.GetType().Name}, isPlayer={collider is Player}");
+
+			if (collider is Node hitNode)
+			{
+				if (hitNode.IsInGroup("enemies"))
+					hitNode.Call("OnHitByBullet");
+				else if (hitNode is Player hitPlayer)
+				{
+					GD.Print($"ProcessUltimate: found player {hitPlayer.Name}, OwnerId={hitPlayer.MyId.OwnerId}, myOwnerId={MyId.OwnerId}");
+					if (hitPlayer.MyId.OwnerId != MyId.OwnerId)
+						hitPlayer.TakeDamage(UltimateDamage);
+					else
+						GD.Print("ProcessUltimate: skipping self");
+				}
+			}
+		}
+
+		Rpc(MethodName.PlayUltimateEffectOnClients, center);
+	}
+
+	/// <summary>
+	/// Server → all clients. Trigger the particle effect at the confirmed position.
+	/// </summary>
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void PlayUltimateEffectOnClients(Vector3 center)
+	{
+		// TODO: instantiate your explosion/impact particle scene here
+		GD.Print($"Ultimate effect at {center}");
+	}
+
+	/// <summary>
+	/// Server → all peers. Disables the player visually and blocks input.
+	/// </summary>
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void OnDiedOnAllPeers()
+	{
+		_isDead = true;
+		Visible = false; // hide the player model
+	}
+
+	/// <summary>
+	/// Server → all peers. Re-enables the player at the spawn position.
+	/// </summary>
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void OnRespawnedOnAllPeers(Vector3 spawnPos)
+	{
+		_isDead          = false;
+		CurrentHp       = MaxHp;
+		GlobalPosition   = spawnPos;
+		Visible          = true;
+	}
+
+	/// <summary>
+	/// Called server-side only. Applies damage and handles death.
+	/// </summary>
+	public void TakeDamage(float amount)
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		if (_isDead) return;
+
+		CurrentHp = Mathf.Max(CurrentHp - amount, 0f);
+		GD.Print($"{Name} took {amount} damage, HP={CurrentHp}/{MaxHp}");
+
+		if (CurrentHp <= 0f)
+			Die();
+	}
+
+	private void Die()
+	{
+		if (_isDead) return;
+		_isDead = true;
+		GD.Print($"{Name} died");
+
+		Rpc(MethodName.OnDiedOnAllPeers);
+
+		// Start respawn timer on the server
+		var timer = GetTree().CreateTimer(RespawnDelay);
+		timer.Timeout += Respawn;
+	}
+
+	private void Respawn()
+	{
+		if (!GenericCore.Instance.IsServer) return;
+
+		CurrentHp = MaxHp;
+		_isDead    = false;
+
+		// Find a spawn point — looks for nodes in the SpawnPoints group
+		Vector3 spawnPos = FindSpawnPoint();
+		GD.Print($"{Name} respawning at {spawnPos}");
+
+		Rpc(MethodName.OnRespawnedOnAllPeers, spawnPos);
+	}
+
+	private Vector3 FindSpawnPoint()
+	{
+		var spawnPoints = GetTree().GetNodesInGroup("SpawnPoints");
+		if (spawnPoints.Count == 0) return Vector3.Zero;
+
+		// Pick a random spawn point
+		int index = GD.RandRange(0, spawnPoints.Count - 1);
+		return (spawnPoints[index] as Node3D)?.GlobalPosition ?? Vector3.Zero;
 	}
 
 	// --- Helper Functions ---
@@ -244,5 +428,70 @@ public partial class Player : BaseNetworkedPlayer
 
 		var result = spaceState.IntersectRay(query);
 		return result.Count > 0 ? result["position"].AsVector3() : rayEnd;
+	}
+
+	private void EnterUltimateAiming()
+	{
+		_isAimingUltimate = true;
+		if (UltimateIndicator != null)
+		{
+			UltimateIndicator.Visible = true;
+			// Scale the indicator to match the configured radius
+			UltimateIndicator.Scale = Vector3.One * UltimateRadius;
+		}
+	}
+
+	private void CancelUltimate()
+	{
+		_isAimingUltimate = false;
+		if (UltimateIndicator != null)
+			UltimateIndicator.Visible = false;
+	}
+
+	private void ConfirmUltimate()
+	{
+		Vector3 aimPoint = GetGroundAimPoint();
+		CancelUltimate(); // hides indicator
+
+		_ultimateTimer = UltimateCooldown;
+		Rpc(MethodName.ProcessUltimate, aimPoint);
+	}
+
+	/// <summary>
+	/// Casts a ray from the camera to the ground plane only (layer 1),
+	/// so the indicator always lands on terrain rather than on characters.
+	/// </summary>
+	private Vector3 GetGroundAimPoint()
+	{
+		if (playerCam == null) return GlobalPosition;
+
+		var viewport = GetViewport();
+		Vector2 screenCenter = viewport.GetVisibleRect().Size / 2f;
+
+		Vector3 rayOrigin = playerCam.ProjectRayOrigin(screenCenter);
+		Vector3 rayDir    = playerCam.ProjectRayNormal(screenCenter);
+		Vector3 rayEnd    = rayOrigin + rayDir * 500f;
+
+		var spaceState = GetWorld3D().DirectSpaceState;
+		var query = PhysicsRayQueryParameters3D.Create(
+			rayOrigin, rayEnd,
+			collisionMask: 0b01 // terrain/static layer only
+		);
+		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
+
+		var result = spaceState.IntersectRay(query);
+		return result.Count > 0 ? result["position"].AsVector3() : GlobalPosition;
+	}
+
+	/// <summary>
+	/// Called every frame while aiming — moves the indicator to where the
+	/// crosshair ray hits the ground.
+	/// </summary>
+	private void UpdateUltimateIndicator()
+	{
+		if (UltimateIndicator == null) return;
+		Vector3 groundPoint = GetGroundAimPoint();
+		// Lift slightly off the ground so it isn't clipped by the terrain
+		UltimateIndicator.GlobalPosition = groundPoint + Vector3.Up * 0.05f;
 	}
 }
