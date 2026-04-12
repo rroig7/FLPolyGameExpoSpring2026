@@ -37,6 +37,10 @@ public partial class Player : BaseNetworkedPlayer
 	float _dashDurationTimer = 0f;
 	bool  _isDashing         = false;
 
+	// --- Jump Settings
+	[Export] public float JumpVelocity = 4.5f;
+	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+
 	// --- Bullet Settings ---
 	[Export] public PackedScene SnowBulletScene;
 	[Export] public float BulletDamage = 20f;
@@ -117,9 +121,13 @@ public partial class Player : BaseNetworkedPlayer
 		float camYaw = playerCam.GetFacingYaw();
 		Rpc(MethodName.ProcessMouseLook, camYaw);
 
-		// Movement and dash always available, even while aiming ultimate
 		var input = Input.GetVector("Left", "Right", "Forward", "Back");
 		Rpc(MethodName.ProcessInput, new Vector3(input.X, 0, input.Y));
+
+		if (Input.IsActionJustPressed("Jump"))
+		{
+			Rpc(MethodName.ProcessJump);
+		}
 
 		if (Input.IsActionJustPressed("Dash") && _dashCooldownTimer <= 0f && input != Vector2.Zero)
 		{
@@ -167,6 +175,11 @@ public partial class Player : BaseNetworkedPlayer
 
 	public override void ServerProcess(float delta)
 	{
+		if (!IsOnFloor())
+		{
+			Velocity -= new Vector3(0, gravity * delta, 0);
+		}
+
 		if (_isDashing)
 		{
 			_dashDurationTimer -= delta;
@@ -189,6 +202,19 @@ public partial class Player : BaseNetworkedPlayer
 		Rotation = new Vector3(0, yaw, 0);
 	}
 
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, 
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void ProcessJump()
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		
+		if (IsOnFloor())
+		{
+			// Set the Y velocity without affecting horizontal momentum
+			Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
+		}
+	}
+
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
 		 TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
 	void ProcessInput(Vector3 playerInput)
@@ -196,12 +222,22 @@ public partial class Player : BaseNetworkedPlayer
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDashing) return;
 
+		// Optimized to preserve Velocity.Y (the jump/gravity)
+		Vector3 nextVelocity = Velocity;
+		
 		if (playerInput.LengthSquared() > 0)
 		{
-			Velocity = (-Basis.Z * playerInput.Z + -Basis.X * playerInput.X).Normalized() * baseSpeed;
+			Vector3 dir = (-Basis.Z * playerInput.Z + -Basis.X * playerInput.X).Normalized();
+			nextVelocity.X = dir.X * baseSpeed;
+			nextVelocity.Z = dir.Z * baseSpeed;
 		}
 		else
-			Velocity = Vector3.Zero;
+		{
+			nextVelocity.X = 0;
+			nextVelocity.Z = 0;
+		}
+
+		Velocity = nextVelocity;
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
