@@ -6,7 +6,6 @@ public partial class Player : BaseNetworkedPlayer
 {
 	CameraFollow playerCam;
 	public bool isLocal => MyId.IsLocal;
-	public enum PlayerAbilities { ABILITY1, ABILITY2, ABILITY3 }
 
 	[Export]
 	public Vector3 SyncVelocity
@@ -22,6 +21,13 @@ public partial class Player : BaseNetworkedPlayer
 		set => OnServerPositionReceived(value);  // intercept the snap
 	}
 
+	// --- HP Settings ---
+	[Export] public float MaxHp = 100f;
+	[Export] public float CurrentHp = 100f;
+	[Export] public float RespawnDelay = 3f;
+	
+	private bool _isDead = false;
+
 	// --- Dash settings ---
 	[Export] float dashSpeed    = 20f;
 	[Export] float dashDuration = 0.15f;
@@ -33,6 +39,7 @@ public partial class Player : BaseNetworkedPlayer
 
 	// --- Bullet Settings ---
 	[Export] public PackedScene SnowBulletScene;
+	[Export] public float BulletDamage = 20f;
 	[Export] public float FireRate = 0.2f;
 	[Export] public float shootTimer = 0f;
 	[Export] public Node3D _muzzle;
@@ -54,6 +61,7 @@ public partial class Player : BaseNetworkedPlayer
 	public override void _Ready()
 	{
 		base._Ready();
+		CurrentHp = MaxHp;
 		_ultimateTimer = UltimateCooldown;
 		MyId.NetIDReady += SlowStart;
 	}
@@ -89,6 +97,8 @@ public partial class Player : BaseNetworkedPlayer
 
 	public override void LocalProcess(float delta)
 	{
+		if (_isDead) return;
+
 		if (_dashCooldownTimer > 0f)
 			_dashCooldownTimer -= delta;
 
@@ -246,7 +256,7 @@ public partial class Player : BaseNetworkedPlayer
 
 		var bullet = SnowBulletScene.Instantiate<SnowBullet>();
 		bullet.IsAuthoritative = GenericCore.Instance.IsServer;
-		bullet.ShooterId       = GetMultiplayerAuthority();
+		bullet.ShooterId       = (int)MyId.OwnerId;
 		bullet.BulletId        = bulletId;
 
 		// Authority must be the server (1) so the bullet's Rpc(DestroyOnClient)
@@ -271,36 +281,39 @@ public partial class Player : BaseNetworkedPlayer
 		GD.Print($"ProcessUltimate: called, IsServer={GenericCore.Instance.IsServer}, center={center}");
 		if (!GenericCore.Instance.IsServer) return;
 
-		// Overlap sphere to find everything in range
 		var spaceState = GetWorld3D().DirectSpaceState;
 		var shape = new SphereShape3D();
 		shape.Radius = UltimateRadius;
 
 		var query = new PhysicsShapeQueryParameters3D();
-		query.Shape     = shape;
-		query.Transform = new Transform3D(Basis.Identity, center);
+		query.Shape        = shape;
+		query.Transform    = new Transform3D(Basis.Identity, center);
 		query.CollisionMask = 0b11;
-		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() }; // don't hit self
+		query.Exclude      = new Godot.Collections.Array<Rid> { GetRid() };
 
 		var results = spaceState.IntersectShape(query);
+		GD.Print($"ProcessUltimate: found {results.Count} colliders in range");
 
 		foreach (var hit in results)
 		{
 			var collider = ((Godot.Collections.Dictionary)hit)["collider"].As<GodotObject>();
+			GD.Print($"ProcessUltimate: collider={collider}, type={collider?.GetType().Name}, isPlayer={collider is Player}");
 
 			if (collider is Node hitNode)
 			{
 				if (hitNode.IsInGroup("enemies"))
-					hitNode.Call("OnHitByBullet"); // reuse existing enemy hit method
-
-				else if (hitNode is Player hitPlayer &&
-						hitPlayer.GetMultiplayerAuthority() != GetMultiplayerAuthority())
-					GD.Print($"Ultimate hit player: {hitPlayer.Name}");
-					// TODO: call your player damage method here
+					hitNode.Call("OnHitByBullet");
+				else if (hitNode is Player hitPlayer)
+				{
+					GD.Print($"ProcessUltimate: found player {hitPlayer.Name}, OwnerId={hitPlayer.MyId.OwnerId}, myOwnerId={MyId.OwnerId}");
+					if (hitPlayer.MyId.OwnerId != MyId.OwnerId)
+						hitPlayer.TakeDamage(UltimateDamage);
+					else
+						GD.Print("ProcessUltimate: skipping self");
+				}
 			}
 		}
 
-		// Tell all clients to play the visual effect at this position
 		Rpc(MethodName.PlayUltimateEffectOnClients, center);
 	}
 
@@ -313,6 +326,82 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		// TODO: instantiate your explosion/impact particle scene here
 		GD.Print($"Ultimate effect at {center}");
+	}
+
+	/// <summary>
+	/// Server → all peers. Disables the player visually and blocks input.
+	/// </summary>
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void OnDiedOnAllPeers()
+	{
+		_isDead = true;
+		Visible = false; // hide the player model
+	}
+
+	/// <summary>
+	/// Server → all peers. Re-enables the player at the spawn position.
+	/// </summary>
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void OnRespawnedOnAllPeers(Vector3 spawnPos)
+	{
+		_isDead          = false;
+		CurrentHp       = MaxHp;
+		GlobalPosition   = spawnPos;
+		Visible          = true;
+	}
+
+	/// <summary>
+	/// Called server-side only. Applies damage and handles death.
+	/// </summary>
+	public void TakeDamage(float amount)
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		if (_isDead) return;
+
+		CurrentHp = Mathf.Max(CurrentHp - amount, 0f);
+		GD.Print($"{Name} took {amount} damage, HP={CurrentHp}/{MaxHp}");
+
+		if (CurrentHp <= 0f)
+			Die();
+	}
+
+	private void Die()
+	{
+		if (_isDead) return;
+		_isDead = true;
+		GD.Print($"{Name} died");
+
+		Rpc(MethodName.OnDiedOnAllPeers);
+
+		// Start respawn timer on the server
+		var timer = GetTree().CreateTimer(RespawnDelay);
+		timer.Timeout += Respawn;
+	}
+
+	private void Respawn()
+	{
+		if (!GenericCore.Instance.IsServer) return;
+
+		CurrentHp = MaxHp;
+		_isDead    = false;
+
+		// Find a spawn point — looks for nodes in the SpawnPoints group
+		Vector3 spawnPos = FindSpawnPoint();
+		GD.Print($"{Name} respawning at {spawnPos}");
+
+		Rpc(MethodName.OnRespawnedOnAllPeers, spawnPos);
+	}
+
+	private Vector3 FindSpawnPoint()
+	{
+		var spawnPoints = GetTree().GetNodesInGroup("SpawnPoints");
+		if (spawnPoints.Count == 0) return Vector3.Zero;
+
+		// Pick a random spawn point
+		int index = GD.RandRange(0, spawnPoints.Count - 1);
+		return (spawnPoints[index] as Node3D)?.GlobalPosition ?? Vector3.Zero;
 	}
 
 	// --- Helper Functions ---

@@ -32,6 +32,9 @@ properties/5/replication_mode = 1
 properties/6/path = NodePath(".:SyncPosition")
 properties/6/spawn = true
 properties/6/replication_mode = 1
+properties/7/path = NodePath(".:CurrentHp")
+properties/7/spawn = true
+properties/7/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "MyId")]
 floor_max_angle = 1.5707964
