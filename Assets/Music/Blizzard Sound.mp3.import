@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://vmgw7gd4ab01"
+path="res://.godot/imported/Blizzard Sound.mp3-13fc9dabe89b82d9f4206831ce43f3e1.mp3str"
+
+[deps]
+
+source_file="res://Assets/Music/Blizzard Sound.mp3"
+dest_files=["res://.godot/imported/Blizzard Sound.mp3-13fc9dabe89b82d9f4206831ce43f3e1.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4
