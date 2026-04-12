@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ptl76tm620su"]
+
+[ext_resource type="PackedScene" uid="uid://5isfs1lia8sw" path="res://Assets/Titanic/titanic.glb" id="1_eqod6"]
+
+[node name="Titanic" unique_id=147546188 instance=ExtResource("1_eqod6")]
+transform = Transform3D(0.01, 0, 0, 0, 0.01, 0, 0, 0, 0.01, 0, 0, 0)

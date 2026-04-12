@@ -3,51 +3,93 @@
 [ext_resource type="Script" uid="uid://bfw5hdcj0yn71" path="res://Scripts/Player.cs" id="1_rpqav"]
 [ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_dewec"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_kyqiw"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_kyqiw"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_kyqiw"]
-size = Vector3(0.8, 0.2, 0.5)
+[ext_resource type="PackedScene" uid="uid://bk2q30hrnqy0m" path="res://Assets/FuckingPenguin/FuckingPenguin.glb" id="3_gntrk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gntrk"]
+radius = 0.15527344
+height = 0.7774658
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gntrk"]
-properties/0/path = NodePath(".:position")
+properties/0/path = NodePath(".:rotation")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
+properties/1/path = NodePath("MultiplayerSynchronizer:IsNetworkReady")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath("MultiplayerSynchronizer:IsNetworkReady")
+properties/2/path = NodePath("MultiplayerSynchronizer:IsSynced")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath("MultiplayerSynchronizer:IsSynced")
+properties/3/path = NodePath("MultiplayerSynchronizer:OwnerId")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath("MultiplayerSynchronizer:OwnerId")
+properties/4/path = NodePath(".:scale")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+properties/5/path = NodePath(".:SyncVelocity")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath(".:SyncPosition")
+properties/6/spawn = true
+properties/6/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "MyId") groups=["players"]]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "HUD", "MyId")]
+floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
 SnowBulletScene = ExtResource("2_dewec")
 _muzzle = NodePath("Muzzle")
+HUD = NodePath("HUD")
 MyId = NodePath("MultiplayerSynchronizer")
-baseSpeed = 2.0
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1608544703]
-mesh = SubResource("CapsuleMesh_kyqiw")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D" unique_id=824225894]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49825144, 0.2902277)
-mesh = SubResource("BoxMesh_kyqiw")
+baseSpeed = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=825879414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38787842, 0)
 shape = SubResource("CapsuleShape3D_gntrk")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=486744588]
 replication_config = SubResource("SceneReplicationConfig_gntrk")
 script = ExtResource("2_kyqiw")
 
-[node name="Muzzle" type="Node3D" parent="." unique_id=54158534]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5682076, 0.5351485, 1.1233056)
+[node name="FuckingPenguin" parent="." unique_id=1565179669 instance=ExtResource("3_gntrk")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.42324185, 0)
+
+[node name="Muzzle" type="Node3D" parent="." unique_id=2096701833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19521835, 0.5851183, 0.38866067)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=199841574]
+visible = false
+
+[node name="Crosshair" type="Control" parent="HUD" unique_id=613684786]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="HUD/Crosshair" unique_id=514406054]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -5.0
+offset_right = 1.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect2" type="ColorRect" parent="HUD/Crosshair" unique_id=999212313]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -1.0
+offset_right = 5.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

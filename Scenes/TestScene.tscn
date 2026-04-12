@@ -3,20 +3,7 @@
 [ext_resource type="Script" uid="uid://do2ep11bssdcg" path="res://Scripts/TestScene.cs" id="1_5lt6y"]
 [ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="1_b5ayd"]
 [ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
-[ext_resource type="PackedScene" uid="uid://capcy13bjlkrr" path="res://Scenes/Turret.tscn" id="5_0f5h7"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_iufkg"]
-size = Vector3(30, 1, 30)
-
-[sub_resource type="NavigationMesh" id="NavigationMesh_0f5h7"]
-vertices = PackedVector3Array(-14.5, 0.4, -14.5, -14.5, 0.4, 14.5, 14.5, 0.4, 14.5, 14.5, 0.4, -14.5)
-polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_b5ayd"]
-size = Vector3(30, 0.2, 30)
-
-[sub_resource type="BoxMesh" id="BoxMesh_0r02p"]
-size = Vector3(30, 0.2, 30)
+[ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="5_0f5h7"]
 
 [node name="TestScene" type="Node3D" unique_id=2078605398 node_paths=PackedStringArray("PlayerSpawner", "SpawnPoint")]
 script = ExtResource("1_5lt6y")
@@ -24,56 +11,17 @@ PlayerSpawner = NodePath("MultiplayerSpawner")
 SpawnPoint = NodePath("SpawnPoint")
 
 [node name="SpawnPoint" type="Node3D" parent="." unique_id=1258090954]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=2122061902]
 _spawnable_scenes = PackedStringArray("uid://dqt54rh3b3x66")
 spawn_path = NodePath("..")
 script = ExtResource("1_b5ayd")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1570241713]
-transform = Transform3D(1, 0, 0, 0, 0.7453015, 0.66672766, 0, -0.66672766, 0.7453014, 0, 4.9691157, 4.3438277)
-
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1310418211 groups=["PLAYERCAMERA"]]
-transform = Transform3D(1, 0, 0, 0, 0.94542193, 0.3258487, 0, -0.3258487, 0.94542193, 0, 4.001159, 7.9017577)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.001159, 7.9017577)
 script = ExtResource("3_8k7wh")
-radius = 5.0
-YOffset = 2.0
-swivelSpeed = 100.0
-smoothingSpeed = 3.0
+radius = 1.5
+YOffset = 1.0
+swivelSpeed = 0.2
 
-[node name="Area3D" type="Area3D" parent="." unique_id=2069016497]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1864109419]
-shape = SubResource("BoxShape3D_iufkg")
-
-[node name="Node3D" type="Node3D" parent="." unique_id=723385887]
-
-[node name="Marker3D" type="Marker3D" parent="Node3D" unique_id=1996167104]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, -15)
-
-[node name="Marker3D2" type="Marker3D" parent="Node3D" unique_id=472270609]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 12)
-
-[node name="Marker3D3" type="Marker3D" parent="Node3D" unique_id=2030915368]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, 13)
-
-[node name="Marker3D4" type="Marker3D" parent="Node3D" unique_id=1745497698]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, -14)
-
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=115815064]
-navigation_mesh = SubResource("NavigationMesh_0f5h7")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D" unique_id=2085783760]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/StaticBody3D" unique_id=1389004837]
-shape = SubResource("BoxShape3D_b5ayd")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/StaticBody3D" unique_id=1138686602]
-mesh = SubResource("BoxMesh_0r02p")
-
-[node name="Turret" parent="." unique_id=1336070727 instance=ExtResource("5_0f5h7")]
-transform = Transform3D(-2, 0, -1.7484555e-07, 0, 2, 0, 1.7484555e-07, 0, -2, -9.400173, 0.19999987, -10.461255)
-
-[node name="Turret2" parent="." unique_id=626211149 instance=ExtResource("5_0f5h7")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -10.061067, 0.20000035, 1.1680665)
+[node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]

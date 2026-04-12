@@ -1,16 +1,25 @@
 [gd_scene format=3 uid="uid://c73y4jqgjuev"]
 
-[ext_resource type="Script" uid="uid://faoqta4o6eta" path="res://Scripts/SnowBullet.cs" id="1_yjm6l"]
+[ext_resource type="Script" uid="uid://qnd88ryr7s2o" path="res://Scripts/SnowBullet.cs" id="1_v7qr8"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_3stbu"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v7qr8"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.75
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_v7qr8"]
+[sub_resource type="SphereMesh" id="SphereMesh_yjm6l"]
+material = SubResource("StandardMaterial3D_v7qr8")
+radius = 0.1
+height = 0.2
 
-[node name="Snowball" type="CharacterBody3D" unique_id=346927955]
-script = ExtResource("1_yjm6l")
+[sub_resource type="SphereShape3D" id="SphereShape3D_x0bju"]
+radius = 0.1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=404153181]
-mesh = SubResource("SphereMesh_3stbu")
+[node name="Snowball" type="CharacterBody3D" unique_id=996059330]
+script = ExtResource("1_v7qr8")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1682615180]
-shape = SubResource("SphereShape3D_v7qr8")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=91505140]
+mesh = SubResource("SphereMesh_yjm6l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1799363358]
+shape = SubResource("SphereShape3D_x0bju")
