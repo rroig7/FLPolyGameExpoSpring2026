@@ -36,7 +36,7 @@ properties/7/path = NodePath(".:CurrentHp")
 properties/7/spawn = true
 properties/7/replication_mode = 1
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "MyId")]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "MyId") groups=["players"]]
 floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
 SnowBulletScene = ExtResource("2_dewec")
