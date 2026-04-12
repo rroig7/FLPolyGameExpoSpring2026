@@ -31,6 +31,7 @@ public partial class CameraFollow : Camera3D
 			Target = target;
 		
 		var LS = GetTree().GetFirstNodeInGroup("LoadingScreen") as Control; 
+		GD.Print($"CameraFollow: Turning off loading screen: {LS != null}");
 		LS?.Hide();
 	}
 
