@@ -7,8 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://b31jlpgk0cqgo" path="res://Scenes/UltimateIndicator.tscn" id="5_5ixxa"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gntrk"]
-radius = 0.15527344
-height = 0.7774658
+radius = 0.15332031
+height = 0.61502075
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5ixxa"]
+radius = 0.118636034
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gntrk"]
 properties/0/path = NodePath(".:rotation")
@@ -48,8 +51,12 @@ MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=825879414]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38787842, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.30937195, 0)
 shape = SubResource("CapsuleShape3D_gntrk")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=679061034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6592022, 0)
+shape = SubResource("SphereShape3D_5ixxa")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=486744588]
 replication_config = SubResource("SceneReplicationConfig_gntrk")
