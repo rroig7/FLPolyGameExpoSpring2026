@@ -53,9 +53,6 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_eljsg")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_y30xb"]
-size = Vector3(1.6408539, 1.5634766, 1.9380188)
-
 [node name="Igloo3" type="MeshInstance3D" unique_id=2106285624]
 transform = Transform3D(-1.3113416e-07, 0, 3.5, 0, 4, 0, -3, 0, -1.5298986e-07, 0, 0, 0)
 mesh = SubResource("ArrayMesh_e15k5")
@@ -63,59 +60,11 @@ mesh = SubResource("ArrayMesh_e15k5")
 [node name="IceBlock02_" parent="." unique_id=891279039 instance=ExtResource("4_8q1us")]
 transform = Transform3D(1.2498803, 0, 0.017299993, 0, 1.25, 0, -0.017299993, 0, 1.2498803, 0.021302203, -1.2072332, 0.44437122)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="IceBlock02_" unique_id=353318161]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="IceBlock02_/StaticBody3D" unique_id=1739627341]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.57182693, 0.28173828, -0.1684115)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="IceBlock02_/StaticBody3D" unique_id=278636190]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.71396065, 0.28173828, -0.030700684)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
-
 [node name="IceBlock02_2" parent="." unique_id=1336498329 instance=ExtResource("4_8q1us")]
 transform = Transform3D(0.4999521, 0, 0.0069199973, 0, 0.5, 0, -0.0069199973, 0, 0.4999521, 0.021302154, -0.56463194, 1.5589161)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="IceBlock02_2" unique_id=1370070720]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="IceBlock02_2/StaticBody3D" unique_id=623108803]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.57182693, 0.28173828, -0.1684115)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="IceBlock02_2/StaticBody3D" unique_id=738531673]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.71396065, 0.28173828, -0.030700684)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
 
 [node name="IceBlock02_3" parent="." unique_id=633079763 instance=ExtResource("4_8q1us")]
 transform = Transform3D(0.4999521, 0, 0.0069199973, 0, 0.5, 0, -0.0069199973, 0, 0.4999521, 0.021302138, -0.6795771, 1.9773545)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="IceBlock02_3" unique_id=452480817]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="IceBlock02_3/StaticBody3D" unique_id=1888130248]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.57182693, 0.28173828, -0.1684115)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="IceBlock02_3/StaticBody3D" unique_id=962879336]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.71396065, 0.28173828, -0.030700684)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
-
 [node name="IceBlock02_4" parent="." unique_id=299506546 instance=ExtResource("4_8q1us")]
 transform = Transform3D(0.4999521, 0, 0.0069199973, 0, 0.5, 0, -0.0069199973, 0, 0.4999521, 0.021302106, -0.8210967, 2.6358862)
-
-[node name="StaticBody3D" type="StaticBody3D" parent="IceBlock02_4" unique_id=932184805]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="IceBlock02_4/StaticBody3D" unique_id=1525023398]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.57182693, 0.28173828, -0.1684115)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="IceBlock02_4/StaticBody3D" unique_id=508762910]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.71396065, 0.28173828, -0.030700684)
-shape = SubResource("BoxShape3D_y30xb")
-debug_color = Color(0.96862745, 0, 0.47843137, 1)
