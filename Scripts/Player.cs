@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Runtime.CompilerServices;
 
 [GlobalClass]
 public partial class Player : BaseNetworkedPlayer
@@ -120,10 +121,10 @@ public partial class Player : BaseNetworkedPlayer
 		}
 
 		float camYaw = playerCam.GetFacingYaw();
-		Rpc(MethodName.ProcessMouseLook, camYaw);
+		//Rpc(MethodName.ProcessMouseLook, camYaw);
 
 		var input = Input.GetVector("Left", "Right", "Forward", "Back");
-		Rpc(MethodName.ProcessInput, new Vector3(input.X, 0, input.Y));
+		Rpc(MethodName.ProcessInput, new Vector3(input.X, 0, input.Y), camYaw);
 
 		if (Input.IsActionJustPressed("Jump"))
 		{
@@ -174,13 +175,17 @@ public partial class Player : BaseNetworkedPlayer
 		}
 	}
 
-	public override void ServerProcess(float delta)
+	public override void AllProcess(float delta)
 	{
 		if (!IsOnFloor())
 		{
 			Velocity -= new Vector3(0, gravity * delta, 0);
 		}
+	}
 
+
+	public override void ServerProcess(float delta)
+	{
 		if (_isDashing)
 		{
 			_dashDurationTimer -= delta;
@@ -216,10 +221,12 @@ public partial class Player : BaseNetworkedPlayer
 		}
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true,
 		 TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-	void ProcessInput(Vector3 playerInput)
+	void ProcessInput(Vector3 playerInput, float yaw)
 	{
+		Rotation = new Vector3(0, yaw, 0);
+
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDashing) return;
 
@@ -385,7 +392,7 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		_isDead          = false;
 		CurrentHp       = MaxHp;
-		GlobalPosition   = spawnPos;
+		ResetServerPosition(spawnPos);
 		Visible          = true;
 	}
 

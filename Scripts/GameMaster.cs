@@ -46,8 +46,6 @@ public partial class GameMaster : Node
 	[Signal] public delegate void SpawnBossTriggerEventHandler();
 	[Signal] public delegate void SuddenDeathTriggerEventHandler();
 
-
-
 	public async override void _Ready() 
 	{
 		while(!GenericCore.Instance.IsGenericCoreConnected) 
@@ -111,8 +109,6 @@ public partial class GameMaster : Node
 		//I don't think we ever "disconnect" from the lobby system
 		LobbyStreamlined.Instance.DisconnectFromLobbySystem();
 	}
-
-	
 
 	void SpawnBoss()
 	{
