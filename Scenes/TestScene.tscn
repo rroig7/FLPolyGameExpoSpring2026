@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="1_b5ayd"]
 [ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
 [ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="5_0f5h7"]
+[ext_resource type="PackedScene" uid="uid://bk40tsh7xhgns" path="res://Scenes/Turret.tscn" id="5_c264a"]
+[ext_resource type="PackedScene" uid="uid://5nuoosjopxg3" path="res://Scenes/Enemy.tscn" id="6_6xh1p"]
 
 [node name="TestScene" type="Node3D" unique_id=2078605398 node_paths=PackedStringArray("PlayerSpawner", "SpawnPoint")]
 script = ExtResource("1_5lt6y")
@@ -29,3 +31,12 @@ YOffset = 1.0
 swivelSpeed = 0.2
 
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]
+
+[node name="Turret" parent="." unique_id=1336070727 instance=ExtResource("5_c264a")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.07475853, 0.20000082, 4.915168)
+
+[node name="Enemy" parent="." unique_id=842654904 instance=ExtResource("6_6xh1p")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.969754, 0.6000004, 0.013975382)
+
+[node name="Enemy2" parent="." unique_id=1233181852 instance=ExtResource("6_6xh1p")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5439367, 0.6000004, -4.841987)

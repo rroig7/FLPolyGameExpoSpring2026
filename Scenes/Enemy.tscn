@@ -40,7 +40,7 @@ properties/7/replication_mode = 1
 [sub_resource type="SphereShape3D" id="SphereShape3D_7j2nt"]
 radius = 2.551
 
-[node name="BossCube" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "patrolPoints")]
+[node name="Enemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "patrolPoints")]
 script = ExtResource("1_wovta")
 myId = NodePath("MultiplayerSynchronizer")
 patrolPoints = []

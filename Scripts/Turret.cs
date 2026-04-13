@@ -3,148 +3,148 @@ using System.Collections.Generic;
 
 public partial class Turret : Node3D
 {
-    [Export] public float RotationSpeed = 5.0f;
-    [Export] public float FireRate = 1.0f;
-    [Export] public float BulletSpeed = 20.0f;
-    [Export] public PackedScene BulletScene;
+	[Export] public float RotationSpeed = 5.0f;
+	[Export] public float FireRate = 1.0f;
+	[Export] public float BulletSpeed = 20.0f;
+	[Export] public PackedScene BulletScene;
 
-    [Export] public Node3D TurretHead;
-    [Export] public Node3D Muzzle;
-    [Export] public Area3D TurretFOV;
+	[Export] public Node3D TurretHead;
+	[Export] public Node3D Muzzle;
+	[Export] public Area3D TurretFOV;
 
-    private readonly List<Node3D> _targetsInFOV = new();
-    private Node3D _currentTarget;
-    private float _fireCooldown = 0.25f;
-    private bool _isAcquiring = false;
+	private readonly List<Node3D> _targetsInFOV = new();
+	private Node3D _currentTarget;
+	private float _fireCooldown = 0.25f;
+	private bool _isAcquiring = false;
 
-    [Export] public uint CollisionMask = 1;
+	[Export] public uint CollisionMask = 1;
 
-    public override void _Ready()
-    {
-        TurretHead ??= GetNode<Node3D>("TurretHead");
-        Muzzle     ??= GetNode<Node3D>("TurretHead/Muzzle");
-        TurretFOV  ??= GetNode<Area3D>("TurretFOV");
+	public override void _Ready()
+	{
+		TurretHead ??= GetNode<Node3D>("TurretHead");
+		Muzzle     ??= GetNode<Node3D>("TurretHead/Muzzle");
+		TurretFOV  ??= GetNode<Area3D>("TurretFOV");
 
-        TurretFOV.BodyEntered += OnBodyEntered;
-        TurretFOV.BodyExited  += OnBodyExited;
-    }
+		TurretFOV.BodyEntered += OnBodyEntered;
+		TurretFOV.BodyExited  += OnBodyExited;
+	}
 
-    public override void _Process(double delta)
-    {
-        _fireCooldown -= (float)delta;
+	public override void _Process(double delta)
+	{
+		_fireCooldown -= (float)delta;
 
-        Node3D newTarget = GetClosestTarget();
+		Node3D newTarget = GetClosestTarget();
 
-        if (newTarget != _currentTarget)
-        {
-            _currentTarget = newTarget;
-            _isAcquiring = true;
-        }
+		if (newTarget != _currentTarget)
+		{
+			_currentTarget = newTarget;
+			_isAcquiring = true;
+		}
 
-        if (_currentTarget is null)
-            return;
+		if (_currentTarget is null)
+			return;
 
-        AimAt(_currentTarget, (float)delta);
+		AimAt(_currentTarget, (float)delta);
 
-        if (_isAcquiring && IsAimedAt(_currentTarget))
-            _isAcquiring = false;
+		if (_isAcquiring && IsAimedAt(_currentTarget))
+			_isAcquiring = false;
 
-        if (!_isAcquiring && _fireCooldown <= 0f && IsAimedAt(_currentTarget))
-        {
-            Fire();
-            _fireCooldown = 1f / FireRate;
-        }
-    }
+		if (!_isAcquiring && _fireCooldown <= 0f && IsAimedAt(_currentTarget))
+		{
+			Fire();
+			_fireCooldown = 1f / FireRate;
+		}
+	}
 
-    // ── Targeting ─────────────────────────────────────────────────────────────
+	// ── Targeting ─────────────────────────────────────────────────────────────
 
-    private Node3D GetClosestTarget()
-    {
-        Node3D closest = null;
-        float  minDist = float.MaxValue;
+	private Node3D GetClosestTarget()
+	{
+		Node3D closest = null;
+		float  minDist = float.MaxValue;
 
-        foreach (Node3D body in _targetsInFOV)
-        {
-            if (!IsInstanceValid(body)) continue;
-            float d = GlobalPosition.DistanceSquaredTo(body.GlobalPosition);
-            if (d < minDist) { minDist = d; closest = body; }
-        }
-        return closest;
-    }
+		foreach (Node3D body in _targetsInFOV)
+		{
+			if (!IsInstanceValid(body)) continue;
+			float d = GlobalPosition.DistanceSquaredTo(body.GlobalPosition);
+			if (d < minDist) { minDist = d; closest = body; }
+		}
+		return closest;
+	}
 
-    // ── Aiming ────────────────────────────────────────────────────────────────
+	// ── Aiming ────────────────────────────────────────────────────────────────
 
-    private void AimAt(Node3D target, float delta)
-    {
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
-            TurretHead.GlobalPosition,
-            target.GlobalPosition,
-            CollisionMask
-        );
+	private void AimAt(Node3D target, float delta)
+	{
+		PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(
+			TurretHead.GlobalPosition,
+			target.GlobalPosition,
+			CollisionMask
+		);
 
-        var result = GetWorld3D().DirectSpaceState.IntersectRay(query);
+		var result = GetWorld3D().DirectSpaceState.IntersectRay(query);
 
-        Vector3 aimPoint = result.Count > 0
-            ? (Vector3)result["position"]
-            : target.GlobalPosition;
+		Vector3 aimPoint = result.Count > 0
+			? (Vector3)result["position"]
+			: target.GlobalPosition;
 
-        // Full 3D direction — no Y zeroing, so the head pitches up/down too
-        Vector3 toTarget = (aimPoint - TurretHead.GlobalPosition).Normalized();
+		// Full 3D direction — no Y zeroing, so the head pitches up/down too
+		Vector3 toTarget = (aimPoint - TurretHead.GlobalPosition).Normalized();
 
-        if (toTarget.IsZeroApprox())
-            return;
+		if (toTarget.IsZeroApprox())
+			return;
 
-        Basis lookBasis   = Basis.LookingAt(toTarget, Vector3.Up);
-        Basis parentBasis = TurretHead.GetParentNode3D().GlobalBasis.Orthonormalized();
-        Basis localLook   = parentBasis.Inverse() * lookBasis;
+		Basis lookBasis   = Basis.LookingAt(toTarget, Vector3.Up);
+		Basis parentBasis = TurretHead.GetParentNode3D().GlobalBasis.Orthonormalized();
+		Basis localLook   = parentBasis.Inverse() * lookBasis;
 
-        Quaternion desired = new Quaternion(localLook.Orthonormalized());
-        TurretHead.Quaternion = TurretHead.Quaternion.Slerp(desired, RotationSpeed * delta);
-    }
+		Quaternion desired = new Quaternion(localLook.Orthonormalized());
+		TurretHead.Quaternion = TurretHead.Quaternion.Slerp(desired, RotationSpeed * delta);
+	}
 
-    /// Returns true when the muzzle is roughly pointing at the target (within 5°).
-    private bool IsAimedAt(Node3D target)
-    {
-        Vector3 toTarget  = (target.GlobalPosition - Muzzle.GlobalPosition).Normalized();
-        Vector3 muzzleFwd = -Muzzle.GlobalTransform.Basis.Z;
-        return muzzleFwd.Dot(toTarget) > 0.996f;
-    }
+	/// Returns true when the muzzle is roughly pointing at the target (within 5°).
+	private bool IsAimedAt(Node3D target)
+	{
+		Vector3 toTarget  = (target.GlobalPosition - Muzzle.GlobalPosition).Normalized();
+		Vector3 muzzleFwd = -Muzzle.GlobalTransform.Basis.Z;
+		return muzzleFwd.Dot(toTarget) > 0.996f;
+	}
 
-    // ── Firing ────────────────────────────────────────────────────────────────
+	// ── Firing ────────────────────────────────────────────────────────────────
 
-    private void Fire()
-    {
-        if (BulletScene is null)
-        {
-            GD.PushWarning("Turret: BulletScene is not assigned.");
-            return;
-        }
+	private void Fire()
+	{
+		if (BulletScene is null)
+		{
+			GD.PushWarning("Turret: BulletScene is not assigned.");
+			return;
+		}
 
-        var bullet = BulletScene.Instantiate<Node3D>();
+		var bullet = BulletScene.Instantiate<Node3D>();
 
-        var t = Transform3D.Identity;
-        t.Origin = Muzzle.GlobalPosition;
-        t.Basis  = new Basis(Muzzle.GlobalTransform.Basis.GetRotationQuaternion());
-        bullet.GlobalTransform = t;
+		var t = Transform3D.Identity;
+		t.Origin = Muzzle.GlobalPosition;
+		t.Basis  = new Basis(Muzzle.GlobalTransform.Basis.GetRotationQuaternion());
+		bullet.GlobalTransform = t;
 
-        // DO NOT TOUCH THIS CODE HOLY FUCK
-        Vector3 muzzleFwd = -Muzzle.GlobalTransform.Basis.Z;
-        bullet.GlobalTransform = new Transform3D(
-            Basis.LookingAt(-muzzleFwd, Vector3.Up),
-            Muzzle.GlobalPosition
-        );
-        // DO NOT TOUCH THIS CODE HOLY FUCK
+		// DO NOT TOUCH THIS CODE HOLY FUCK
+		Vector3 muzzleFwd = -Muzzle.GlobalTransform.Basis.Z;
+		bullet.GlobalTransform = new Transform3D(
+			Basis.LookingAt(-muzzleFwd, Vector3.Up),
+			Muzzle.GlobalPosition
+		);
+		// DO NOT TOUCH THIS CODE HOLY FUCK
 
-        GetTree().Root.AddChild(bullet);
-    }
+		GetTree().Root.AddChild(bullet);
+	}
 
-    // ── FOV callbacks ─────────────────────────────────────────────────────────
+	// ── FOV callbacks ─────────────────────────────────────────────────────────
 
-    private void OnBodyEntered(Node3D body)
-    {
-        if (body.IsInGroup("players") && !_targetsInFOV.Contains(body))
-            _targetsInFOV.Add(body);
-    }
+	private void OnBodyEntered(Node3D body)
+	{
+		if (body.IsInGroup("players") && !_targetsInFOV.Contains(body))
+			_targetsInFOV.Add(body);
+	}
 
-    private void OnBodyExited(Node3D body) => _targetsInFOV.Remove(body);
+	private void OnBodyExited(Node3D body) => _targetsInFOV.Remove(body);
 }
