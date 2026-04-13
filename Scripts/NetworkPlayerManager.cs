@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 public partial class NetworkPlayerManager : Control
 {
@@ -19,7 +20,13 @@ public partial class NetworkPlayerManager : Control
 
 	public override void _Ready()
 	{
-		MyNetID.NetIDReady += OnNetIDReady;
+		AddToGroup("NetworkPlayerManagers");
+
+		if (MyNetID == null)
+			MyNetID = GetChildren().OfType<NetID>().FirstOrDefault();
+
+		if (MyNetID != null)
+			MyNetID.NetIDReady += OnNetIDReady;
 	}
 
 	private void OnNetIDReady()
@@ -34,18 +41,20 @@ public partial class NetworkPlayerManager : Control
 		if (canEdit && !_uiConnected)
 		{
 			_uiConnected = true;
-			_nameEdit.TextChanged    += (name) => Rpc("OnNameChanged", name);
-			_readyButton.Pressed       +=  () => Rpc("OnReadyPressed");
+			_nameEdit.TextChanged += (name) => Rpc("OnNameChanged", name);
+			_readyButton.Pressed  += () => Rpc("OnReadyPressed");
 		}
 
-		if(GenericCore.Instance.IsServer)
+		if(GenericCore.Instance.IsServer && GameMaster.Instance != null)
 		{
-			GameMaster.Instance.AddPlayer(this);
-			GameMaster.Instance.GameStartTrigger += SpawnPlayer;
-		} 
+			if(!GameMaster.Instance.Players.Contains(this))
+			{
+				GameMaster.Instance.AddPlayer(this);
+				GameMaster.Instance.GameStartTrigger += SpawnPlayer;
+			}
+		}
 
 		_readyButton.Modulate = Colors.White;
-
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -67,7 +76,8 @@ public partial class NetworkPlayerManager : Control
 		}
 	}
 
-	void SpawnPlayer()
+	// Change from implicit private to public
+	public void SpawnPlayer()
 	{
 		GD.PushWarning($"Spawning player for {PlayerName} with NetID {MyNetID.OwnerId}");
 		Character = GenericCore.Instance.MainNetworkCore.NetCreateObject(1, Vector3.Zero, Quaternion.Identity, MyNetID.OwnerId) as Player;
@@ -81,5 +91,13 @@ public partial class NetworkPlayerManager : Control
 			_readyButton.Text = IsReady ? "✓ Ready" : "Ready";
 			_readyButton.Modulate = IsReady ? new Color(0.4f, 1f, 0.4f) : Colors.White;			
 		}
+	}
+
+	private void OnDeferredRegister()
+	{
+		if (GameMaster.Instance == null) return;
+		GetTree().ProcessFrame -= OnDeferredRegister;
+		GameMaster.Instance.AddPlayer(this);
+		GameMaster.Instance.GameStartTrigger += SpawnPlayer;
 	}
 }

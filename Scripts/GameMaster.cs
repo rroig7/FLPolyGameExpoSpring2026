@@ -14,22 +14,22 @@ public partial class GameMaster : Node
 	/// </summary>
 	[Export] int minPlayerCount = 2;
 
-    /// <summary>
+	/// <summary>
 	/// Length of the round in Minutes
 	/// </summary>
-	[Export] float TotalRoundLength;
+	[Export] float TotalRoundLength = 8;
 	float RoundTime => TotalRoundLength * 60;
 
 	/// <summary>
 	/// Time when the boss spawns in Minutes
 	/// </summary>
-	[Export] float BossSpawn;
+	[Export] float BossSpawn = 3;
 	float BossTime => BossSpawn * 60;
 
 	/// <summary>
 	/// Time when sudden death starts in Minutes
 	/// </summary>
-	[Export] float SuddenDeath;
+	[Export] float SuddenDeath = 7;
 	float SuddenDeathTime => SuddenDeath * 60;
 
 	/// <summary>
@@ -39,7 +39,7 @@ public partial class GameMaster : Node
 
 	[Export] NetworkCore NPMSpawner;
 
-	List<NetworkPlayerManager> Players = new();
+	public List<NetworkPlayerManager> Players = new();
 
 	[Signal] public delegate void GameStartTriggerEventHandler();
 	[Signal] public delegate void GameEndTriggerEventHandler();
@@ -48,13 +48,27 @@ public partial class GameMaster : Node
 
 
 
-	public async override void _Ready() {
+	public async override void _Ready() 
+	{
+		while(!GenericCore.Instance.IsGenericCoreConnected) 
+			await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
 		
-		while(!GenericCore.Instance.IsGenericCoreConnected) await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
-		if(Instance != this && Instance != null) {QueueFree(); return; }
-
+		if(Instance != this && Instance != null) { QueueFree(); return; }
 		Instance = this;
 		GenericCore.Instance.ServerDisconnected += Reconnect;
+
+		// Catch any NPMs that already registered before GameMaster.Instance was set
+		if(GenericCore.Instance.IsServer)
+		{
+			foreach(var npm in GetTree().GetNodesInGroup("NetworkPlayerManagers").OfType<NetworkPlayerManager>())
+			{
+				if(!Players.Contains(npm))
+				{
+					Players.Add(npm);
+					GameStartTrigger += npm.SpawnPlayer;
+				}
+			}
+		}
 	}
 	
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -126,12 +140,17 @@ public partial class GameMaster : Node
 	*/
 
 	//What should we do when a player DC's?
-	public void AddPlayer(NetworkPlayerManager npm) => Players.Add(npm);
+	public void AddPlayer(NetworkPlayerManager npm)
+	{
+		Players.Add(npm);
+		PlayerReady(); // re-evaluate in case this was the last needed registration
+	}
 
 	public void PlayerReady()
 	{
-		GD.PushWarning($"{Players.Count}");
-		if(Players.All(p => p.IsReady) && Players.Count >= minPlayerCount) Rpc("GameStart");
+		GD.PushWarning($"PlayerReady called. Players registered: {Players.Count}");
+		if (Players.Count < minPlayerCount) return; // not enough registered yet
+		if (Players.All(p => p.IsReady)) Rpc("GameStart");
 	}
 
 	async void Reconnect()

@@ -9,10 +9,10 @@
 [node name="Global Timers" type="Node" parent="." unique_id=1024444880]
 script = ExtResource("4_0f5h7")
 
-[node name="SpawnPoint1" type="Node3D" parent="." unique_id=1258090954]
+[node name="SpawnPoint1" type="Node3D" parent="." unique_id=1258090954 groups=["SpawnPoints"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.735781)
 
-[node name="SpawnPoint2" type="Node3D" parent="." unique_id=1748751901]
+[node name="SpawnPoint2" type="Node3D" parent="." unique_id=1748751901 groups=["SpawnPoints"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.905203)
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1310418211 groups=["PLAYERCAMERA"]]
