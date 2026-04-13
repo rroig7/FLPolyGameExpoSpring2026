@@ -1,25 +1,19 @@
-[gd_scene format=3 uid="uid://mwfw7rn1p2ys"]
+[gd_scene format=3 uid="uid://nsjin1m5p7kp"]
 
-[ext_resource type="Script" uid="uid://do2ep11bssdcg" path="res://Scripts/TestScene.cs" id="1_5lt6y"]
-[ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="1_b5ayd"]
 [ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
+[ext_resource type="Script" uid="uid://bmv65ueb31brc" path="res://Scripts/GlobalTimers.cs" id="4_0f5h7"]
 [ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="5_0f5h7"]
 
-[node name="TestScene" type="Node3D" unique_id=2078605398 node_paths=PackedStringArray("PlayerSpawner", "SpawnPoint")]
-script = ExtResource("1_5lt6y")
-PlayerSpawner = NodePath("MultiplayerSpawner")
-SpawnPoint = NodePath("SpawnPoint1")
+[node name="TestScene" type="Node3D" unique_id=2078605398]
 
-[node name="SpawnPoint1" type="Node3D" parent="." unique_id=1258090954]
+[node name="Global Timers" type="Node" parent="." unique_id=1024444880]
+script = ExtResource("4_0f5h7")
+
+[node name="SpawnPoint1" type="Node3D" parent="." unique_id=1258090954 groups=["SpawnPoints"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.735781)
 
-[node name="SpawnPoint2" type="Node3D" parent="." unique_id=1748751901]
+[node name="SpawnPoint2" type="Node3D" parent="." unique_id=1748751901 groups=["SpawnPoints"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.905203)
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=2122061902]
-_spawnable_scenes = PackedStringArray("uid://dqt54rh3b3x66")
-spawn_path = NodePath("..")
-script = ExtResource("1_b5ayd")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1310418211 groups=["PLAYERCAMERA"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.001159, 7.9017577)

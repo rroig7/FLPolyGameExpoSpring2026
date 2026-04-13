@@ -28,7 +28,7 @@ public partial class LobbyStreamlined : Node
 	private bool UseLocal;
 
 	public bool IsWanLobbyConnected;
-	public bool IsWanLobbyServer;
+	[Export] public bool IsWanLobbyServer;
 
 	public static LobbyStreamlined Instance;
 
@@ -64,6 +64,9 @@ public partial class LobbyStreamlined : Node
 		string[] args = OS.GetCmdlineArgs();
 		AgentSpawner.SpawnFunction = new Callable(this, nameof(SpawnAgent));
 		bool isGameServer = false;
+
+		GD.Print($"Command Line Arguments: {string.Join(", ", args)}");
+
 		foreach (string arg in args)
 		{
 			if (arg == "MASTER")
@@ -235,24 +238,29 @@ public partial class LobbyStreamlined : Node
 			AgentAPI.Poll();
 		if (!IsWanLobbyServer)
 			{ UpdateVBoxChildren((VBoxContainer)GetNode(AgentSpawner.GetPath() + "/" + AgentSpawner.SpawnPath)); }
-	   
+
+		
 		if (GenericCore.Instance.IsGenericCoreConnected || IsWanLobbyServer)
 			{
 				((Control)GetChild(0)).Visible = false;
 				foreach(Node n in GenericCore.Instance.GetChildren())
 				{
-					if (n is CanvasItem canvasItem)
+					if(IsWanLobbyServer)
 					{
-						canvasItem.Visible = true;
+						if (n is CanvasItem canvasItem)
+						{
+							canvasItem.Visible = false;
+						}
+						else if (n is Node3D node3D)
+						{
+							node3D.Visible = false;
+						}
+						else if (n is CanvasLayer canvasLayer)
+						{
+							canvasLayer.Visible = false;
+						}						
 					}
-					else if (n is Node3D node3D)
-					{
-						node3D.Visible = true;
-					}
-					else if (n is CanvasLayer canvasLayer)
-					{
-						canvasLayer.Visible = true;
-					}
+
 				}
 			}
 		else
@@ -273,7 +281,9 @@ public partial class LobbyStreamlined : Node
 					canvasLayer.Visible = true;
 				}
 			}
+			
 		}
+		
 	}
 
 	private void UpdateVBoxChildren(VBoxContainer vbox)

@@ -13,6 +13,12 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath("MultiplayerSynchronizer:OwnerId")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+properties/3/path = NodePath(".:IsReady")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+properties/4/path = NodePath("PanelContainer/VBoxContainer/NameContainer/NameInput:placeholder_text")
+properties/4/spawn = true
+properties/4/replication_mode = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_itrf0"]
 bg_color = Color(0.3201083, 0.48287237, 0.7384613, 1)
@@ -28,24 +34,31 @@ default_font_size = 30
 [sub_resource type="LabelSettings" id="LabelSettings_7l00a"]
 font_size = 30
 
-[node name="NetworkPlayerManager" type="Control" unique_id=2127080030]
+[node name="NetworkPlayerManager" type="Control" unique_id=2127080030 node_paths=PackedStringArray("MyNetID", "_nameEdit", "_readyButton") groups=["NPM"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_vertical = 3
 script = ExtResource("1_wv0xt")
+MyNetID = NodePath("MultiplayerSynchronizer")
+_nameEdit = NodePath("PanelContainer/VBoxContainer/NameContainer/NameInput")
+_readyButton = NodePath("PanelContainer/VBoxContainer/ReadyButton")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1740679586]
 replication_config = SubResource("SceneReplicationConfig_wv0xt")
 script = ExtResource("1_k28jr")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1912154378]
-custom_minimum_size = Vector2(600, 325)
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.347
+anchor_bottom = 0.50200003
+offset_right = 0.25598145
+offset_bottom = -1.2960205
 theme_override_styles/panel = SubResource("StyleBoxFlat_itrf0")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1314661709]
