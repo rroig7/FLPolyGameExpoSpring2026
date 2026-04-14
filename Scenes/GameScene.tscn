@@ -139,7 +139,7 @@ draw_pass_1 = SubResource("QuadMesh_f43ej")
 script = ExtResource("1_cr6v8")
 Floor = ExtResource("2_7rq2r")
 FloorCollider = ExtResource("3_124qp")
-minSize = 25.0
+minSize = 15.0
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Enviroment" unique_id=1439273693]
 replication_config = SubResource("SceneReplicationConfig_qolck")
