@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dwlfj1b0orpsl" path="res://Assets/Shaders/Shader_Texture/Ice003_2K-JPG_NormalDX.jpg" id="3_6vvcf"]
 [ext_resource type="Shape3D" uid="uid://bvi2k6ektloa4" path="res://Assets/Local Resources/Floor Collider.tres" id="3_124qp"]
 [ext_resource type="PackedScene" uid="uid://bp3um8cntn01l" path="res://Assets/Igloo/IGLOO_BASE.tscn" id="3_lg2j6"]
+[ext_resource type="Shape3D" uid="uid://c74nscs128rcu" path="res://Assets/Local Resources/Dissapear Area.tres" id="4_124qp"]
 [ext_resource type="Texture2D" uid="uid://bn1fuqfnhamuf" path="res://Assets/Shaders/Shader_Texture/Ice002_2K-JPG_Displacement.jpg" id="4_cr6v8"]
 [ext_resource type="PackedScene" uid="uid://daf4by0o1a6uu" path="res://Assets/I.C.E_BLOCKS/IceBlock01_.tscn" id="4_lohlh"]
 [ext_resource type="PackedScene" uid="uid://d0kabuncnxt8d" path="res://Assets/I.C.E_BLOCKS/IceBlock03_.tscn" id="5_kilg5"]
@@ -139,6 +140,7 @@ draw_pass_1 = SubResource("QuadMesh_f43ej")
 script = ExtResource("1_cr6v8")
 Floor = ExtResource("2_7rq2r")
 FloorCollider = ExtResource("3_124qp")
+DissapearCollider = ExtResource("4_124qp")
 minSize = 15.0
 BodyDrop = NodePath("../Area3D")
 
@@ -150,7 +152,8 @@ collision_layer = 0
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Enviroment/Area3D" unique_id=1292788428]
-shape = ExtResource("3_124qp")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+shape = ExtResource("4_124qp")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Enviroment" unique_id=405068119]
 collision_layer = 2

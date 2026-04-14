@@ -6,13 +6,14 @@ public partial class MapShrink : Node
 	[Export] float ShrinkTime = 20;
 	[Export] CylinderMesh Floor;
 	[Export] CylinderShape3D FloorCollider;
+	[Export] CylinderShape3D DissapearCollider;
 	[Export] float minSize;
 	[Export] float curSize
 	{	
 		get { return _curSize; }
 		set { 			
 				Floor.TopRadius = Floor.BottomRadius = value;
-				FloorCollider.Radius = value;
+				FloorCollider.Radius = DissapearCollider.Radius = value;
 				_curSize = value;
 			}
 	}
