@@ -70,11 +70,11 @@ public partial class GameMaster : Node
 
 		while(!level.IsInsideTree()) await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
 
-		var Bases = GetTree().GetNodesInGroup("Base");
+		var Bases = GetTree().GetNodesInGroup("PlayerBase");
 		for(int i = 0; i < Bases.Count; i++)
 		{
-			if(i < Players.Count) Players[i].SpawnPlayer(i+1, (Node3D)Bases.First(p => p.Name == $"Igloo{i+1}"));
-			else { Rpc(MethodName.RemoveBase, Bases.First(p => p.Name == $"Igloo{i+1}").GetPath()); }
+			if(i < Players.Count) Players[i].SpawnPlayer((Base)Bases.First(p => p.GetParent().Name == $"Igloo{i+1}"));
+			else {  RemoveBase(Bases.First(p => p.GetParent().Name == $"Igloo{i+1}") as Base); }
 		}
 		
 
@@ -82,10 +82,9 @@ public partial class GameMaster : Node
 		GameActive = true;
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void RemoveBase(NodePath path)
+	void RemoveBase(Base b)
 	{
-		GetNode(path).QueueFree();
+		GenericCore.Instance.MainNetworkCore.NetDestroyObject(b.MyID);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]

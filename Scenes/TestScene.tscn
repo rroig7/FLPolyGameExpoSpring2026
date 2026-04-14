@@ -17,15 +17,3 @@ YOffset = 1.0
 swivelSpeed = 0.2
 
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]
-
-[node name="P1 SpawnPoint" type="Node3D" parent="." unique_id=1258090954 groups=["SpawnPoints"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 2.8, 6.119594e-07)
-
-[node name="P2 SpawnPoint" type="Node3D" parent="." unique_id=1748751901 groups=["SpawnPoints"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.5, 2.8, 4.5896957e-07)
-
-[node name="P3 SpawnPoint" type="Node3D" parent="." unique_id=1816665925 groups=["SpawnPoints"]]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.1793913e-07, 1.3, 38.5)
-
-[node name="P4 SpawnPoint" type="Node3D" parent="." unique_id=444923322 groups=["SpawnPoints"]]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 1.3, -38.5)
