@@ -2,16 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bomgoj5cimfhd" path="res://Scripts/Enemy2.cs" id="1_7j2nt"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_jfpgj"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_vkdvt"]
-size = Vector3(10, 10, 10)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lj6qe"]
-albedo_color = Color(0.82604355, 0, 0.11804021, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_vkdvt"]
-material = SubResource("StandardMaterial3D_lj6qe")
-size = Vector3(10, 10, 10)
+[ext_resource type="PackedScene" uid="uid://colw7gw6y0qmh" path="res://Assets/PolarBear/mad_polar_bear_game_ready_3d_model.glb" id="3_jfpgj"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7sgnn"]
 properties/0/path = NodePath(".:position")
@@ -42,16 +33,14 @@ properties/7/replication_mode = 1
 [sub_resource type="SphereShape3D" id="SphereShape3D_7j2nt"]
 radius = 13.064
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lj6qe"]
+radius = 1.90625
+height = 8.793823
+
 [node name="BossCube" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "patrolPoints")]
 script = ExtResource("1_7j2nt")
 myId = NodePath("MultiplayerSynchronizer")
 patrolPoints = []
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=558016991]
-shape = SubResource("BoxShape3D_vkdvt")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=383504865]
-mesh = SubResource("BoxMesh_vkdvt")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1602294620]
 
@@ -63,3 +52,10 @@ script = ExtResource("2_jfpgj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1968873893]
 shape = SubResource("SphereShape3D_7j2nt")
+
+[node name="Sketchfab_Scene" parent="." unique_id=929004655 instance=ExtResource("3_jfpgj")]
+transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1868736931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.4054565, 0)
+shape = SubResource("CapsuleShape3D_lj6qe")

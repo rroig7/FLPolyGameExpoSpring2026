@@ -6,19 +6,21 @@ public partial class GlobalTimers : Node
 	public static GlobalTimers Instance {get; private set;}
 	
 
-	public override void _Ready() {		
-		Instance ??= this;
-		GameMaster.Instance.GameEndTrigger += StopAll;
+	public async override void _Ready() {		
+		while(!GenericCore.Instance.IsGenericCoreConnected) await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
+		if(!GenericCore.Instance.IsServer || (Instance != this && Instance != null)) {QueueFree(); return; }
+
+		Instance ??= this;		
 	}
 
 	public Timer OneShotTimer(float t)
 	{
-		var timer = Timer(t);
+		var timer = RepeatTimer(t);
 		timer.Timeout += timer.QueueFree;
 		return timer;
 	}
 
-	public Timer Timer(float t)
+	public Timer RepeatTimer(float t)
 	{
 		var timer = new Timer();
 		AddChild(timer);

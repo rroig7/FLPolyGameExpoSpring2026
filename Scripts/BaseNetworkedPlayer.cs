@@ -10,7 +10,7 @@ public partial class BaseNetworkedPlayer : CharacterBody3D
 	// How far the client can drift from the server position before a
 	// hard correction is applied. Below this threshold, drift is
 	// smoothed out gradually instead of snapping.
-	[Export] float correctionThreshold = 0.5f;
+	[Export] float correctionThreshold = 3.0f;
 
 	// How quickly the client smoothly corrects toward the server position.
 	// Higher = snappier correction, lower = smoother but more drift.
@@ -60,7 +60,8 @@ public partial class BaseNetworkedPlayer : CharacterBody3D
 			{
 				// Small drift – nudge smoothly toward server position so
 				// the correction is invisible to the player.
-				GlobalPosition = GlobalPosition.Lerp(_serverPosition, correctionSpeed * (float)delta);
+				float t = Mathf.Clamp(correctionSpeed * (float)delta * (drift / correctionThreshold), 0f, 1f);
+				GlobalPosition = GlobalPosition.Lerp(_serverPosition, t);
 			}
 		}
 
@@ -71,6 +72,13 @@ public partial class BaseNetworkedPlayer : CharacterBody3D
 			AllPlayerProcess((float)delta);
 
 		AllProcess((float)delta);
+	}
+
+	public void ResetServerPosition(Vector3 pos)
+	{
+		GlobalPosition = pos;
+		_serverPosition = pos;
+		_serverPositionInitialized = true; // ensure smoothing doesn't re-init stale
 	}
 
 	/// <summary>

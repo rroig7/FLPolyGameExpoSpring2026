@@ -29,6 +29,10 @@ public partial class CameraFollow : Camera3D
 	{
 		if (!GenericCore.Instance.IsServer)
 			Target = target;
+		
+		var LS = GetTree().GetFirstNodeInGroup("LoadingScreen") as Control; 
+		GD.Print($"CameraFollow: Turning off loading screen: {LS != null} {LS.Visible}");
+		LS?.Hide();
 	}
 
 	public float GetFacingYaw()
