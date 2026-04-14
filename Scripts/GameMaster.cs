@@ -29,7 +29,7 @@ public partial class GameMaster : Node
 	/// Time when sudden death starts in Minutes
 	/// </summary>
 	[Export] float SuddenDeath = 7;
-	float SuddenDeathTime => SuddenDeath * 60;
+	public float SuddenDeathTime => SuddenDeath * 60;
 
 	/// <summary>
 	/// Duration of the end screen in seconds

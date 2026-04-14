@@ -15,6 +15,7 @@ public partial class Base : Node
 		if(GenericCore.Instance.IsServer)
 		{
 			currentHP = MaxHp;
+			GameMaster.Instance.SuddenDeathTrigger += BaseDestroyed;
 		}
 	}
 	
@@ -25,7 +26,19 @@ public partial class Base : Node
 		if(owner == MyID.OwnerId) { return; }
 
 		currentHP -= dmg;
-		if(currentHP <= 0) { GenericCore.Instance.MainNetworkCore.NetDestroyObject(MyID); }
+		if(currentHP <= 0) BaseDestroyed();
+	}
+
+	void BaseDestroyed()
+	{
+		GenericCore.Instance.MainNetworkCore.NetDestroyObject(MyID);
+		//Rpc(MethodName.SelfDestruct);	
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void SelfDestruct()
+	{
+		GetParent().QueueFree();
 	}
 
 }
