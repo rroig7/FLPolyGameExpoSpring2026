@@ -42,6 +42,7 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] public float RespawnDelay = 3f;
 	
 	private bool _isDead = false;
+	public Base PlayerBase;
 
 	// --- Dash settings ---
 	[Export] float dashSpeed    = 15f;
@@ -82,6 +83,7 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] Label UltCDLabel;
 	[Export] TextureRect DashIcon;
 	[Export] Label DashCDLabel;
+	[Export] Label RoundTimer;
 
 
 	public override void _Ready()
@@ -316,6 +318,9 @@ public partial class Player : BaseNetworkedPlayer
 				Velocity = Vector3.Zero;
 			}
 		}
+
+		if(GameMaster.GameActive && !GameMaster.SuddenDeath)
+			Rpc(MethodName.UpdateRoundTimer, MathF.Round((float)GameMaster.Instance.RoundTimer.TimeLeft));
 	}
 
 	// -------------------------------------------------------
@@ -531,6 +536,15 @@ public partial class Player : BaseNetworkedPlayer
 		}
 	}
 
+	[Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+	void UpdateRoundTimer(float t)
+	{
+		if(!isLocal) return;
+
+		RoundTimer.Text = $"{t:F1}";		
+		if(t < 0.1f) RoundTimer.Text = "SUDDEN DEATH";
+	}
+
 	/// <summary>
 	/// Called server-side only. Applies damage and handles death.
 	/// </summary>
@@ -554,9 +568,9 @@ public partial class Player : BaseNetworkedPlayer
 
 		Rpc(MethodName.OnDiedOnAllPeers);
 
-		// Start respawn timer on the server
-		var timer = GetTree().CreateTimer(RespawnDelay);
-		timer.Timeout += Respawn;
+		// Start respawn timer on the server if base is alive, otherwise player is eliminated
+		if(IsInstanceValid(PlayerBase)) GlobalTimers.Instance.OneShotTimer(RespawnDelay).Timeout += Respawn;
+		else GameMaster.Instance.PlayerEliminated();
 	}
 
 	private void Respawn()
@@ -567,21 +581,12 @@ public partial class Player : BaseNetworkedPlayer
 		_isDead    = false;
 
 		// Find a spawn point — looks for nodes in the SpawnPoints group
-		Vector3 spawnPos = FindSpawnPoint();
+		Vector3 spawnPos = PlayerBase.Spawnpoint.GlobalPosition;
 		GD.Print($"{Name} respawning at {spawnPos}");
 
 		Rpc(MethodName.OnRespawnedOnAllPeers, spawnPos);
 	}
 
-	private Vector3 FindSpawnPoint()
-	{
-		var spawnPoints = GetTree().GetNodesInGroup("SpawnPoints");
-		if (spawnPoints.Count == 0) return Vector3.Zero;
-
-		// Pick a random spawn point
-		int index = GD.RandRange(0, spawnPoints.Count - 1);
-		return (spawnPoints[index] as Node3D)?.GlobalPosition ?? Vector3.Zero;
-	}
 
 	// --- Helper Functions ---
 

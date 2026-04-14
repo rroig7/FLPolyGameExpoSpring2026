@@ -120,7 +120,9 @@ corner_detail = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o3h8g"]
 bg_color = Color(18.892157, 18.892157, 18.892157, 0)
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "MyId") groups=["players"]]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "MyId") groups=["players"]]
+collision_layer = 4
+collision_mask = 15
 floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
 SnowBulletScene = ExtResource("2_dewec")
@@ -134,6 +136,7 @@ UltIcon = NodePath("HUD/Habilities/Ulty")
 UltCDLabel = NodePath("HUD/Habilities/Coldown")
 DashIcon = NodePath("HUD/Habilities/Slide/Slide")
 DashCDLabel = NodePath("HUD/Habilities/Slide/Coldown2")
+RoundTimer = NodePath("HUD/Timer_Label")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
 

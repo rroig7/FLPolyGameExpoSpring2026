@@ -78,12 +78,14 @@ public partial class NetworkPlayerManager : Control
 	public void SpawnPlayer(Base Base)
 	{
 		GD.PushWarning($"Spawning player for {PlayerName} with NetID {MyNetID.OwnerId}");
-		PlayerBase = Base;
 		Base.MyID.OwnerId = MyNetID.OwnerId;
 		var playerSpawn = Base.Spawnpoint;
+		PlayerBase = Base;
 
 		PlayerCharacter = GenericCore.Instance.MainNetworkCore
 			.NetCreateObject(1, playerSpawn.GlobalPosition, (PlayerBase.GetParent() as Node3D).Quaternion, MyNetID.OwnerId) as Player;
+		
+		PlayerCharacter.PlayerBase = PlayerBase;
 	}
 
 	public override void _Process(double delta) {
