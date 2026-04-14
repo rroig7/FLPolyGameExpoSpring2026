@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 public partial class GameMaster : Node
@@ -53,38 +52,40 @@ public partial class GameMaster : Node
 		
 		if(Instance != this && Instance != null) { QueueFree(); return; }
 		Instance = this;
-		GenericCore.Instance.ServerDisconnected += Reconnect;
-
-		// Catch any NPMs that already registered before GameMaster.Instance was set
-		if(GenericCore.Instance.IsServer)
-		{
-			foreach(var npm in GetTree().GetNodesInGroup("NetworkPlayerManagers").OfType<NetworkPlayerManager>())
-			{
-				if(!Players.Contains(npm))
-				{
-					Players.Add(npm);
-					GameStartTrigger += npm.SpawnPlayer;
-				}
-			}
-		}
 	}
 	
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	public void GameStart()
+	public async void GameStart()
 	{
 		EmitSignal(SignalName.GameStartTrigger);
 
 		if(!GenericCore.Instance.IsServer) return;
 
-		GenericCore.Instance.MainNetworkCore.NetCreateObject(0, Vector3.Zero, Quaternion.Identity);
+		var level = GenericCore.Instance.MainNetworkCore.NetCreateObject(0, Vector3.Zero, Quaternion.Identity);
 		GD.PushWarning($"Vars: {TotalRoundLength}, {BossSpawn}, {SuddenDeath}. \nTimes: {RoundTime}, {BossTime}, {SuddenDeathTime}");
 
 		GlobalTimers.Instance.OneShotTimer(RoundTime).Timeout += GameEnd;
 		GlobalTimers.Instance.OneShotTimer(BossTime).Timeout += SpawnBoss;
 		GlobalTimers.Instance.OneShotTimer(SuddenDeathTime).Timeout += TriggerSuddenDeath;
 
+		while(!level.IsInsideTree()) await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
+
+		var Bases = GetTree().GetNodesInGroup("Base");
+		for(int i = 0; i < Bases.Count; i++)
+		{
+			if(i < Players.Count) Players[i].SpawnPlayer(i+1, (Node3D)Bases.First(p => p.Name == $"Igloo{i+1}"));
+			else { Rpc(MethodName.RemoveBase, Bases.First(p => p.Name == $"Igloo{i+1}").GetPath()); }
+		}
+		
+
 		GD.PushWarning("Game Started");
 		GameActive = true;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void RemoveBase(NodePath path)
+	{
+		GetNode(path).QueueFree();
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -149,29 +150,4 @@ public partial class GameMaster : Node
 		if (Players.All(p => p.IsReady)) Rpc("GameStart");
 	}
 
-	async void Reconnect()
-	{
-		Input.MouseMode = Input.MouseModeEnum.Visible;
-		if(!GameActive) {GenericCore.Instance.DisconnectFromGame(); return;}
-
-		GD.PushWarning("Attempting to reconnect to server...");
-		
-		for(int i = 0; i < 10; i++)
-		{
-			if(GenericCore.Instance.IsGenericCoreConnected)
-			{
-				if(GenericCore.Instance.JoinGame() == Error.Ok)
-				{
-					GD.PushWarning("Reconnected to server!");
-					return;
-				}
-				else
-				{
-					GD.PushWarning("Failed to reconnect to server, retrying...");
-					await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
-				}
-			}
-		}
-
-	}
 }

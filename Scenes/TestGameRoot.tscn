@@ -133,7 +133,7 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
-_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66")
+_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://bp3um8cntn01l")
 spawn_path = NodePath("../Level")
 script = ExtResource("3_5ftxa")
 
