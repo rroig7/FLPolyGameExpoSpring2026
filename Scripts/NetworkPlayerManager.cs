@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Diagnostics;
 using System.Linq;
 
 public partial class NetworkPlayerManager : Control
@@ -16,7 +14,8 @@ public partial class NetworkPlayerManager : Control
 	private bool _isLocalPlayer = false;
 	private bool _isInitialized = false;
 	private bool _uiConnected = false;
-	public Player Character {get; private set;}
+	public Player PlayerCharacter {get; private set;}
+	public Node3D PlayerBase {get; private set;}
 
 	public override void _Ready()
 	{
@@ -50,7 +49,6 @@ public partial class NetworkPlayerManager : Control
 			if(!GameMaster.Instance.Players.Contains(this))
 			{
 				GameMaster.Instance.AddPlayer(this);
-				GameMaster.Instance.GameStartTrigger += SpawnPlayer;
 			}
 		}
 
@@ -77,10 +75,19 @@ public partial class NetworkPlayerManager : Control
 	}
 
 	// Change from implicit private to public
-	public void SpawnPlayer()
+	public void SpawnPlayer(int pNumber, Node3D Base)
 	{
-		GD.PushWarning($"Spawning player for {PlayerName} with NetID {MyNetID.OwnerId}");
-		Character = GenericCore.Instance.MainNetworkCore.NetCreateObject(1, Vector3.Zero, Quaternion.Identity, MyNetID.OwnerId) as Player;
+		GD.PushWarning($"Spawning player for {PlayerName} with NetID {MyNetID.OwnerId} and Player Number {pNumber}");
+		PlayerBase = Base;
+
+		var playerSpawnpoints = GetTree().GetNodesInGroup("SpawnPoints");
+
+		GD.PushWarning($"Query: P{pNumber} Basespawn; P{pNumber} SpawnPoint");
+
+		var playerSpawn = playerSpawnpoints.First(p => p.Name == $"P{pNumber} SpawnPoint") as Node3D;
+
+		PlayerCharacter = GenericCore.Instance.MainNetworkCore
+			.NetCreateObject(1, playerSpawn.GlobalPosition, Quaternion.Identity, MyNetID.OwnerId) as Player;
 	}
 
 	public override void _Process(double delta) {
@@ -98,6 +105,5 @@ public partial class NetworkPlayerManager : Control
 		if (GameMaster.Instance == null) return;
 		GetTree().ProcessFrame -= OnDeferredRegister;
 		GameMaster.Instance.AddPlayer(this);
-		GameMaster.Instance.GameStartTrigger += SpawnPlayer;
 	}
 }
