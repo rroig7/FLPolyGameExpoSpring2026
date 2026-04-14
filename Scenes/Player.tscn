@@ -5,6 +5,12 @@
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_kyqiw"]
 [ext_resource type="PackedScene" uid="uid://bk2q30hrnqy0m" path="res://Assets/FuckingPenguin/FuckingPenguin.glb" id="3_gntrk"]
 [ext_resource type="PackedScene" uid="uid://b31jlpgk0cqgo" path="res://Scenes/UltimateIndicator.tscn" id="5_5ixxa"]
+[ext_resource type="Texture2D" uid="uid://btsjmr3f6prtv" path="res://Assets/UI Images/Ulty_Logo.png" id="5_52ee3"]
+[ext_resource type="FontFile" uid="uid://cjhmlf66vdsar" path="res://Assets/UI Images/Amonk Outline.ttf" id="6_bhhdu"]
+[ext_resource type="Texture2D" uid="uid://l2wyeejcyvak" path="res://Assets/UI Images/letter-q.png" id="6_megsn"]
+[ext_resource type="Texture2D" uid="uid://2kmjs8w06u4f" path="res://Assets/UI Images/shift.png" id="8_yoq75"]
+[ext_resource type="Texture2D" uid="uid://bc0h7ftjrguek" path="res://Assets/UI Images/SlideIcon.png" id="9_ksbbd"]
+[ext_resource type="FontFile" uid="uid://m58jjc3281g1" path="res://Assets/UI Images/Amonk Ice-SVG.ttf" id="10_ksbbd"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gntrk"]
 radius = 0.15332031
@@ -39,6 +45,78 @@ properties/7/path = NodePath(".:CurrentHp")
 properties/7/spawn = true
 properties/7/replication_mode = 1
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ixxa"]
+bg_color = Color(0, 0, 0, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nn08x"]
+bg_color = Color(1, 0, 0, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ksbbd"]
+bg_color = Color(0.34069967, 0.271728, 0.34983525, 0.42745098)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_glx4g"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_miouo"]
+bg_color = Color(6.943117, 0, 6.943117, 0.52156866)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1e7my"]
+bg_color = Color(11.708403, 11.708403, 11.708403, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arntx"]
+bg_color = Color(0.80090064, 0.5201376, 0.4332033, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o3h8g"]
+bg_color = Color(18.892157, 18.892157, 18.892157, 0)
+
 [node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "MyId") groups=["players"]]
 floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
@@ -69,7 +147,6 @@ transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.42324185, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19521835, 0.5851183, 0.38866067)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=199841574]
-visible = false
 
 [node name="Crosshair" type="Control" parent="HUD" unique_id=613684786]
 layout_mode = 3
@@ -106,6 +183,468 @@ offset_right = 5.0
 offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="HealthBar" type="ProgressBar" parent="HUD" unique_id=408857110]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -169.0
+offset_top = -66.0
+offset_right = 169.0
+offset_bottom = -39.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_5ixxa")
+theme_override_styles/fill = SubResource("StyleBoxFlat_nn08x")
+value = 90.0
+show_percentage = false
+
+[node name="XP_ Label" type="Label" parent="HUD" unique_id=857337707]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -95.0
+offset_right = 20.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+text = "XP: 1000000000"
+
+[node name="Habilities" type="Control" parent="HUD" unique_id=466432297]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Ulty" type="TextureRect" parent="HUD/Habilities" unique_id=694646140]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -223.0
+offset_top = -301.0
+offset_right = -37.0
+offset_bottom = -96.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("5_52ee3")
+expand_mode = 1
+
+[node name="Ulty Key" type="TextureRect" parent="HUD/Habilities" unique_id=717402325]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -156.0
+offset_top = -142.0
+offset_right = -116.0
+offset_bottom = -110.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("6_megsn")
+expand_mode = 1
+
+[node name="Coldown" type="Label" parent="HUD/Habilities" unique_id=236211401]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -177.0
+offset_top = -230.0
+offset_right = -101.5
+offset_bottom = -156.75
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_bhhdu")
+theme_override_font_sizes/font_size = 37
+text = "60"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slide" type="Control" parent="HUD/Habilities" unique_id=244470777]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Slide Key" type="TextureRect" parent="HUD/Habilities/Slide" unique_id=381912767]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -278.0
+offset_top = -63.0
+offset_right = -238.0
+offset_bottom = -31.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("8_yoq75")
+expand_mode = 1
+
+[node name="Slide" type="TextureRect" parent="HUD/Habilities/Slide" unique_id=1278359270]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -341.0
+offset_top = -138.0
+offset_right = -180.0
+offset_bottom = -56.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("9_ksbbd")
+expand_mode = 1
+
+[node name="Coldown2" type="Label" parent="HUD/Habilities/Slide" unique_id=169839558]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -287.0
+offset_top = -121.0
+offset_right = -234.0
+offset_bottom = -66.75
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_bhhdu")
+theme_override_font_sizes/font_size = 37
+text = "60"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UpGrades" type="Control" parent="HUD" unique_id=1617456860]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Slide-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=760471210]
+modulate = Color(0.28828594, 0.559468, 1, 1)
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 1088.0
+offset_bottom = 576.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ksbbd")
+
+[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/Slide-Upgrades" unique_id=221392318]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 128.0
+offset_right = 288.0
+offset_bottom = 448.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+
+[node name="Panel" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#1" unique_id=609858742]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 42.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_miouo")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#1" unique_id=832277732]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 42.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "UPGRADE #1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel2" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#1" unique_id=888312688]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -88.0
+offset_top = -112.0
+offset_right = 88.0
+offset_bottom = 154.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#1" unique_id=224304496]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -73.0
+offset_top = -55.0
+offset_right = 71.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#1/Price_Panel" unique_id=311565237]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 27
+text = "$ 50000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/Slide-Upgrades" unique_id=520988123]
+layout_mode = 0
+offset_left = 416.0
+offset_top = 128.0
+offset_right = 608.0
+offset_bottom = 448.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+
+[node name="Panel" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#2" unique_id=392408443]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 42.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_miouo")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#2" unique_id=1285071633]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 42.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "UPGRADE #2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel2" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#2" unique_id=544554691]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -88.0
+offset_top = -112.0
+offset_right = 88.0
+offset_bottom = 154.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#2" unique_id=1999962416]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -73.0
+offset_top = -55.0
+offset_right = 71.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#2/Price_Panel" unique_id=341875632]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 27
+text = "$ 50000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Upgrade#3" type="Panel" parent="HUD/UpGrades/Slide-Upgrades" unique_id=1124513524]
+layout_mode = 0
+offset_left = 736.0
+offset_top = 128.0
+offset_right = 928.0
+offset_bottom = 448.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+
+[node name="Panel" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#3" unique_id=1962743670]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 42.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_miouo")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#3" unique_id=518225382]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 42.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "UPGRADE #3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel2" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#3" unique_id=1724082699]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -88.0
+offset_top = -112.0
+offset_right = 88.0
+offset_bottom = 154.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#3" unique_id=11824252]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -73.0
+offset_top = -55.0
+offset_right = 71.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/Slide-Upgrades/Upgrade#3/Price_Panel" unique_id=744016019]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 27
+text = "$ 50000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Name" type="Label" parent="HUD/UpGrades/Slide-Upgrades" unique_id=1763252652]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -230.5
+offset_top = 29.0
+offset_right = 230.5
+offset_bottom = 81.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("10_ksbbd")
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxFlat_o3h8g")
+text = "SLIDE UPGRADES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="HUD/UpGrades/Slide-Upgrades" unique_id=304545116]
+layout_mode = 1
+offset_right = 64.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 42
+text = "x"
+
+[node name="Slide" type="Button" parent="HUD/UpGrades" unique_id=512753422]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 357.0
+offset_top = -67.0
+offset_right = 488.0
+offset_bottom = -28.0
+grow_vertical = 0
+text = "SLIDE UPGRADE"
+
+[node name="Slide2" type="Button" parent="HUD/UpGrades" unique_id=1748932334]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 516.0
+offset_top = -66.0
+offset_right = 647.0
+offset_bottom = -27.0
+grow_vertical = 0
+text = "ULTY UPGRADE"
+
+[node name="Slide3" type="Button" parent="HUD/UpGrades" unique_id=93461215]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 672.0
+offset_top = -67.0
+offset_right = 804.0
+offset_bottom = -28.0
+grow_vertical = 0
+text = "BASIC UPGRADE"
+
+[node name="Timer_Label" type="Label" parent="HUD" unique_id=1861699097]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -63.5
+offset_right = 63.5
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0.66560394, 1.961328e-06, 4.3317675e-07, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 40
+text = "TIME LEFT: 30:00"
 
 [node name="UltimateIndicator" parent="." unique_id=134195759 instance=ExtResource("5_5ixxa")]
 visible = false

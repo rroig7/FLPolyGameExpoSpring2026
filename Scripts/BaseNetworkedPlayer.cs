@@ -61,7 +61,7 @@ public partial class BaseNetworkedPlayer : CharacterBody3D
 				// Small drift – nudge smoothly toward server position so
 				// the correction is invisible to the player.
 				float t = Mathf.Clamp(correctionSpeed * (float)delta * (drift / correctionThreshold), 0f, 1f);
-    			GlobalPosition = GlobalPosition.Lerp(_serverPosition, t);
+				GlobalPosition = GlobalPosition.Lerp(_serverPosition, t);
 			}
 		}
 
