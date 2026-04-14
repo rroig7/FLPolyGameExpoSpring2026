@@ -71,7 +71,7 @@ public partial class SnowBullet : CharacterBody3D
 		KinematicCollision3D collision = MoveAndCollide(Velocity * (float)GetPhysicsProcessDeltaTime());
 		if (collision == null) return;
 
-		GodotObject collider = collision.GetCollider();
+		Node collider = collision.GetCollider() as Node;
 		GD.Print($"SnowBullet: hit something: {(collider as Node)?.Name ?? "unknown"}, type={collider?.GetType().Name}");
 
 		if (collider is Node hitNode && hitNode.IsInGroup("enemies"))
@@ -85,6 +85,10 @@ public partial class SnowBullet : CharacterBody3D
 				player.TakeDamage(player.BulletDamage);
 			else
 				GD.Print("SnowBullet: skipping damage, player is the shooter");
+		}
+		else if(collider is Base playerBase)
+		{
+			playerBase.Hit(ShooterId, 1);
 		}
 		else
 		{

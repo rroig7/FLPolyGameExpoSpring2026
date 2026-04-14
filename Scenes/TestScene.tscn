@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
 [ext_resource type="Script" uid="uid://bmv65ueb31brc" path="res://Scripts/GlobalTimers.cs" id="4_0f5h7"]
-[ext_resource type="PackedScene" uid="uid://5nuoosjopxg3" path="res://Scenes/MeleeEnemy.tscn" id="4_iufkg"]
 [ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="5_0f5h7"]
 
 [node name="TestScene" type="Node3D" unique_id=2078605398]
@@ -18,72 +17,3 @@ YOffset = 1.0
 swivelSpeed = 0.2
 
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]
-
-[node name="P1 SpawnPoint" type="Node3D" parent="." unique_id=1258090954 groups=["SpawnPoints"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 2.8, 6.119594e-07)
-
-[node name="P2 SpawnPoint" type="Node3D" parent="." unique_id=1748751901 groups=["SpawnPoints"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.5, 2.8, 4.5896957e-07)
-
-[node name="P3 SpawnPoint" type="Node3D" parent="." unique_id=1816665925 groups=["SpawnPoints"]]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.1793913e-07, 1.3, 38.5)
-
-[node name="P4 SpawnPoint" type="Node3D" parent="." unique_id=444923322 groups=["SpawnPoints"]]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 1.3, -38.5)
-
-[node name="EnemyNavPoints" type="Node3D" parent="." unique_id=2098773319]
-
-[node name="Marker3D" type="Marker3D" parent="EnemyNavPoints" unique_id=123611096]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.297922)
-
-[node name="Marker3D2" type="Marker3D" parent="EnemyNavPoints" unique_id=180785572]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.957283, 0, 0)
-
-[node name="Marker3D3" type="Marker3D" parent="EnemyNavPoints" unique_id=746380358]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35539436, 0, -6.6240697)
-
-[node name="Marker3D4" type="Marker3D" parent="EnemyNavPoints" unique_id=1646483057]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.416829, 0, -0.04147482)
-
-[node name="Marker3D5" type="Marker3D" parent="EnemyNavPoints" unique_id=943256008]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.153318, 0, -0.052811623)
-
-[node name="Marker3D6" type="Marker3D" parent="EnemyNavPoints" unique_id=730223232]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.452098, 0, -13.989261)
-
-[node name="Marker3D7" type="Marker3D" parent="EnemyNavPoints" unique_id=850301957]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3186884, 0, -21.45697)
-
-[node name="Marker3D8" type="Marker3D" parent="EnemyNavPoints" unique_id=1234237321]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.78647, 0, -13.765155)
-
-[node name="Marker3D9" type="Marker3D" parent="EnemyNavPoints" unique_id=1513119454]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.623495, -9.536743e-07, -2.9071207)
-
-[node name="Marker3D10" type="Marker3D" parent="EnemyNavPoints" unique_id=1776500912]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.012163, -9.536743e-07, 11.491698)
-
-[node name="Marker3D11" type="Marker3D" parent="EnemyNavPoints" unique_id=1941789958]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.741388, -9.536743e-07, 25.07114)
-
-[node name="Marker3D12" type="Marker3D" parent="EnemyNavPoints" unique_id=199676975]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.325808, -9.536743e-07, 23.872944)
-
-[node name="Marker3D13" type="Marker3D" parent="EnemyNavPoints" unique_id=722288097]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7937603, -9.536743e-07, 25.273157)
-
-[node name="Marker3D14" type="Marker3D" parent="EnemyNavPoints" unique_id=763186559]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.255863, -9.536743e-07, 15.880354)
-
-[node name="Marker3D15" type="Marker3D" parent="EnemyNavPoints" unique_id=271177561]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.17468, -9.536743e-07, 4.990877)
-
-[node name="Marker3D16" type="Marker3D" parent="EnemyNavPoints" unique_id=1001276879]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.823004, 0, -12.394419)
-
-[node name="Marker3D17" type="Marker3D" parent="EnemyNavPoints" unique_id=1315982818]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.506647, 1.9073486e-06, -17.99762)
-
-[node name="MeleeEnemy" parent="." unique_id=842654904 node_paths=PackedStringArray("patrolPoints") instance=ExtResource("4_iufkg")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -5.25711, 0.2930999, 0.42998838)
-patrolPoints = [NodePath("../EnemyNavPoints/Marker3D"), NodePath("../EnemyNavPoints/Marker3D2"), NodePath("../EnemyNavPoints/Marker3D3"), NodePath("../EnemyNavPoints/Marker3D4"), NodePath("../EnemyNavPoints/Marker3D5"), NodePath("../EnemyNavPoints/Marker3D6"), NodePath("../EnemyNavPoints/Marker3D7"), NodePath("../EnemyNavPoints/Marker3D8"), NodePath("../EnemyNavPoints/Marker3D9"), NodePath("../EnemyNavPoints/Marker3D10"), NodePath("../EnemyNavPoints/Marker3D11"), NodePath("../EnemyNavPoints/Marker3D12"), NodePath("../EnemyNavPoints/Marker3D13"), NodePath("../EnemyNavPoints/Marker3D14"), NodePath("../EnemyNavPoints/Marker3D15"), NodePath("../EnemyNavPoints/Marker3D16"), NodePath("../EnemyNavPoints/Marker3D17")]

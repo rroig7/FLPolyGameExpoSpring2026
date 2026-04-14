@@ -76,6 +76,13 @@ Jump={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Everything Else"
+3d_physics/layer_2="Floor"
+3d_physics/layer_3="Player"
+3d_physics/layer_4="Igloo"
+
 [physics]
 
 common/physics_jitter_fix=0.0

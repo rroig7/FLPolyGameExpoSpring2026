@@ -15,7 +15,7 @@ public partial class NetworkPlayerManager : Control
 	private bool _isInitialized = false;
 	private bool _uiConnected = false;
 	public Player PlayerCharacter {get; private set;}
-	public Node3D PlayerBase {get; private set;}
+	public Base PlayerBase {get; private set;}
 
 	public override void _Ready()
 	{
@@ -75,19 +75,17 @@ public partial class NetworkPlayerManager : Control
 	}
 
 	// Change from implicit private to public
-	public void SpawnPlayer(int pNumber, Node3D Base)
+	public void SpawnPlayer(Base Base)
 	{
-		GD.PushWarning($"Spawning player for {PlayerName} with NetID {MyNetID.OwnerId} and Player Number {pNumber}");
+		GD.PushWarning($"Spawning player for {PlayerName} with NetID {MyNetID.OwnerId}");
+		Base.MyID.OwnerId = MyNetID.OwnerId;
+		var playerSpawn = Base.Spawnpoint;
 		PlayerBase = Base;
 
-		var playerSpawnpoints = GetTree().GetNodesInGroup("SpawnPoints");
-
-		GD.PushWarning($"Query: P{pNumber} Basespawn; P{pNumber} SpawnPoint");
-
-		var playerSpawn = playerSpawnpoints.First(p => p.Name == $"P{pNumber} SpawnPoint") as Node3D;
-
 		PlayerCharacter = GenericCore.Instance.MainNetworkCore
-			.NetCreateObject(1, playerSpawn.GlobalPosition, Quaternion.Identity, MyNetID.OwnerId) as Player;
+			.NetCreateObject(1, playerSpawn.GlobalPosition, (PlayerBase.GetParent() as Node3D).Quaternion, MyNetID.OwnerId) as Player;
+		
+		PlayerCharacter.PlayerBase = PlayerBase;
 	}
 
 	public override void _Process(double delta) {

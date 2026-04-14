@@ -8,7 +8,7 @@ public partial class GlobalTimers : Node
 
 	public async override void _Ready() {		
 		while(!GenericCore.Instance.IsGenericCoreConnected) await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
-		if(!GenericCore.Instance.IsServer || (Instance != this && Instance != null)) {QueueFree(); return; }
+		if(Instance != this && Instance != null) { QueueFree(); return; }
 
 		Instance ??= this;		
 	}
@@ -17,6 +17,7 @@ public partial class GlobalTimers : Node
 	{
 		var timer = RepeatTimer(t);
 		timer.Timeout += timer.QueueFree;
+		timer.Start();
 		return timer;
 	}
 
@@ -26,7 +27,6 @@ public partial class GlobalTimers : Node
 		AddChild(timer);
 		timer.WaitTime = t;
 		timer.OneShot = true;
-		timer.Start();
 		return timer;
 	}
 

@@ -6,7 +6,9 @@ using System.Linq;
 public partial class GameMaster : Node
 {
 	public static GameMaster Instance {get; private set;}
-	public static bool GameActive = false;
+	public static bool GameActive {get; private set;} = false;
+	public static bool SuddenDeath {get; private set;} = false;
+
 
 	/// <summary>
 	/// Minimum number of players required to start the game.
@@ -25,20 +27,15 @@ public partial class GameMaster : Node
 	[Export] float BossSpawn = 3;
 	float BossTime => BossSpawn * 60;
 
-	/// <summary>
-	/// Time when sudden death starts in Minutes
-	/// </summary>
-	[Export] float SuddenDeath = 7;
-	float SuddenDeathTime => SuddenDeath * 60;
 
 	/// <summary>
 	/// Duration of the end screen in seconds
 	/// </summary>
 	[Export] float EndScreenDuration = 10f;
 
-	[Export] NetworkCore NPMSpawner;
-
 	public List<NetworkPlayerManager> Players = new();
+	public Timer RoundTimer;
+	float Eliminations = 0;
 
 	[Signal] public delegate void GameStartTriggerEventHandler();
 	[Signal] public delegate void GameEndTriggerEventHandler();
@@ -62,19 +59,19 @@ public partial class GameMaster : Node
 		if(!GenericCore.Instance.IsServer) return;
 
 		var level = GenericCore.Instance.MainNetworkCore.NetCreateObject(0, Vector3.Zero, Quaternion.Identity);
-		GD.PushWarning($"Vars: {TotalRoundLength}, {BossSpawn}, {SuddenDeath}. \nTimes: {RoundTime}, {BossTime}, {SuddenDeathTime}");
+		GD.PushWarning($"Vars: {TotalRoundLength}, {BossSpawn}, \nTimes: {RoundTime}, {BossTime}");
 
-		GlobalTimers.Instance.OneShotTimer(RoundTime).Timeout += GameEnd;
+		RoundTimer = GlobalTimers.Instance.OneShotTimer(RoundTime);
+		RoundTimer.Timeout += TriggerSuddenDeath;
 		GlobalTimers.Instance.OneShotTimer(BossTime).Timeout += SpawnBoss;
-		GlobalTimers.Instance.OneShotTimer(SuddenDeathTime).Timeout += TriggerSuddenDeath;
 
 		while(!level.IsInsideTree()) await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
 
-		var Bases = GetTree().GetNodesInGroup("Base");
+		var Bases = GetTree().GetNodesInGroup("PlayerBase");
 		for(int i = 0; i < Bases.Count; i++)
 		{
-			if(i < Players.Count) Players[i].SpawnPlayer(i+1, (Node3D)Bases.First(p => p.Name == $"Igloo{i+1}"));
-			else { Rpc(MethodName.RemoveBase, Bases.First(p => p.Name == $"Igloo{i+1}").GetPath()); }
+			if(i < Players.Count) Players[i].SpawnPlayer((Base)Bases.First(p => p.GetParent().Name == $"Igloo{i+1}"));
+			else {  RemoveBase(Bases.First(p => p.GetParent().Name == $"Igloo{i+1}") as Base); }
 		}
 		
 
@@ -82,10 +79,9 @@ public partial class GameMaster : Node
 		GameActive = true;
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void RemoveBase(NodePath path)
+	void RemoveBase(Base b)
 	{
-		GetNode(path).QueueFree();
+		GenericCore.Instance.MainNetworkCore.NetDestroyObject(b.MyID);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -122,6 +118,7 @@ public partial class GameMaster : Node
 	void TriggerSuddenDeath()
 	{
 		EmitSignal(SignalName.SuddenDeathTrigger);
+		SuddenDeath = true;
 
 		//Sudden Death Logic Here
 		GD.PushWarning("Sudden Death!");
@@ -150,4 +147,8 @@ public partial class GameMaster : Node
 		if (Players.All(p => p.IsReady)) Rpc("GameStart");
 	}
 
+	public void PlayerEliminated()
+	{
+		if(++Eliminations == Players.Count-1) GameEnd();
+	}
 }

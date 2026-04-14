@@ -43,7 +43,10 @@ properties/6/spawn = true
 properties/6/replication_mode = 1
 properties/7/path = NodePath(".:CurrentHp")
 properties/7/spawn = true
-properties/7/replication_mode = 1
+properties/7/replication_mode = 2
+properties/8/path = NodePath(".:XP")
+properties/8/spawn = true
+properties/8/replication_mode = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ixxa"]
 bg_color = Color(0, 0, 0, 1)
@@ -117,7 +120,9 @@ corner_detail = 5
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o3h8g"]
 bg_color = Color(18.892157, 18.892157, 18.892157, 0)
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "MyId") groups=["players"]]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "MyId") groups=["players"]]
+collision_layer = 4
+collision_mask = 15
 floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
 SnowBulletScene = ExtResource("2_dewec")
@@ -125,6 +130,13 @@ _muzzle = NodePath("Muzzle")
 UltimateRadius = 6.0
 UltimateIndicator = NodePath("UltimateIndicator")
 HUD = NodePath("HUD")
+HpBar = NodePath("HUD/HealthBar")
+XpLabel = NodePath("HUD/XP_ Label")
+UltIcon = NodePath("HUD/Habilities/Ulty")
+UltCDLabel = NodePath("HUD/Habilities/Coldown")
+DashIcon = NodePath("HUD/Habilities/Slide/Slide")
+DashCDLabel = NodePath("HUD/Habilities/Slide/Coldown2")
+RoundTimer = NodePath("HUD/Timer_Label")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
 

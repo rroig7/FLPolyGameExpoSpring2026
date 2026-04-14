@@ -22,17 +22,32 @@ public partial class Player : BaseNetworkedPlayer
 		set => OnServerPositionReceived(value);  // intercept the snap
 	}
 
-	// --- HP Settings ---
+	// --- HP/XP Settings ---
 	[Export] public float MaxHp = 100f;
-	[Export] public float CurrentHp = 100f;
+
+	private float _currentHp = 100f;
+	[Export] public float CurrentHp
+	{
+		get => _currentHp;
+		set { _currentHp = value; if (isLocal) UpdateHpBar(); }
+	}
+
+	private int _xp = 0;
+	[Export] public int XP
+	{
+		get => _xp;
+		set { _xp = value; if (isLocal) UpdateXpLabel(); }
+	}
+
 	[Export] public float RespawnDelay = 3f;
 	
 	private bool _isDead = false;
+	public Base PlayerBase;
 
 	// --- Dash settings ---
-	[Export] float dashSpeed    = 20f;
-	[Export] float dashDuration = 0.15f;
-	[Export] float dashCooldown = 1.0f;
+	[Export] float dashSpeed    = 15f;
+	[Export] float dashDuration = 0.10f;
+	[Export] float dashCooldown = 3.0f;
 
 	float _dashCooldownTimer = 0f;
 	float _dashDurationTimer = 0f;
@@ -45,7 +60,7 @@ public partial class Player : BaseNetworkedPlayer
 	// --- Bullet Settings ---
 	[Export] public PackedScene SnowBulletScene;
 	[Export] public float BulletDamage = 20f;
-	[Export] public float FireRate = 0.2f;
+	[Export] public float FireRate = 0.3f;
 	[Export] public float shootTimer = 0f;
 	[Export] public Node3D _muzzle;
 
@@ -53,8 +68,8 @@ public partial class Player : BaseNetworkedPlayer
 
 	// --- Ultimate Settings ---
 	[Export] public float UltimateCooldown = 30f;
-	[Export] public float UltimateRadius   = 8f;
-	[Export] public float UltimateDamage   = 100f;
+	[Export] public float UltimateRadius   = 5f;
+	[Export] public float UltimateDamage   = 80f;
 	[Export] public Node3D UltimateIndicator;
 
 	private float _ultimateTimer   = 0f;
@@ -62,6 +77,14 @@ public partial class Player : BaseNetworkedPlayer
 
 	// --- HUD Settings ---
 	[Export] CanvasLayer HUD;
+	[Export] ProgressBar HpBar;
+	[Export] Label XpLabel;
+	[Export] TextureRect UltIcon;
+	[Export] Label UltCDLabel;
+	[Export] TextureRect DashIcon;
+	[Export] Label DashCDLabel;
+	[Export] Label RoundTimer;
+
 	
 	// --- Enemy Knockback Settings ---
 	private Vector3 _knockbackVelocity = Vector3.Zero;
@@ -71,6 +94,10 @@ public partial class Player : BaseNetworkedPlayer
 		base._Ready();
 		CurrentHp = MaxHp;
 		_ultimateTimer = UltimateCooldown;
+
+		if (HUD != null)
+			HUD.Visible = false;
+
 		MyId.NetIDReady += SlowStart;
 	}
 
@@ -86,6 +113,12 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (UltimateIndicator != null)
 			UltimateIndicator.Visible = false;
+
+		// Initialise HUD to current state
+		UpdateHpBar();
+		UpdateXpLabel();
+		UpdateUltimateHud();
+		UpdateDashHud();
 	}
 
 	private void TryAssignCamera()
@@ -103,6 +136,92 @@ public partial class Player : BaseNetworkedPlayer
 	public void SetCamera(Camera3D cam) => playerCam = cam as CameraFollow;
 
 	// -------------------------------------------------------
+	//  HUD Helpers  (local-only; all guard-checked)
+	// -------------------------------------------------------
+
+	/// <summary>Sets the HP bar fill and colour.</summary>
+	private void UpdateHpBar()
+	{
+		if (!isLocal || HpBar == null) return;
+
+		HpBar.MaxValue = MaxHp;
+		HpBar.Value    = CurrentHp;
+
+		float ratio = CurrentHp / MaxHp;
+
+		Color barColor;
+		if (ratio > 0.5f)
+			barColor = Colors.Green.Lerp(Colors.Yellow, 1f - ((ratio - 0.5f) * 2f));
+		else
+			barColor = Colors.Yellow.Lerp(Colors.Red, 1f - (ratio * 2f));
+
+		var fill = HpBar.GetThemeStylebox("fill") as StyleBoxFlat;
+		if (fill != null)
+			fill.BgColor = barColor;
+	}
+
+	/// <summary>Refreshes the XP counter label.</summary>
+	private void UpdateXpLabel()
+	{
+		if (!isLocal || XpLabel == null) return;
+		XpLabel.Text = $"XP: {XP}";
+	}
+
+	/// <summary>
+	/// Updates the ultimate icon opacity and cooldown label every frame.
+	/// Call from LocalProcess so it stays in sync with _ultimateTimer.
+	/// </summary>
+	private void UpdateUltimateHud()
+	{
+		if (!isLocal) return;
+
+		bool onCooldown = _ultimateTimer > 0f;
+
+		if (UltIcon != null)
+			UltIcon.Modulate = onCooldown ? new Color(1, 1, 1, 0.35f) : Colors.White;
+
+		if (UltCDLabel != null)
+		{
+			if (onCooldown)
+			{
+				UltCDLabel.Visible = true;
+				UltCDLabel.Text    = Mathf.CeilToInt(_ultimateTimer).ToString();
+			}
+			else
+			{
+				UltCDLabel.Visible = false;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Updates the dash icon opacity and cooldown label every frame.
+	/// Call from LocalProcess so it stays in sync with _dashCooldownTimer.
+	/// </summary>
+	private void UpdateDashHud()
+	{
+		if (!isLocal) return;
+
+		bool onCooldown = _dashCooldownTimer > 0f;
+
+		if (DashIcon != null)
+			DashIcon.Modulate = onCooldown ? new Color(1, 1, 1, 0.35f) : Colors.White;
+
+		if (DashCDLabel != null)
+		{
+			if (onCooldown)
+			{
+				DashCDLabel.Visible = true;
+				DashCDLabel.Text    = Mathf.CeilToInt(_dashCooldownTimer).ToString();
+			}
+			else
+			{
+				DashCDLabel.Visible = false;
+			}
+		}
+	}
+
+	// -------------------------------------------------------
 
 	public override void LocalProcess(float delta)
 	{
@@ -116,6 +235,10 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (_ultimateTimer > 0f)
 			_ultimateTimer -= delta;
+
+		// --- Tick HUD every local frame ---
+		UpdateUltimateHud();
+		UpdateDashHud();
 
 		if (playerCam == null)
 		{
@@ -198,6 +321,9 @@ public partial class Player : BaseNetworkedPlayer
 				Velocity = Vector3.Zero;
 			}
 		}
+
+		if(GameMaster.GameActive && !GameMaster.SuddenDeath)
+			Rpc(MethodName.UpdateRoundTimer, MathF.Round((float)GameMaster.Instance.RoundTimer.TimeLeft));
 		
 		// Add this inside your existing _PhysicsProcess, before MoveAndSlide()
 		if (_knockbackVelocity != Vector3.Zero)
@@ -395,6 +521,10 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		_isDead = true;
 		Visible = false; // hide the player model
+
+		// Hide HUD on death (local player only)
+		if (isLocal && HUD != null)
+			HUD.Visible = false;
 	}
 
 	/// <summary>
@@ -404,10 +534,29 @@ public partial class Player : BaseNetworkedPlayer
 		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	void OnRespawnedOnAllPeers(Vector3 spawnPos)
 	{
-		_isDead          = false;
-		CurrentHp       = MaxHp;
+		_isDead    = false;
+		CurrentHp  = MaxHp;
 		ResetServerPosition(spawnPos);
-		Visible          = true;
+		Visible    = true;
+
+		// Restore HUD and refresh all values on respawn
+		if (isLocal)
+		{
+			if (HUD != null) HUD.Visible = true;
+			UpdateHpBar();
+			UpdateXpLabel();
+			UpdateUltimateHud();
+			UpdateDashHud();
+		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+	void UpdateRoundTimer(float t)
+	{
+		if(!isLocal) return;
+
+		RoundTimer.Text = $"{t:F1}";		
+		if(t < 0.1f) RoundTimer.Text = "SUDDEN DEATH";
 	}
 
 	/// <summary>
@@ -433,9 +582,9 @@ public partial class Player : BaseNetworkedPlayer
 
 		Rpc(MethodName.OnDiedOnAllPeers);
 
-		// Start respawn timer on the server
-		var timer = GetTree().CreateTimer(RespawnDelay);
-		timer.Timeout += Respawn;
+		// Start respawn timer on the server if base is alive, otherwise player is eliminated
+		if(IsInstanceValid(PlayerBase)) GlobalTimers.Instance.OneShotTimer(RespawnDelay).Timeout += Respawn;
+		else GameMaster.Instance.PlayerEliminated();
 	}
 
 	private void Respawn()
@@ -446,21 +595,12 @@ public partial class Player : BaseNetworkedPlayer
 		_isDead    = false;
 
 		// Find a spawn point — looks for nodes in the SpawnPoints group
-		Vector3 spawnPos = FindSpawnPoint();
+		Vector3 spawnPos = PlayerBase.Spawnpoint.GlobalPosition;
 		GD.Print($"{Name} respawning at {spawnPos}");
 
 		Rpc(MethodName.OnRespawnedOnAllPeers, spawnPos);
 	}
 
-	private Vector3 FindSpawnPoint()
-	{
-		var spawnPoints = GetTree().GetNodesInGroup("SpawnPoints");
-		if (spawnPoints.Count == 0) return Vector3.Zero;
-
-		// Pick a random spawn point
-		int index = GD.RandRange(0, spawnPoints.Count - 1);
-		return (spawnPoints[index] as Node3D)?.GlobalPosition ?? Vector3.Zero;
-	}
 
 	// --- Helper Functions ---
 

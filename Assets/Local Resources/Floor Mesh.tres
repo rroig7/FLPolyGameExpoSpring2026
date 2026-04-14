@@ -1,0 +1,25 @@
+[gd_resource type="CylinderMesh" format=3 uid="uid://d25auerkkqj6q"]
+
+[ext_resource type="Shader" uid="uid://b1u3h8e2i7477" path="res://Assets/Shaders/GameScene.gdshader" id="1_umgwf"]
+[ext_resource type="Texture2D" uid="uid://dqua068vnmtp8" path="res://Assets/Shaders/Shader_Texture/Ice003_2K-JPG_Color.jpg" id="2_4bkow"]
+[ext_resource type="Texture2D" uid="uid://dwlfj1b0orpsl" path="res://Assets/Shaders/Shader_Texture/Ice003_2K-JPG_NormalDX.jpg" id="3_ou8ik"]
+[ext_resource type="Texture2D" uid="uid://bn1fuqfnhamuf" path="res://Assets/Shaders/Shader_Texture/Ice002_2K-JPG_Displacement.jpg" id="4_l6f43"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y30xb"]
+render_priority = 1
+shader = ExtResource("1_umgwf")
+shader_parameter/over_texture = ExtResource("2_4bkow")
+shader_parameter/under_texture = ExtResource("4_l6f43")
+shader_parameter/surface_normalmap = ExtResource("3_ou8ik")
+shader_parameter/top_color = Color(0.6764, 0.980092, 1, 1)
+shader_parameter/depth = 0.1
+shader_parameter/normal_depth = 3.675
+shader_parameter/roughness = 0.18000000855
+shader_parameter/metallic = 0.7
+shader_parameter/refractive_index = 3.065
+
+[resource]
+material = SubResource("ShaderMaterial_y30xb")
+top_radius = 80.0
+bottom_radius = 80.0
+height = 0.18
