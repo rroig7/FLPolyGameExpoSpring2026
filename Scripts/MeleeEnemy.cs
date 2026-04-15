@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Linq;
 
-public partial class Enemy2 : CharacterBody3D
+public partial class MeleeEnemy : CharacterBody3D
 {
 	[Export] public NetID myId;
 	[Export] public AnimationPlayer myAnimation;
@@ -11,6 +11,15 @@ public partial class Enemy2 : CharacterBody3D
 	[Export] public float chaseRange = 10.0f;
 	[Export] public float returnRange = 15.0f;
 	[Export] public float moveSpeed = 4.0f;
+
+	[Export] public float attackRange = 1.5f;
+	[Export] public float attackCooldown = 2.0f;
+	[Export] public float knockbackForce = 6.0f;
+	
+	[Export] public float MaxHp = 100f;
+	[Export] public float CurrentHp = 100f;
+
+	private float _attackTimer = 0f;
 
 	[Export] public Vector3 SyncedVelocity
 	{
@@ -38,12 +47,10 @@ public partial class Enemy2 : CharacterBody3D
 
 		if (patrolPoints == null || patrolPoints.Length == 0)
 		{
-			var pointParent = GetTree().CurrentScene.GetNode("GameMaster/MainLevel/EnemyNavPoints");
+			var pointParent = GetTree().CurrentScene.GetNode("EnemyNavPoints");
 			patrolPoints = pointParent.GetChildren().OfType<Marker3D>().ToArray();
 		}
 
-		// If myId wasn't assigned in the editor, try to find it as a child.
-		// NetID always names itself "MultiplayerSynchronizer" in _EnterTree.
 		if (myId == null)
 			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
 
@@ -57,6 +64,9 @@ public partial class Enemy2 : CharacterBody3D
 
 		if (GenericCore.Instance.IsServer)
 		{
+			if (_attackTimer > 0f)
+				_attackTimer -= (float)delta;
+
 			if (!IsOnFloor())
 			{
 				Vector3 vel = Velocity;
@@ -90,15 +100,26 @@ public partial class Enemy2 : CharacterBody3D
 					}
 
 					float distanceToPlayer = (targetPlayer.GlobalPosition - GlobalPosition).Length();
+
 					if (distanceToPlayer > returnRange)
 					{
 						ReturnToPatrol();
 						break;
 					}
 
-					navAgent.TargetPosition = targetPlayer.GlobalPosition;
-					MoveAlongPath();
-					SyncedIsMoving = true;
+					if (distanceToPlayer <= attackRange)
+					{
+						TryAttackPlayer(targetPlayer);
+						Velocity = new Vector3(0, Velocity.Y, 0);
+						SyncedIsMoving = false;
+					}
+					else
+					{
+						navAgent.TargetPosition = targetPlayer.GlobalPosition;
+						MoveAlongPath();
+						SyncedIsMoving = true;
+					}
+
 					SyncedIsChasing = true;
 					break;
 
@@ -124,6 +145,24 @@ public partial class Enemy2 : CharacterBody3D
 			UpdateAnimation();
 	}
 
+	private void TryAttackPlayer(Player player)
+	{
+		if (_attackTimer > 0f) return;
+
+		_attackTimer = attackCooldown;
+
+		// Get horizontal direction from enemy to player, normalize while flat
+		Vector3 knockbackDir = (player.GlobalPosition - GlobalPosition);
+		knockbackDir.Y = 0;
+		knockbackDir = knockbackDir.Normalized();
+
+		// Add small upward nudge AFTER normalizing so horizontal stays dominant
+		knockbackDir += new Vector3(0, 0.15f, 0);
+
+		player.ApplyKnockback(knockbackDir * knockbackForce);
+		player.TakeDamage(20f);
+	}
+
 	private void UpdateAnimation()
 	{
 		if (myAnimation == null) return;
@@ -143,7 +182,7 @@ public partial class Enemy2 : CharacterBody3D
 
 		foreach (Player player in GetTree().GetNodesInGroup("players"))
 		{
-			Godot.GD.Print("Player: " + player.Name);
+			GD.Print("Player: " + player.Name);
 			float dist = (player.GlobalPosition - GlobalPosition).Length();
 			if (dist <= closestDist)
 			{
@@ -197,29 +236,37 @@ public partial class Enemy2 : CharacterBody3D
 		navAgent.TargetPosition = lastPatrolTarget;
 	}
 
+// Replace your existing OnHitByBullet with this:
 	public void OnHitByBullet()
 	{
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDying) return;
+
+		CurrentHp -= 20f; // or wire this up to bullet damage later
+		GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
+
+		if (CurrentHp > 0f) return;
+
+		Die();
+	}
+	
+	private void Die()
+	{
+		if (_isDying) return;
 		_isDying = true;
 
-		// Fallback: find myId by child name if the export wasn't wired in the editor.
-		// NetID always names itself "MultiplayerSynchronizer" in _EnterTree.
 		if (myId == null)
 			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
 
 		if (myId != null && IsInstanceValid(myId))
 		{
 			myId.ProcessMode = ProcessModeEnum.Disabled;
-
 			try { myId.ReplicationConfig = null; } catch { }
-
 			myId.Rpc(NetID.MethodName.ManualDelete);
 		}
 		else
 		{
-			// No NetID found at all — just free locally as a last resort.
-			GD.PushWarning("Enemy2.OnHitByBullet: no valid NetID found, freeing locally only.");
+			GD.PushWarning("MeleeEnemy.Die: no valid NetID found, freeing locally only.");
 			QueueFree();
 		}
 	}

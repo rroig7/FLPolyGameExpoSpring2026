@@ -88,6 +88,10 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] Label DashCDLabel;
 	[Export] Label RoundTimer;
 
+	
+	// --- Enemy Knockback Settings ---
+	private Vector3 _knockbackVelocity = Vector3.Zero;
+
 	public override void _Ready()
 	{
 		base._Ready();
@@ -322,6 +326,16 @@ public partial class Player : BaseNetworkedPlayer
 
 		if(GameMaster.GameActive && !GameMaster.SuddenDeath)
 			Rpc(MethodName.UpdateRoundTimer, MathF.Round((float)GameMaster.Instance.RoundTimer.TimeLeft));
+		
+		// Add this inside your existing _PhysicsProcess, before MoveAndSlide()
+		if (_knockbackVelocity != Vector3.Zero)
+		{
+			Velocity += _knockbackVelocity;
+			_knockbackVelocity = _knockbackVelocity.Lerp(Vector3.Zero, 0.3f);
+
+			if (_knockbackVelocity.Length() < 0.1f)
+				_knockbackVelocity = Vector3.Zero;
+		}
 	}
 
 	// -------------------------------------------------------
@@ -356,6 +370,7 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDashing) return;
+		if (_knockbackVelocity.Length() > 0.5f) return;
 
 		// Optimized to preserve Velocity.Y (the jump/gravity)
 		Vector3 nextVelocity = Velocity;
@@ -677,5 +692,10 @@ public partial class Player : BaseNetworkedPlayer
 		Vector3 groundPoint = GetGroundAimPoint();
 		// Lift slightly off the ground so it isn't clipped by the terrain
 		UltimateIndicator.GlobalPosition = groundPoint + Vector3.Up * 0.05f;
+	}
+	
+	public void ApplyKnockback(Vector3 force)
+	{
+		_knockbackVelocity = force;
 	}
 }

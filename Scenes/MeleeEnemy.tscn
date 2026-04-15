@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://5nuoosjopxg3"]
 
-[ext_resource type="Script" uid="uid://bomgoj5cimfhd" path="res://Scripts/Enemy2.cs" id="1_1blns"]
+[ext_resource type="Script" uid="uid://bomgoj5cimfhd" path="res://Scripts/MeleeEnemy.cs" id="1_1blns"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_mjdfb"]
 [ext_resource type="PackedScene" uid="uid://depnc2imgbt2j" path="res://Assets/Pinnacarid/pinnacarid.glb" id="3_kjirb"]
 
@@ -30,17 +30,19 @@ properties/7/path = NodePath(".:SyncedVelocity")
 properties/7/spawn = true
 properties/7/replication_mode = 1
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_7j2nt"]
-radius = 2.551
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpr8r"]
 radius = 0.2939453
 height = 2.126007
 
-[node name="MeleeEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "patrolPoints")]
+[node name="MeleeEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "patrolPoints") groups=["enemies"]]
+wall_min_slide_angle = 0.34906584
+floor_max_angle = 1.0471976
 script = ExtResource("1_1blns")
 myId = NodePath("MultiplayerSynchronizer")
 patrolPoints = []
+chaseRange = 5.0
+returnRange = 10.0
+moveSpeed = 3.0
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1602294620]
 
@@ -48,15 +50,10 @@ patrolPoints = []
 replication_config = SubResource("SceneReplicationConfig_7sgnn")
 script = ExtResource("2_mjdfb")
 
-[node name="DetectionArea" type="Area3D" parent="." unique_id=1473774793]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1968873893]
-shape = SubResource("SphereShape3D_7j2nt")
-
 [node name="Sketchfab_Scene" parent="." unique_id=1995295348 instance=ExtResource("3_kjirb")]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+transform = Transform3D(-4.371139e-06, 0, 100, 0, 100, 0, -100, 0, -4.371139e-06, 0, 0, 0)
 
-[node name="Skeleton3D" parent="Sketchfab_Scene/Sketchfab_model/Pinnacarid_fbx/Object_2/RootNode/Pinnacarid/Object_5" parent_id_path=PackedInt32Array(1995295348, 1677480024) index="0" unique_id=2021710883]
+[node name="Skeleton3D" parent="Sketchfab_Scene/Sketchfab_model/Pinnacarid_fbx/Object_2/RootNode/Pinnacarid/Object_5" parent_id_path=PackedInt32Array(1995295348, 1994405195) index="0" unique_id=1646536100]
 bones/2/position = Vector3(-0.0026506723, 0.0010570586, 0.1994707)
 bones/2/rotation = Quaternion(-0.028804004, 0.7065323, -0.028773809, 0.7065087)
 bones/3/position = Vector3(-0.11843887, -6.8238005e-06, 2.7283775e-05)
@@ -216,7 +213,7 @@ bones/93/position = Vector3(0.15950742, 0.0119600445, -0.067712575)
 bones/93/rotation = Quaternion(0.028799595, -0.7065279, 0.028777955, 0.70651317)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2112056081]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.09304916, 0.13261414)
+transform = Transform3D(-4.371139e-08, 1, -4.371139e-08, 0, -4.371139e-08, -1, -1, -4.371139e-08, 1.9106855e-15, 0, 0.09304916, -0.0012015402)
 shape = SubResource("CapsuleShape3D_kpr8r")
 
 [editable path="Sketchfab_Scene"]
