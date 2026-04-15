@@ -16,8 +16,8 @@ font_size = 64
 [node name="TestGameRoot" type="Node" unique_id=1127935270 node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_ul1ws")
 MainNetworkCore = NodePath("Main Spawner")
-_portMaximum = 7000
-_portMinimum = 7010
+_portMaximum = 7010
+_portMinimum = 7000
 _localPort = 7000
 _serverAddress = "127.0.0.1"
 _maxConnections = 4
