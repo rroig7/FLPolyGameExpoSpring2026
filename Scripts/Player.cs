@@ -459,7 +459,7 @@ public partial class Player : BaseNetworkedPlayer
 		var query = new PhysicsShapeQueryParameters3D();
 		query.Shape        = shape;
 		query.Transform    = new Transform3D(Basis.Identity, center);
-		query.CollisionMask = 0b11;
+		query.CollisionMask = 3;
 		query.Exclude      = new Godot.Collections.Array<Rid> { GetRid() };
 
 		var results = spaceState.IntersectShape(query);
@@ -659,7 +659,7 @@ public partial class Player : BaseNetworkedPlayer
 		var spaceState = GetWorld3D().DirectSpaceState;
 		var query = PhysicsRayQueryParameters3D.Create(
 			rayOrigin, rayEnd,
-			collisionMask: 0b01 // terrain/static layer only
+			collisionMask: 1 | 2 // terrain/static layer only
 		);
 		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
 
