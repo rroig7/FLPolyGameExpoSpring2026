@@ -23,28 +23,27 @@ public partial class Player : BaseNetworkedPlayer
 	}
 
 	// --- HP/XP Settings ---
+	[ExportGroup("HP & XP")]
 	[Export] public float MaxHp = 100f;
-
-	private float _currentHp = 100f;
 	[Export] public float CurrentHp
 	{
 		get => _currentHp;
 		set { _currentHp = value; if (isLocal) UpdateHpBar(); }
 	}
-
-	private int _xp = 0;
 	[Export] public int XP
 	{
 		get => _xp;
 		set { _xp = value; if (isLocal) UpdateXpLabel(); }
 	}
-
 	[Export] public float RespawnDelay = 3f;
-	
+
+	private float _currentHp = 100f;
+	private int _xp = 0;
 	private bool _isDead = false;
 	public Base PlayerBase;
 
 	// --- Dash settings ---
+	[ExportGroup("Dash Settings")]
 	[Export] float dashSpeed    = 15f;
 	[Export] float dashDuration = 0.10f;
 	[Export] float dashCooldown = 3.0f;
@@ -54,10 +53,12 @@ public partial class Player : BaseNetworkedPlayer
 	bool  _isDashing         = false;
 
 	// --- Jump Settings
+	[ExportGroup("Jump Settings")]
 	[Export] public float JumpVelocity = 4.5f;
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	// --- Bullet Settings ---
+	[ExportGroup("Bullet Settings")]
 	[Export] public PackedScene SnowBulletScene;
 	[Export] public float BulletDamage = 20f;
 	[Export] public float FireRate = 0.3f;
@@ -67,6 +68,7 @@ public partial class Player : BaseNetworkedPlayer
 	private int _bulletCounter = 0;
 
 	// --- Ultimate Settings ---
+	[ExportGroup("Ultimate Ability")]
 	[Export] public float UltimateCooldown = 30f;
 	[Export] public float UltimateRadius   = 5f;
 	[Export] public float UltimateDamage   = 80f;
@@ -76,6 +78,7 @@ public partial class Player : BaseNetworkedPlayer
 	private bool  _isAimingUltimate = false;
 
 	// --- HUD Settings ---
+	[ExportGroup("HUD")]
 	[Export] CanvasLayer HUD;
 	[Export] ProgressBar HpBar;
 	[Export] Label XpLabel;
@@ -84,7 +87,6 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] TextureRect DashIcon;
 	[Export] Label DashCDLabel;
 	[Export] Label RoundTimer;
-
 
 	public override void _Ready()
 	{
@@ -305,7 +307,6 @@ public partial class Player : BaseNetworkedPlayer
 			Velocity -= new Vector3(0, gravity * delta, 0);
 		}
 	}
-
 
 	public override void ServerProcess(float delta)
 	{
@@ -586,7 +587,6 @@ public partial class Player : BaseNetworkedPlayer
 
 		Rpc(MethodName.OnRespawnedOnAllPeers, spawnPos);
 	}
-
 
 	// --- Helper Functions ---
 
