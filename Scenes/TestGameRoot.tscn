@@ -54,7 +54,6 @@ grow_vertical = 2
 color = Color(0.53436923, 0.54496837, 1, 1)
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Lobby UI" unique_id=1725437401]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
 [ext_resource type="Script" uid="uid://bmv65ueb31brc" path="res://Scripts/GlobalTimers.cs" id="4_0f5h7"]
+[ext_resource type="PackedScene" uid="uid://5nuoosjopxg3" path="res://Scenes/MeleeEnemy.tscn" id="4_iufkg"]
 [ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="5_0f5h7"]
 
 [node name="TestScene" type="Node3D" unique_id=2078605398]
@@ -16,4 +17,90 @@ radius = 1.5
 YOffset = 1.0
 swivelSpeed = 0.2
 
+[node name="EnemyRoamPoints" type="Node3D" parent="." unique_id=869748027]
+
+[node name="Marker3D" type="Marker3D" parent="EnemyRoamPoints" unique_id=1766407979]
+
+[node name="Marker3D2" type="Marker3D" parent="EnemyRoamPoints" unique_id=961086956]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8181505, 0, 0.28346586)
+
+[node name="Marker3D3" type="Marker3D" parent="EnemyRoamPoints" unique_id=796276963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21431255, 0, -6.860535)
+
+[node name="Marker3D4" type="Marker3D" parent="EnemyRoamPoints" unique_id=2035681427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.63081, 0, 0.20742607)
+
+[node name="Marker3D5" type="Marker3D" parent="EnemyRoamPoints" unique_id=778789508]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9068651, 0, 6.68134)
+
+[node name="Marker3D6" type="Marker3D" parent="EnemyRoamPoints" unique_id=1968785383]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.9817133, 0, 14.136613)
+
+[node name="Marker3D7" type="Marker3D" parent="EnemyRoamPoints" unique_id=1716271361]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2903371, 0, 25.13107)
+
+[node name="Marker3D8" type="Marker3D" parent="EnemyRoamPoints" unique_id=1609382199]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.598862, 0, 24.454441)
+
+[node name="Marker3D9" type="Marker3D" parent="EnemyRoamPoints" unique_id=1085391590]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.201916, 0, 24.652521)
+
+[node name="Marker3D10" type="Marker3D" parent="EnemyRoamPoints" unique_id=2057855521]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.79804, 0, 12.734821)
+
+[node name="Marker3D11" type="Marker3D" parent="EnemyRoamPoints" unique_id=588511385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.728992, 0, 4.3424816)
+
+[node name="Marker3D12" type="Marker3D" parent="EnemyRoamPoints" unique_id=2042037119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.864555, 0, -5.396208)
+
+[node name="Marker3D13" type="Marker3D" parent="EnemyRoamPoints" unique_id=36967317]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.222457, 0, -12.57719)
+
+[node name="Marker3D26" type="Marker3D" parent="EnemyRoamPoints" unique_id=2072878209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.525278, 4.7683716e-07, -19.93948)
+
+[node name="Marker3D27" type="Marker3D" parent="EnemyRoamPoints" unique_id=1019474633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.052773, 4.7683716e-07, -23.53969)
+
+[node name="Marker3D14" type="Marker3D" parent="EnemyRoamPoints" unique_id=1854350922]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.9508705, -9.536743e-07, -18.192326)
+
+[node name="Marker3D15" type="Marker3D" parent="EnemyRoamPoints" unique_id=2140422628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4829063, -1.9073486e-06, -26.392609)
+
+[node name="Marker3D16" type="Marker3D" parent="EnemyRoamPoints" unique_id=1882993499]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4964867, -1.9073486e-06, -21.763351)
+
+[node name="Marker3D17" type="Marker3D" parent="EnemyRoamPoints" unique_id=1164987822]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.865681, -1.9073486e-06, -27.821138)
+
+[node name="Marker3D18" type="Marker3D" parent="EnemyRoamPoints" unique_id=1081345329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.908646, -1.9073486e-06, -23.064749)
+
+[node name="Marker3D19" type="Marker3D" parent="EnemyRoamPoints" unique_id=2129552910]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.69572, -1.9073486e-06, -17.473345)
+
+[node name="Marker3D20" type="Marker3D" parent="EnemyRoamPoints" unique_id=692166067]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.910843, -1.9073486e-06, -13.649099)
+
+[node name="Marker3D21" type="Marker3D" parent="EnemyRoamPoints" unique_id=896890777]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.627882, -9.536743e-07, -2.6069298)
+
+[node name="Marker3D22" type="Marker3D" parent="EnemyRoamPoints" unique_id=1634143136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.997524, -9.536743e-07, 10.803586)
+
+[node name="Marker3D23" type="Marker3D" parent="EnemyRoamPoints" unique_id=41793808]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.926764, -9.536743e-07, 5.500091)
+
+[node name="Marker3D24" type="Marker3D" parent="EnemyRoamPoints" unique_id=131032244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.98207, -9.536743e-07, 15.47377)
+
+[node name="Marker3D25" type="Marker3D" parent="EnemyRoamPoints" unique_id=708608592]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.13998, -9.536743e-07, 24.258545)
+
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]
+
+[node name="MeleeEnemy" parent="." unique_id=842654904 node_paths=PackedStringArray("patrolPoints") instance=ExtResource("4_iufkg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3832942, 0.29661563, 4.370463)
+patrolPoints = [NodePath("../EnemyRoamPoints/Marker3D"), NodePath("../EnemyRoamPoints/Marker3D2"), NodePath("../EnemyRoamPoints/Marker3D3"), NodePath("../EnemyRoamPoints/Marker3D4"), NodePath("../EnemyRoamPoints/Marker3D5"), NodePath("../EnemyRoamPoints/Marker3D6"), NodePath("../EnemyRoamPoints/Marker3D7"), NodePath("../EnemyRoamPoints/Marker3D8"), NodePath("../EnemyRoamPoints/Marker3D9"), NodePath("../EnemyRoamPoints/Marker3D10"), NodePath("../EnemyRoamPoints/Marker3D11"), NodePath("../EnemyRoamPoints/Marker3D12"), NodePath("../EnemyRoamPoints/Marker3D13"), NodePath("../EnemyRoamPoints/Marker3D26"), NodePath("../EnemyRoamPoints/Marker3D27"), NodePath("../EnemyRoamPoints/Marker3D14"), NodePath("../EnemyRoamPoints/Marker3D15"), NodePath("../EnemyRoamPoints/Marker3D16"), NodePath("../EnemyRoamPoints/Marker3D17"), NodePath("../EnemyRoamPoints/Marker3D18"), NodePath("../EnemyRoamPoints/Marker3D19"), NodePath("../EnemyRoamPoints/Marker3D20"), NodePath("../EnemyRoamPoints/Marker3D21"), NodePath("../EnemyRoamPoints/Marker3D22"), NodePath("../EnemyRoamPoints/Marker3D23"), NodePath("../EnemyRoamPoints/Marker3D24"), NodePath("../EnemyRoamPoints/Marker3D25")]
