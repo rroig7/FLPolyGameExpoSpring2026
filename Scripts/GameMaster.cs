@@ -105,6 +105,7 @@ public partial class GameMaster : Node
 
 		//I don't think we ever "disconnect" from the lobby system
 		LobbyStreamlined.Instance.DisconnectFromLobbySystem();
+		GetTree().Quit();
 	}
 
 	void SpawnBoss()
@@ -149,6 +150,7 @@ public partial class GameMaster : Node
 
 	public void PlayerEliminated()
 	{
+		if(!GenericCore.Instance.IsServer) return;
 		if(++Eliminations == Players.Count-1) GameEnd();
 	}
 }

@@ -74,9 +74,9 @@ public partial class SnowBullet : CharacterBody3D
 		Node collider = collision.GetCollider() as Node;
 		GD.Print($"SnowBullet: hit something: {(collider as Node)?.Name ?? "unknown"}, type={collider?.GetType().Name}");
 
-		if (collider is Node hitNode && hitNode.IsInGroup("enemies"))
+		if (collider is MeleeEnemy enemy)
 		{
-			hitNode.Call("OnHitByBullet");
+			enemy.OnHitByBullet(ShooterId);
 		}
 		else if (collider is Player player)
 		{

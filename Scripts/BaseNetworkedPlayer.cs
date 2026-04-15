@@ -4,7 +4,7 @@ using System;
 public partial class BaseNetworkedPlayer : CharacterBody3D
 {
 	[Export] protected AnimationPlayer Animator;
-	[Export] protected NetID MyId;
+	[Export] public NetID MyId {get; private set;}
 	[Export] protected float baseSpeed;
 
 	// How far the client can drift from the server position before a

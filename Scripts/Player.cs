@@ -474,7 +474,7 @@ public partial class Player : BaseNetworkedPlayer
 		var query = new PhysicsShapeQueryParameters3D();
 		query.Shape        = shape;
 		query.Transform    = new Transform3D(Basis.Identity, center);
-		query.CollisionMask = 1 << (3 - 1);
+		query.CollisionMask = 1 << (3 - 1) | 1 << (5 - 1);
 		query.Exclude      = new Godot.Collections.Array<Rid> { GetRid() };
 
 		var results = spaceState.IntersectShape(query);
@@ -487,8 +487,11 @@ public partial class Player : BaseNetworkedPlayer
 
 			if (collider is Node hitNode)
 			{
-				if (hitNode.IsInGroup("enemies"))
-					hitNode.Call("OnHitByBullet");
+				if (hitNode is MeleeEnemy enemy)
+				{
+					enemy.Die();
+					XP += enemy.XP_Value;					
+				}
 				else if (hitNode is Player hitPlayer)
 				{
 					GD.Print($"ProcessUltimate: found player {hitPlayer.Name}, OwnerId={hitPlayer.MyId.OwnerId}, myOwnerId={MyId.OwnerId}");

@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://db7ayul814eso" path="res://Scripts/CameraFollow.cs" id="3_8k7wh"]
 [ext_resource type="Script" uid="uid://bmv65ueb31brc" path="res://Scripts/GlobalTimers.cs" id="4_0f5h7"]
-[ext_resource type="PackedScene" uid="uid://5nuoosjopxg3" path="res://Scenes/MeleeEnemy.tscn" id="4_iufkg"]
 [ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="5_0f5h7"]
 [ext_resource type="Script" uid="uid://c6ua4gj4ih8nn" path="res://Scripts/NetworkCore/SpawnEgg.cs" id="5_qsjrb"]
 
@@ -102,11 +101,37 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.13998, -9.536743e-07, 24.
 
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("5_0f5h7")]
 
-[node name="MeleeEnemy" parent="." unique_id=842654904 node_paths=PackedStringArray("patrolPoints") instance=ExtResource("4_iufkg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3832942, 0.29661563, 4.370463)
-patrolPoints = [NodePath("../EnemyRoamPoints/Marker3D"), NodePath("../EnemyRoamPoints/Marker3D2"), NodePath("../EnemyRoamPoints/Marker3D3"), NodePath("../EnemyRoamPoints/Marker3D4"), NodePath("../EnemyRoamPoints/Marker3D5"), NodePath("../EnemyRoamPoints/Marker3D6"), NodePath("../EnemyRoamPoints/Marker3D7"), NodePath("../EnemyRoamPoints/Marker3D8"), NodePath("../EnemyRoamPoints/Marker3D9"), NodePath("../EnemyRoamPoints/Marker3D10"), NodePath("../EnemyRoamPoints/Marker3D11"), NodePath("../EnemyRoamPoints/Marker3D12"), NodePath("../EnemyRoamPoints/Marker3D13"), NodePath("../EnemyRoamPoints/Marker3D26"), NodePath("../EnemyRoamPoints/Marker3D27"), NodePath("../EnemyRoamPoints/Marker3D14"), NodePath("../EnemyRoamPoints/Marker3D15"), NodePath("../EnemyRoamPoints/Marker3D16"), NodePath("../EnemyRoamPoints/Marker3D17"), NodePath("../EnemyRoamPoints/Marker3D18"), NodePath("../EnemyRoamPoints/Marker3D19"), NodePath("../EnemyRoamPoints/Marker3D20"), NodePath("../EnemyRoamPoints/Marker3D21"), NodePath("../EnemyRoamPoints/Marker3D22"), NodePath("../EnemyRoamPoints/Marker3D23"), NodePath("../EnemyRoamPoints/Marker3D24"), NodePath("../EnemyRoamPoints/Marker3D25")]
-
 [node name="Spawn Egg" type="Node3D" parent="." unique_id=1876714026]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3994732, 0.29654598, 4.3441625)
 script = ExtResource("5_qsjrb")
 SpawnIndex = 2
+Respawn = true
+TimeToRespawn = 3.0
+
+[node name="Spawn Egg2" type="Node3D" parent="." unique_id=1776652499]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.066928506, 0.29654598, -0.2588277)
+script = ExtResource("5_qsjrb")
+SpawnIndex = 2
+Respawn = true
+TimeToRespawn = 3.0
+
+[node name="Spawn Egg3" type="Node3D" parent="." unique_id=1353599746]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.80646, 0.29654598, -3.030737)
+script = ExtResource("5_qsjrb")
+SpawnIndex = 2
+Respawn = true
+TimeToRespawn = 3.0
+
+[node name="Spawn Egg4" type="Node3D" parent="." unique_id=685116704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.405656, 0.29654598, -1.754508)
+script = ExtResource("5_qsjrb")
+SpawnIndex = 2
+Respawn = true
+TimeToRespawn = 3.0
+
+[node name="Spawn Egg5" type="Node3D" parent="." unique_id=179562190]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6476741, 0.29654598, 3.8417778)
+script = ExtResource("5_qsjrb")
+SpawnIndex = 2
+Respawn = true
+TimeToRespawn = 3.0

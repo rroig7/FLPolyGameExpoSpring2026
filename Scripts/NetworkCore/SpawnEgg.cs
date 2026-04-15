@@ -40,7 +40,7 @@ public partial class SpawnEgg : Node3D
 	{
 		Spawn.TreeExited -= RespawnObject;
 		await ToSignal(GetTree().CreateTimer(TimeToRespawn), Timer.SignalName.Timeout);
-		SpawnObject();
+		if(!GameMaster.SuddenDeath) SpawnObject();
 	}
 
 }

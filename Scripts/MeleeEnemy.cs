@@ -18,6 +18,7 @@ public partial class MeleeEnemy : CharacterBody3D
 	
 	[Export] public float MaxHp = 100f;
 	[Export] public float CurrentHp = 100f;
+	[Export] public int XP_Value = 10;
 
 	private float _attackTimer = 0f;
 
@@ -55,6 +56,7 @@ public partial class MeleeEnemy : CharacterBody3D
 			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
 
 		ChoosePatrolPoint();
+		GameMaster.Instance.SuddenDeathTrigger += Die;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -237,7 +239,7 @@ public partial class MeleeEnemy : CharacterBody3D
 	}
 
 // Replace your existing OnHitByBullet with this:
-	public void OnHitByBullet()
+	public void OnHitByBullet(int id)
 	{
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDying) return;
@@ -247,10 +249,16 @@ public partial class MeleeEnemy : CharacterBody3D
 
 		if (CurrentHp > 0f) return;
 
+		var Players = GetTree().GetNodesInGroup("players").ToArray().Cast<Player>();
+
+		var player = Players.First(p => p.MyId.OwnerId == id);
+		player.XP += XP_Value;
+		GD.Print($"{player.Name} gained {XP_Value} XP, total XP={player.XP}");
+
 		Die();
 	}
 	
-	private void Die()
+	public  void Die()
 	{
 		if (_isDying) return;
 		_isDying = true;
