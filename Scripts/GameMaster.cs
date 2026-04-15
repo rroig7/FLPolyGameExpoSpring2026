@@ -46,15 +46,34 @@ public partial class GameMaster : Node
 	{
 		while(!GenericCore.Instance.IsGenericCoreConnected) 
 			await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
+
+		GenericCore.Instance.ClientDisconnected += PlayerDC;
 		
 		if(Instance != this && Instance != null) { QueueFree(); return; }
 		Instance = this;
+	}
+
+	void PlayerDC(long id)
+	{
+		var npm = Players.First(p => p.MyNetID.OwnerId == id);
+		Players.Remove(npm);
+		GD.PushError($"Player {id} disconnected. Remaining players: {Players.Count}");
+
+		if(GameActive)
+		{
+			PlayerEliminated();
+		}
+		else
+		{
+			PlayerReady();
+		}
 	}
 	
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	public async void GameStart()
 	{
 		EmitSignal(SignalName.GameStartTrigger);
+		GameActive = true;
 
 		if(!GenericCore.Instance.IsServer) return;
 
@@ -76,7 +95,6 @@ public partial class GameMaster : Node
 		
 
 		GD.PushWarning("Game Started");
-		GameActive = true;
 	}
 
 	void RemoveBase(Base b)
@@ -90,10 +108,13 @@ public partial class GameMaster : Node
 		GenericCore.Instance.DisconnectFromGame();
 	}
 
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	async void GameEnd()
 	{
 		GameActive = false;
 		EmitSignal(SignalName.GameEndTrigger);
+
+		if(!GenericCore.Instance.IsServer) return;
 
 		//Display end game screen across all clients
 
@@ -151,6 +172,6 @@ public partial class GameMaster : Node
 	public void PlayerEliminated()
 	{
 		if(!GenericCore.Instance.IsServer) return;
-		if(++Eliminations == Players.Count-1) GameEnd();
+		if(++Eliminations >= Players.Count-1) Rpc(MethodName.GameEnd);
 	}
 }

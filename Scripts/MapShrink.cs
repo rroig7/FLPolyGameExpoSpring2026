@@ -37,7 +37,7 @@ public partial class MapShrink : Node
 		var curTime = 0f;
 		var MaxTime = ShrinkTime;
 
-		while(curTime < MaxTime)
+		while(curTime < MaxTime && GameMaster.GameActive)
 		{
 			curSize = Mathf.Lerp(maxSize, minSize, curTime/MaxTime);
 			GD.Print("Shrinking: " + curSize);

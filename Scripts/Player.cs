@@ -41,6 +41,7 @@ public partial class Player : BaseNetworkedPlayer
 	private int _xp = 0;
 	private bool _isDead = false;
 	public Base PlayerBase;
+	public bool inBase = true;
 
 	// --- Dash settings ---
 	[ExportGroup("Dash Settings")]
@@ -87,6 +88,7 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] TextureRect DashIcon;
 	[Export] Label DashCDLabel;
 	[Export] Label RoundTimer;
+	[Export] Control UpgradeUI;
 
 	
 	// --- Enemy Knockback Settings ---
@@ -108,6 +110,7 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		GD.Print($"Player: SlowStart called. IsLocal={MyId.IsLocal}, IsServer={GenericCore.Instance.IsServer}");
 		if (!MyId.IsLocal) return;
+		
 		TryAssignCamera();
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 
@@ -228,7 +231,7 @@ public partial class Player : BaseNetworkedPlayer
 
 	public override void LocalProcess(float delta)
 	{
-		if (_isDead) return;
+		if (_isDead || !GameMaster.GameActive) return;
 
 		if (_dashCooldownTimer > 0f)
 			_dashCooldownTimer -= delta;
@@ -336,6 +339,18 @@ public partial class Player : BaseNetworkedPlayer
 			if (_knockbackVelocity.Length() < 0.1f)
 				_knockbackVelocity = Vector3.Zero;
 		}
+	}
+
+	public void EnteredBase()
+	{
+		inBase = true;
+		//Show the UI prompt to open menu
+	}
+
+	public void ExitBase()
+	{
+		inBase = false;
+		//Hide the UI prompt
 	}
 
 	// -------------------------------------------------------
@@ -569,8 +584,7 @@ public partial class Player : BaseNetworkedPlayer
 	/// </summary>
 	public void TakeDamage(float amount)
 	{
-		if (!GenericCore.Instance.IsServer) return;
-		if (_isDead) return;
+		if (!GenericCore.Instance.IsServer || _isDead || inBase) return;
 
 		CurrentHp = Mathf.Max(CurrentHp - amount, 0f);
 		GD.Print($"{Name} took {amount} damage, HP={CurrentHp}/{MaxHp}");

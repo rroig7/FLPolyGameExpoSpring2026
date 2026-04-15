@@ -8,6 +8,7 @@ public partial class Base : Node
 	[Export] public NetID MyID {get; private set;}
 	[Export] int currentHP;
 	[Export] public Node3D Spawnpoint {get; private set;}
+	[Export] Area3D Inside;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -16,6 +17,8 @@ public partial class Base : Node
 		{
 			currentHP = MaxHp;
 			GameMaster.Instance.SuddenDeathTrigger += BaseDestroyed;
+			Inside.BodyEntered += BaseEntered;
+			Inside.BodyExited += BaseExited;
 		}
 	}
 	
@@ -39,6 +42,32 @@ public partial class Base : Node
 	void SelfDestruct()
 	{
 		GetParent().QueueFree();
+	}
+
+	void BaseEntered(Node body)
+	{
+		if(body is Player player)
+		{
+			if(player.MyId.OwnerId == MyID.OwnerId)
+			{
+				player.EnteredBase();
+			}
+			else
+			{
+				var dir = Spawnpoint.GlobalPosition.DirectionTo(player.GlobalPosition);
+				dir.Y = 0;
+				player.Velocity = Vector3.Zero;
+				player.ApplyKnockback(dir * 10);
+			}
+		}
+	}
+
+	void BaseExited(Node body)
+	{
+		if(body is Player player && player.MyId.OwnerId == MyID.OwnerId)
+		{
+			player.ExitBase();
+		}
 	}
 
 }
