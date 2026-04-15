@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 
 [GlobalClass]
-public partial class SpawnEgg : Node2D
+public partial class SpawnEgg : Node3D
 {
 	[Export] NetworkCore MyNetworkCore;
 	[Export] int SpawnIndex;
@@ -32,7 +32,7 @@ public partial class SpawnEgg : Node2D
 	void SpawnObject()
 	{
 		GD.PushWarning("Spawning Enemy");
-		Spawn = MyNetworkCore.NetCreateObject(SpawnIndex, new(GlobalPosition.X, GlobalPosition.Y, 0), Quaternion.Identity);
+		Spawn = MyNetworkCore.NetCreateObject(SpawnIndex, new(GlobalPosition.X, GlobalPosition.Y, GlobalPosition.Z), Quaternion.Identity);
 		if(Respawn) Spawn.TreeExited += RespawnObject;
 	}
 

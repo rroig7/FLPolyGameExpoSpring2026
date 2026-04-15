@@ -35,6 +35,8 @@ radius = 0.2939453
 height = 2.126007
 
 [node name="MeleeEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "patrolPoints") groups=["enemies"]]
+collision_layer = 16
+collision_mask = 15
 wall_min_slide_angle = 0.34906584
 floor_max_angle = 1.0471976
 script = ExtResource("1_1blns")
@@ -53,7 +55,7 @@ script = ExtResource("2_mjdfb")
 [node name="Sketchfab_Scene" parent="." unique_id=1995295348 instance=ExtResource("3_kjirb")]
 transform = Transform3D(-4.371139e-06, 0, 100, 0, 100, 0, -100, 0, -4.371139e-06, 0, 0, 0)
 
-[node name="Skeleton3D" parent="Sketchfab_Scene/Sketchfab_model/Pinnacarid_fbx/Object_2/RootNode/Pinnacarid/Object_5" parent_id_path=PackedInt32Array(1995295348, 1994405195) index="0" unique_id=1646536100]
+[node name="Skeleton3D" parent="Sketchfab_Scene/Sketchfab_model/Pinnacarid_fbx/Object_2/RootNode/Pinnacarid/Object_5" parent_id_path=PackedInt32Array(1995295348, 51909239) index="0" unique_id=673877576]
 bones/2/position = Vector3(-0.0026506723, 0.0010570586, 0.1994707)
 bones/2/rotation = Quaternion(-0.028804004, 0.7065323, -0.028773809, 0.7065087)
 bones/3/position = Vector3(-0.11843887, -6.8238005e-06, 2.7283775e-05)

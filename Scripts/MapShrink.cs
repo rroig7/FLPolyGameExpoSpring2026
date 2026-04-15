@@ -27,7 +27,7 @@ public partial class MapShrink : Node
 	public override void _Ready()
 	{
 		GameMaster.Instance.SuddenDeathTrigger += Shrink;
-		curSize = maxSize = FloorCollider.Radius;
+		_curSize = maxSize = FloorCollider.Radius;
 
 		BodyDrop.BodyExited += DeleteObj;
 	}

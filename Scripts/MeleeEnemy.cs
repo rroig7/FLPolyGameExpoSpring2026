@@ -47,7 +47,7 @@ public partial class MeleeEnemy : CharacterBody3D
 
 		if (patrolPoints == null || patrolPoints.Length == 0)
 		{
-			var pointParent = GetTree().CurrentScene.GetNode("EnemyNavPoints");
+			var pointParent = GetTree().GetFirstNodeInGroup("Patrol");
 			patrolPoints = pointParent.GetChildren().OfType<Marker3D>().ToArray();
 		}
 
@@ -182,7 +182,7 @@ public partial class MeleeEnemy : CharacterBody3D
 
 		foreach (Player player in GetTree().GetNodesInGroup("players"))
 		{
-			GD.Print("Player: " + player.Name);
+			//GD.Print("Player: " + player.Name);
 			float dist = (player.GlobalPosition - GlobalPosition).Length();
 			if (dist <= closestDist)
 			{

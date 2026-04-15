@@ -15,6 +15,8 @@ font_size = 64
 
 [node name="TestGameRoot" type="Node" unique_id=1127935270 node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_ul1ws")
+PublicIP = "127.0.0.1"
+PrivateIP = "127.0.0.1"
 MainNetworkCore = NodePath("Main Spawner")
 _portMaximum = 7010
 _portMinimum = 7000
@@ -24,6 +26,7 @@ _maxConnections = 4
 
 [node name="GameMaster" type="Node" parent="." unique_id=1902878242]
 script = ExtResource("2_bousw")
+minPlayerCount = 1
 TotalRoundLength = 1.0
 BossSpawn = 0.2
 
@@ -134,7 +137,7 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
-_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66")
+_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3")
 spawn_path = NodePath("../Level")
 script = ExtResource("3_5ftxa")
 

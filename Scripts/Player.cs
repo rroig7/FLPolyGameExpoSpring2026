@@ -324,7 +324,7 @@ public partial class Player : BaseNetworkedPlayer
 			}
 		}
 
-		if(GameMaster.GameActive && !GameMaster.SuddenDeath)
+		if(GameMaster.GameActive && !GameMaster.SuddenDeath && IsInstanceValid(GameMaster.Instance.RoundTimer))
 			Rpc(MethodName.UpdateRoundTimer, MathF.Round((float)GameMaster.Instance.RoundTimer.TimeLeft));
 		
 		// Add this inside your existing _PhysicsProcess, before MoveAndSlide()
