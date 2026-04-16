@@ -341,7 +341,7 @@ shape = SubResource("ConcavePolygonShape3D_cr6v8")
 [node name="IceBlocks" type="Node" parent="NavigationRegion3D" unique_id=1506276995]
 
 [node name="IceBlock01_" parent="NavigationRegion3D/IceBlocks" unique_id=137161104 instance=ExtResource("4_lohlh")]
-transform = Transform3D(4.248, 0, 0, 0, 6.092, 0, 0, 0, 2.27, 53.81912, 0, -5.4335327)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 55.944256, 0.2548399, -6.641667)
 
 [node name="IceBlock01_2" parent="NavigationRegion3D/IceBlocks" unique_id=1264567019 instance=ExtResource("4_lohlh")]
 transform = Transform3D(1.894415, 0, -2.0320134, 0, 3.852, 0, 3.8044305, 0, 1.0118405, 54.174988, 1.7195833, 9.645199)
@@ -362,7 +362,7 @@ transform = Transform3D(6.292, 0, -1.6908162e-07, 0, 4.194, 0, 3.5700052e-07, 0,
 transform = Transform3D(3.8251789, 0, 1.1974859, 0, 1.756, 0, -1.6853505, 0, 2.7178903, -6.42424, 11.177109, 45.0138)
 
 [node name="IceBlock01_7" parent="NavigationRegion3D/IceBlocks" unique_id=98886842 instance=ExtResource("4_lohlh")]
-transform = Transform3D(4.0510926, 0, -0.771281, 0, 7.472, 0, 1.0854874, 0, 2.878459, -25.232897, 3.482997, 43.310143)
+transform = Transform3D(4.829629, 0, -1.2940956, 0, 5, 0, 1.2940956, 0, 4.829629, -23.801645, 5.2980757, 42.01354)
 
 [node name="IceBlock01_24" parent="NavigationRegion3D/IceBlocks" unique_id=771603774 instance=ExtResource("4_lohlh")]
 transform = Transform3D(4.024047, 0, -0.76610464, 0, 1.555, 0, 1.0782405, 0, 2.8591404, -28.229446, 15.821285, 33.908283)
@@ -470,7 +470,7 @@ transform = Transform3D(1.5029951, 0, 0.5870779, 0, 1.473, 0, -0.5218106, 0, 1.6
 transform = Transform3D(1.5897236, 0.058992345, -0.00017055553, -0.06327059, 1.4610575, -0.21604922, -0.007540279, 0.17765094, 1.7769139, 4.9442215, 2.159445, -14.467947)
 
 [node name="IceBlock02_10" parent="NavigationRegion3D/IceBlocks" unique_id=450034496 instance=ExtResource("11_f43ej")]
-transform = Transform3D(-1.0417526, 0, -0.35141656, 0, 3.737, 0, 0.494126, 0, -0.74088216, 5.7076573, 0, -16.81136)
+transform = Transform3D(-1.1745692, 0, -0.55712384, 0, 1.3, 0, 0.55712384, 0, -1.1745692, 5.72255, 1.7118866, -16.341028)
 
 [node name="IceBlock02_2" parent="NavigationRegion3D/IceBlocks" unique_id=138961717 instance=ExtResource("11_f43ej")]
 transform = Transform3D(2.4, 0, 0, 0, 3.7799997, 0, 0, 0, 2.8799999, -3, -3, -13)
