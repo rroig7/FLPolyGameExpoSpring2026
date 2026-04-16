@@ -69,7 +69,6 @@ texture = ExtResource("4_5ftxa")
 expand_mode = 1
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Lobby UI" unique_id=1725437401]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
