@@ -93,7 +93,6 @@ public partial class GameMaster : Node
 			else {  RemoveBase(Bases.First(p => p.GetParent().Name == $"Igloo{i+1}") as Base); }
 		}
 		
-
 		GD.PushWarning("Game Started");
 	}
 
