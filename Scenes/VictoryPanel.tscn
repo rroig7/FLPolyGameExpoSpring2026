@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://dy75bc2cwvbfp"]
+
+[ext_resource type="FontFile" uid="uid://cjhmlf66vdsar" path="res://Assets/UI Images/Amonk Outline.ttf" id="1_i22jn"]
+[ext_resource type="Texture2D" uid="uid://tbfwxwumpemj" path="res://Assets/UI Images/LongSnow.png" id="2_y2eyb"]
+[ext_resource type="Texture2D" uid="uid://cmgb6433d4wtt" path="res://Assets/UI Images/CornerSnow.png" id="3_f08lg"]
+[ext_resource type="Texture2D" uid="uid://dvqwh317eacq7" path="res://Assets/UI Images/King.png" id="4_aty6h"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ooxr8"]
+bg_color = Color(4.3317675e-07, 0.5082553, 0.5460221, 1)
+border_width_left = 25
+border_width_top = 25
+border_width_right = 25
+border_width_bottom = 25
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhetc"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 3
+
+[node name="Control" type="Control" unique_id=1671002876]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="." unique_id=176278379]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_right = 256.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ooxr8")
+
+[node name="Winner Text" type="Label" parent="Panel" unique_id=907215566]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -192.0
+offset_top = 12.0
+offset_right = 196.0
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 15
+theme_override_fonts/font = ExtResource("1_i22jn")
+theme_override_font_sizes/font_size = 40
+text = "RULES THE ICE !!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Player Name" type="Label" parent="Panel" unique_id=664716354]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -177.5
+offset_top = -44.0
+offset_right = 177.5
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 0)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 15
+theme_override_fonts/font = ExtResource("1_i22jn")
+theme_override_font_sizes/font_size = 40
+text = "ARIEL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="Panel" unique_id=1188229078]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.125
+anchor_top = 0.83950615
+anchor_right = 0.875
+anchor_bottom = 0.9382716
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_i22jn")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_uhetc")
+text = "BACK TO MAIN"
+metadata/_edit_use_anchors_ = true
+
+[node name="Snow3" type="TextureRect" parent="Panel" unique_id=326146608]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -88.0
+offset_right = 8.0
+offset_bottom = 168.0
+grow_horizontal = 2
+texture = ExtResource("2_y2eyb")
+expand_mode = 1
+
+[node name="Snow" type="TextureRect" parent="Panel" unique_id=1986034630]
+layout_mode = 1
+offset_left = -48.0
+offset_top = -16.0
+offset_right = 144.0
+offset_bottom = 176.0
+texture = ExtResource("3_f08lg")
+expand_mode = 1
+
+[node name="Snow2" type="TextureRect" parent="Panel" unique_id=511965413]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 64.0
+offset_top = -16.0
+offset_right = 256.0
+offset_bottom = 176.0
+grow_horizontal = 0
+scale = Vector2(-1.1600049, 1)
+texture = ExtResource("3_f08lg")
+expand_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=1733566399]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -96.0
+offset_top = 64.0
+offset_right = 96.0
+offset_bottom = 256.0
+grow_horizontal = 2
+texture = ExtResource("4_aty6h")
+expand_mode = 1

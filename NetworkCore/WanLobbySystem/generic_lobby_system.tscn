@@ -2,7 +2,11 @@
 
 [ext_resource type="Script" uid="uid://buq7bi58l3fu1" path="res://NetworkCore/WanLobbySystem/BetterLobby/LobbyStreamlined.cs" id="1_nacce"]
 [ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="2_nacce"]
+[ext_resource type="FontFile" uid="uid://m58jjc3281g1" path="res://Assets/UI Images/Amonk Ice-SVG.ttf" id="2_p6o7m"]
 [ext_resource type="PackedScene" uid="uid://bhaj04sfwyyrv" path="res://Scenes/TestGameRoot.tscn" id="3_nacce"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dijh2"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="AbsoluteRoot" type="Node" unique_id=1695034636]
 
@@ -26,7 +30,7 @@ alignment = 1
 [node name="ColorRect" type="ColorRect" parent="GenericLobbySystem/HBoxContainer" unique_id=700996078]
 layout_mode = 2
 size_flags_horizontal = 3
-color = Color(0, 0.6, 0, 1)
+color = Color(0.14117648, 0.5568628, 0.7921569, 0)
 
 [node name="MarginContainer" type="MarginContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect" unique_id=90489072]
 custom_minimum_size = Vector2(200, 200)
@@ -46,11 +50,14 @@ theme_override_constants/margin_bottom = 4
 
 [node name="LeftMenu" type="VBoxContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer" unique_id=511234590]
 layout_mode = 2
+theme_override_constants/separation = 30
 alignment = 1
 
 [node name="Label" type="Label" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu" unique_id=1187495790]
 layout_mode = 2
-text = "REALLY COOL LOBBY SYSTEM"
+theme_override_fonts/font = ExtResource("2_p6o7m")
+theme_override_font_sizes/font_size = 55
+text = "CREATE A GAME"
 horizontal_alignment = 1
 
 [node name="GameName" type="TextEdit" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu" unique_id=1199488657]
@@ -60,13 +67,14 @@ placeholder_text = "Enter Game Name"
 
 [node name="Button" type="Button" parent="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu" unique_id=1688881356]
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_dijh2")
 text = "Create Game"
 
 [node name="ColorRect2" type="ColorRect" parent="GenericLobbySystem/HBoxContainer" unique_id=1226690038]
 custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_horizontal = 3
-color = Color(0.03529412, 1, 0.050980393, 1)
+color = Color(0.05882353, 0.2509804, 0.39215687, 0.89411765)
 
 [node name="ActiveGames" type="MarginContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect2" unique_id=822375401]
 layout_mode = 1
@@ -84,6 +92,7 @@ theme_override_constants/margin_bottom = 4
 
 [node name="ActiveGames" type="VBoxContainer" parent="GenericLobbySystem/HBoxContainer/ColorRect2/ActiveGames" unique_id=1396015201]
 layout_mode = 2
+theme_override_constants/separation = 54
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="GenericLobbySystem/HBoxContainer/ColorRect2/ActiveGames/ActiveGames" unique_id=1281370961]
 _spawnable_scenes = PackedStringArray("uid://cs7s4kaurdy11")
@@ -92,6 +101,8 @@ script = ExtResource("2_nacce")
 SpawnInexZeroOnConnect = true
 
 [node name="TestGameRoot" parent="." unique_id=1127935270 instance=ExtResource("3_nacce")]
+_portMaximum = 7010
+_portMinimum = 7000
 
 [connection signal="pressed" from="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu/Button" to="GenericLobbySystem" method="CreatNewGameServer"]
 [connection signal="ServerDisconnected" from="TestGameRoot" to="TestGameRoot/CanvasLayer/Lobby UI" method="show"]

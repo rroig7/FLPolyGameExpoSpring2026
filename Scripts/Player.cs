@@ -19,7 +19,7 @@ public partial class Player : BaseNetworkedPlayer
 	public Vector3 SyncPosition
 	{
 		get => GlobalPosition;
-		set => OnServerPositionReceived(value);  // intercept the snap
+		set => OnServerPositionReceived(value);
 	}
 
 	// --- HP/XP Settings ---
@@ -38,12 +38,12 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] public float RespawnDelay = 3f;
 
 	private float _currentHp = 100f;
-	private int _xp = 0;
-	private bool _isDead = false;
+	private int   _xp        = 0;
+	private bool  _isDead    = false;
 	public Base PlayerBase;
 	public bool inBase = true;
 
-	// --- Dash settings ---
+	// --- Dash Settings ---
 	[ExportGroup("Dash Settings")]
 	[Export] float dashSpeed    = 15f;
 	[Export] float dashDuration = 0.10f;
@@ -53,18 +53,19 @@ public partial class Player : BaseNetworkedPlayer
 	float _dashDurationTimer = 0f;
 	bool  _isDashing         = false;
 
-	// --- Jump Settings
+	// --- Jump Settings ---
 	[ExportGroup("Jump Settings")]
 	[Export] public float JumpVelocity = 4.5f;
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	// --- Bullet Settings ---
 	[ExportGroup("Bullet Settings")]
-	[Export] public PackedScene SnowBulletScene;
 	[Export] public float BulletDamage = 20f;
-	[Export] public float FireRate = 0.3f;
-	[Export] public float shootTimer = 0f;
+	[Export] public float FireRate     = 0.3f;
+	[Export] public float shootTimer   = 0f;
 	[Export] public Node3D _muzzle;
+
+	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
 
 	private int _bulletCounter = 0;
 
@@ -75,10 +76,10 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] public float UltimateDamage   = 80f;
 	[Export] public Node3D UltimateIndicator;
 
-	private float _ultimateTimer   = 0f;
+	private float _ultimateTimer    = 0f;
 	private bool  _isAimingUltimate = false;
 
-	// --- HUD Settings ---
+	// --- HUD ---
 	[ExportGroup("HUD")]
 	[Export] CanvasLayer HUD;
 	[Export] ProgressBar HpBar;
@@ -90,14 +91,20 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] Label RoundTimer;
 	[Export] Control UpgradeUI;
 
-	
-	// --- Enemy Knockback Settings ---
+	// --- Internal state ---
 	private Vector3 _knockbackVelocity = Vector3.Zero;
+	private Vector3 _lastSentInput     = Vector3.Zero;
+	private Vector3 _serverLastInput   = Vector3.Zero;
+	private float   _lastSentYaw       = float.MaxValue;
+
+	// -------------------------------------------------------
+	//  Lifecycle
+	// -------------------------------------------------------
 
 	public override void _Ready()
 	{
 		base._Ready();
-		CurrentHp = MaxHp;
+		CurrentHp      = MaxHp;
 		_ultimateTimer = UltimateCooldown;
 
 		if (HUD != null)
@@ -110,7 +117,7 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		GD.Print($"Player: SlowStart called. IsLocal={MyId.IsLocal}, IsServer={GenericCore.Instance.IsServer}");
 		if (!MyId.IsLocal) return;
-		
+
 		TryAssignCamera();
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 
@@ -120,7 +127,6 @@ public partial class Player : BaseNetworkedPlayer
 		if (UltimateIndicator != null)
 			UltimateIndicator.Visible = false;
 
-		// Initialise HUD to current state
 		UpdateHpBar();
 		UpdateXpLabel();
 		UpdateUltimateHud();
@@ -142,10 +148,9 @@ public partial class Player : BaseNetworkedPlayer
 	public void SetCamera(Camera3D cam) => playerCam = cam as CameraFollow;
 
 	// -------------------------------------------------------
-	//  HUD Helpers  (local-only; all guard-checked)
+	//  HUD Helpers
 	// -------------------------------------------------------
 
-	/// <summary>Sets the HP bar fill and colour.</summary>
 	private void UpdateHpBar()
 	{
 		if (!isLocal || HpBar == null) return;
@@ -154,7 +159,6 @@ public partial class Player : BaseNetworkedPlayer
 		HpBar.Value    = CurrentHp;
 
 		float ratio = CurrentHp / MaxHp;
-
 		Color barColor;
 		if (ratio > 0.5f)
 			barColor = Colors.Green.Lerp(Colors.Yellow, 1f - ((ratio - 0.5f) * 2f));
@@ -166,21 +170,15 @@ public partial class Player : BaseNetworkedPlayer
 			fill.BgColor = barColor;
 	}
 
-	/// <summary>Refreshes the XP counter label.</summary>
 	private void UpdateXpLabel()
 	{
 		if (!isLocal || XpLabel == null) return;
 		XpLabel.Text = $"XP: {XP}";
 	}
 
-	/// <summary>
-	/// Updates the ultimate icon opacity and cooldown label every frame.
-	/// Call from LocalProcess so it stays in sync with _ultimateTimer.
-	/// </summary>
 	private void UpdateUltimateHud()
 	{
 		if (!isLocal) return;
-
 		bool onCooldown = _ultimateTimer > 0f;
 
 		if (UltIcon != null)
@@ -188,26 +186,14 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (UltCDLabel != null)
 		{
-			if (onCooldown)
-			{
-				UltCDLabel.Visible = true;
-				UltCDLabel.Text    = Mathf.CeilToInt(_ultimateTimer).ToString();
-			}
-			else
-			{
-				UltCDLabel.Visible = false;
-			}
+			UltCDLabel.Visible = onCooldown;
+			if (onCooldown) UltCDLabel.Text = Mathf.CeilToInt(_ultimateTimer).ToString();
 		}
 	}
 
-	/// <summary>
-	/// Updates the dash icon opacity and cooldown label every frame.
-	/// Call from LocalProcess so it stays in sync with _dashCooldownTimer.
-	/// </summary>
 	private void UpdateDashHud()
 	{
 		if (!isLocal) return;
-
 		bool onCooldown = _dashCooldownTimer > 0f;
 
 		if (DashIcon != null)
@@ -215,60 +201,53 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (DashCDLabel != null)
 		{
-			if (onCooldown)
-			{
-				DashCDLabel.Visible = true;
-				DashCDLabel.Text    = Mathf.CeilToInt(_dashCooldownTimer).ToString();
-			}
-			else
-			{
-				DashCDLabel.Visible = false;
-			}
+			DashCDLabel.Visible = onCooldown;
+			if (onCooldown) DashCDLabel.Text = Mathf.CeilToInt(_dashCooldownTimer).ToString();
 		}
 	}
 
+	// -------------------------------------------------------
+	//  Per-frame — client input collection
 	// -------------------------------------------------------
 
 	public override void LocalProcess(float delta)
 	{
 		if (_isDead || !GameMaster.GameActive) return;
 
-		if (_dashCooldownTimer > 0f)
-			_dashCooldownTimer -= delta;
+		if (_dashCooldownTimer > 0f) _dashCooldownTimer -= delta;
+		if (shootTimer > 0f)         shootTimer         -= delta;
+		if (_ultimateTimer > 0f)     _ultimateTimer     -= delta;
 
-		if (shootTimer > 0f)
-			shootTimer -= delta;
-
-		if (_ultimateTimer > 0f)
-			_ultimateTimer -= delta;
-
-		// --- Tick HUD every local frame ---
 		UpdateUltimateHud();
 		UpdateDashHud();
 
-		if (playerCam == null)
+		if (playerCam == null) { TryAssignCamera(); return; }
+
+		float  camYaw  = playerCam.GetFacingYaw();
+		var    input   = Input.GetVector("Left", "Right", "Forward", "Back");
+		var    inputVec = new Vector3(input.X, 0, input.Y);
+
+		bool inputChanged = inputVec != _lastSentInput;
+		bool yawChanged   = Mathf.Abs(camYaw - _lastSentYaw) > 0.001f;
+
+		if (inputChanged || yawChanged)
 		{
-			TryAssignCamera();
-			return;
+			_lastSentInput = inputVec;
+			_lastSentYaw   = camYaw;
+			RpcId(1, MethodName.ServerReceiveMovement, inputVec, camYaw);
 		}
-
-		float camYaw = playerCam.GetFacingYaw();
-		//Rpc(MethodName.ProcessMouseLook, camYaw);
-
-		var input = Input.GetVector("Left", "Right", "Forward", "Back");
-		Rpc(MethodName.ProcessInput, new Vector3(input.X, 0, input.Y), camYaw);
 
 		if (Input.IsActionJustPressed("Jump"))
-		{
-			Rpc(MethodName.ProcessJump);
-		}
+			RpcId(1, MethodName.ServerReceiveJump);
 
 		if (Input.IsActionJustPressed("Dash") && _dashCooldownTimer <= 0f && input != Vector2.Zero)
 		{
 			_dashCooldownTimer = dashCooldown;
-			Rpc(MethodName.ProcessDash);
+			_lastSentInput     = Vector3.Zero;
+			RpcId(1, MethodName.ServerReceiveDash);
 		}
 
+		// ── Ultimate aiming mode ──────────────────────────────
 		if (_isAimingUltimate)
 		{
 			UpdateUltimateIndicator();
@@ -278,7 +257,6 @@ public partial class Player : BaseNetworkedPlayer
 				GD.Print("Ultimate: confirm input received");
 				ConfirmUltimate();
 			}
-
 			if (Input.IsActionJustPressed("cancel_ability") ||
 				Input.IsActionJustPressed("ui_cancel"))
 				CancelUltimate();
@@ -292,7 +270,7 @@ public partial class Player : BaseNetworkedPlayer
 			Vector3 aimDir   = _muzzle.GlobalPosition.DirectionTo(aimPoint).Normalized();
 			if (aimDir == Vector3.Zero) aimDir = -_muzzle.GlobalTransform.Basis.Z;
 
-			Rpc(MethodName.ProcessBlicky, aimDir);
+			RpcId(1, MethodName.ServerReceiveFire, aimDir);
 			shootTimer = FireRate;
 		}
 
@@ -307,109 +285,97 @@ public partial class Player : BaseNetworkedPlayer
 		}
 	}
 
-	public override void AllProcess(float delta)
-	{
-		if (!IsOnFloor())
-		{
-			Velocity -= new Vector3(0, gravity * delta, 0);
-		}
-	}
+	// -------------------------------------------------------
+	//  Per-frame — server physics
+	// -------------------------------------------------------
 
 	public override void ServerProcess(float delta)
 	{
+		if (!IsOnFloor())
+			Velocity -= new Vector3(0, gravity * delta, 0);
+
 		if (_isDashing)
 		{
 			_dashDurationTimer -= delta;
 			if (_dashDurationTimer <= 0f)
 			{
 				_isDashing = false;
-				Velocity = Vector3.Zero;
+				if (_serverLastInput.LengthSquared() > 0)
+				{
+					Vector3 dir = (-Basis.Z * _serverLastInput.Z + -Basis.X * _serverLastInput.X).Normalized();
+					Velocity = new Vector3(dir.X * baseSpeed, Velocity.Y, dir.Z * baseSpeed);
+				}
+				else
+				{
+					Velocity = new Vector3(0, Velocity.Y, 0);
+				}
 			}
 		}
 
-		if(GameMaster.GameActive && !GameMaster.SuddenDeath && IsInstanceValid(GameMaster.Instance.RoundTimer))
-			Rpc(MethodName.UpdateRoundTimer, MathF.Round((float)GameMaster.Instance.RoundTimer.TimeLeft));
-		
-		// Add this inside your existing _PhysicsProcess, before MoveAndSlide()
+		if (GameMaster.GameActive && !GameMaster.SuddenDeath && IsInstanceValid(GameMaster.Instance.RoundTimer))
+			Rpc(MethodName.ClientSyncRoundTimer, MathF.Round((float)GameMaster.Instance.RoundTimer.TimeLeft));
+
 		if (_knockbackVelocity != Vector3.Zero)
 		{
-			Velocity += _knockbackVelocity;
-			_knockbackVelocity = _knockbackVelocity.Lerp(Vector3.Zero, 0.3f);
-
+			Velocity           += _knockbackVelocity;
+			_knockbackVelocity  = _knockbackVelocity.Lerp(Vector3.Zero, 0.3f);
 			if (_knockbackVelocity.Length() < 0.1f)
 				_knockbackVelocity = Vector3.Zero;
 		}
 	}
 
-	public void EnteredBase()
-	{
-		inBase = true;
-		//Show the UI prompt to open menu
-	}
-
-	public void ExitBase()
-	{
-		inBase = false;
-		//Hide the UI prompt
-	}
+	public void EnteredBase() => inBase = true;
+	public void ExitBase()    => inBase = false;
 
 	// -------------------------------------------------------
-	//  Remote Calls
+	//  Server-side RPC receivers (AnyPeer → server only)
 	// -------------------------------------------------------
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true,
-		 TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-	void ProcessMouseLook(float yaw)
-	{
-		Rotation = new Vector3(0, yaw, 0);
-	}
-
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, 
-		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void ProcessJump()
+	/// <summary>
+	/// Receives movement direction and camera yaw from the owning client.
+	/// Authoritative movement runs here on the server.
+	/// </summary>
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+	private void ServerReceiveMovement(Vector3 playerInput, float yaw)
 	{
 		if (!GenericCore.Instance.IsServer) return;
-		
-		if (IsOnFloor())
-		{
-			// Set the Y velocity without affecting horizontal momentum
-			Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
-		}
-	}
+		if (Multiplayer.GetRemoteSenderId() != MyId.OwnerId) return;
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true,
-		 TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
-	void ProcessInput(Vector3 playerInput, float yaw)
-	{
-		Rotation = new Vector3(0, yaw, 0);
+		Rotation         = new Vector3(0, yaw, 0);
+		_serverLastInput = playerInput;
 
-		if (!GenericCore.Instance.IsServer) return;
 		if (_isDashing) return;
 		if (_knockbackVelocity.Length() > 0.5f) return;
 
-		// Optimized to preserve Velocity.Y (the jump/gravity)
-		Vector3 nextVelocity = Velocity;
-		
 		if (playerInput.LengthSquared() > 0)
 		{
 			Vector3 dir = (-Basis.Z * playerInput.Z + -Basis.X * playerInput.X).Normalized();
-			nextVelocity.X = dir.X * baseSpeed;
-			nextVelocity.Z = dir.Z * baseSpeed;
+			Velocity = new Vector3(dir.X * baseSpeed, Velocity.Y, dir.Z * baseSpeed);
 		}
 		else
 		{
-			nextVelocity.X = 0;
-			nextVelocity.Z = 0;
+			Velocity = new Vector3(0, Velocity.Y, 0);
 		}
+	}
 
-		Velocity = nextVelocity;
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+	private void ServerReceiveJump()
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		if (Multiplayer.GetRemoteSenderId() != MyId.OwnerId) return;
+
+		if (IsOnFloor())
+			Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
 		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void ProcessDash()
+	private void ServerReceiveDash()
 	{
 		if (!GenericCore.Instance.IsServer) return;
+		if (Multiplayer.GetRemoteSenderId() != MyId.OwnerId) return;
 		if (_isDashing) return;
 
 		_isDashing         = true;
@@ -417,149 +383,103 @@ public partial class Player : BaseNetworkedPlayer
 		Velocity           = Basis.Z * dashSpeed;
 	}
 
-	/// <summary>
-	/// Received by the server from the shooting client.
-	/// Server validates the shot then broadcasts spawn data to all peers.
-	/// </summary>
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
-	TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void ProcessBlicky(Vector3 aimDir)
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ServerReceiveFire(Vector3 aimDir)
 	{
 		if (!GenericCore.Instance.IsServer) return;
+		if (Multiplayer.GetRemoteSenderId() != MyId.OwnerId) return;
 
-		int     bulletId = _bulletCounter++;
-		Vector3 spawnPos = _muzzle.GlobalPosition;
-
+		int      bulletId = _bulletCounter++;
+		Vector3  spawnPos = _muzzle.GlobalPosition;
 		Quaternion spawnRot = Transform3D.Identity
 			.LookingAt(-aimDir, Vector3.Up)
 			.Basis.GetRotationQuaternion();
 
-		Rpc(MethodName.SpawnBulletOnAllPeers, spawnPos, spawnRot, bulletId);
+		// Signal Level to spawn the bullet (server-side instantiation via NetworkCore).
+		EmitSignal(SignalName.BulletSpawnRequested, spawnPos, spawnRot, bulletId, (int)MyId.OwnerId);
 	}
 
-	/// <summary>
-	/// Runs on EVERY peer (Authority + CallLocal = true).
-	/// Spawns the bullet locally. Server instance gets IsAuthoritative = true;
-	/// clients get false so they only move visually.
-	///
-	/// SetMultiplayerAuthority(1) is called on the bullet so that the server
-	/// (peer 1) is allowed to call Rpc(DestroyOnClient) from the bullet node.
-	/// </summary>
-	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
-		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void SpawnBulletOnAllPeers(Vector3 spawnPos, Quaternion spawnRot, int bulletId)
-	{
-		if (SnowBulletScene == null)
-		{
-			GD.PushWarning("Player: SnowBulletScene is not assigned!");
-			return;
-		}
-
-		var bullet = SnowBulletScene.Instantiate<SnowBullet>();
-		bullet.IsAuthoritative = GenericCore.Instance.IsServer;
-		bullet.ShooterId       = (int)MyId.OwnerId;
-		bullet.BulletId        = bulletId;
-
-		// Authority must be the server (1) so the bullet's Rpc(DestroyOnClient)
-		// call is permitted — RpcMode.Authority means "only the authority may call this"
-		bullet.SetMultiplayerAuthority(1);
-
-		var t = Transform3D.Identity;
-		t.Origin = spawnPos;
-		t.Basis  = new Basis(spawnRot);
-		bullet.GlobalTransform = t;
-
-		GetTree().CurrentScene.AddChild(bullet);
-	}
-
-	/// <summary>
-	/// Client → Server. Server validates then broadcasts the effect to all peers.
-	/// </summary>
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
-		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void ProcessUltimate(Vector3 center)
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ServerReceiveUltimate(Vector3 center)
 	{
-		GD.Print($"ProcessUltimate: called, IsServer={GenericCore.Instance.IsServer}, center={center}");
+		GD.Print($"ServerReceiveUltimate: IsServer={GenericCore.Instance.IsServer}, center={center}");
 		if (!GenericCore.Instance.IsServer) return;
+		if (Multiplayer.GetRemoteSenderId() != MyId.OwnerId) return;
 
 		var spaceState = GetWorld3D().DirectSpaceState;
-		var shape = new SphereShape3D();
-		shape.Radius = UltimateRadius;
+		var shape = new SphereShape3D { Radius = UltimateRadius };
 
-		var query = new PhysicsShapeQueryParameters3D();
-		query.Shape        = shape;
-		query.Transform    = new Transform3D(Basis.Identity, center);
-		query.CollisionMask = 1 << (3 - 1) | 1 << (5 - 1);
-		query.Exclude      = new Godot.Collections.Array<Rid> { GetRid() };
+		var query = new PhysicsShapeQueryParameters3D
+		{
+			Shape         = shape,
+			Transform     = new Transform3D(Basis.Identity, center),
+			CollisionMask = 1 << (3 - 1) | 1 << (5 - 1),
+			Exclude       = new Godot.Collections.Array<Rid> { GetRid() }
+		};
 
 		var results = spaceState.IntersectShape(query);
-		GD.Print($"ProcessUltimate: found {results.Count} colliders in range");
+		GD.Print($"ServerReceiveUltimate: found {results.Count} colliders in range");
 
 		foreach (var hit in results)
 		{
 			var collider = ((Godot.Collections.Dictionary)hit)["collider"].As<GodotObject>();
-			GD.Print($"ProcessUltimate: collider={collider}, type={collider?.GetType().Name}, isPlayer={collider is Player}");
-
-			if (collider is Node hitNode)
+			if (collider is MeleeEnemy enemy)
 			{
-				if (hitNode is MeleeEnemy enemy)
-				{
-					enemy.Die();
-					XP += enemy.XP_Value;					
-				}
-				else if (hitNode is Player hitPlayer)
-				{
-					GD.Print($"ProcessUltimate: found player {hitPlayer.Name}, OwnerId={hitPlayer.MyId.OwnerId}, myOwnerId={MyId.OwnerId}");
-					if (hitPlayer.MyId.OwnerId != MyId.OwnerId)
-						hitPlayer.TakeDamage(UltimateDamage);
-					else
-						GD.Print("ProcessUltimate: skipping self");
-				}
+				enemy.Die();
+				XP += enemy.XP_Value;
+			}
+			else if (collider is Player hitPlayer && hitPlayer.MyId.OwnerId != MyId.OwnerId)
+			{
+				hitPlayer.TakeDamage(UltimateDamage);
 			}
 		}
 
-		Rpc(MethodName.PlayUltimateEffectOnClients, center);
+		Rpc(MethodName.ClientPlayUltimateEffect, center);
 	}
 
-	/// <summary>
-	/// Server → all clients. Trigger the particle effect at the confirmed position.
-	/// </summary>
-	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
-		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void PlayUltimateEffectOnClients(Vector3 center)
+	// -------------------------------------------------------
+	//  Authority → all clients RPCs
+	// -------------------------------------------------------
+
+	/// <summary>Broadcasts authoritative round-timer value to all clients.</summary>
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+	private void ClientSyncRoundTimer(float t)
 	{
-		// TODO: instantiate your explosion/impact particle scene here
+		if (!isLocal) return;
+		RoundTimer.Text = t < 0.1f ? "SUDDEN DEATH" : $"{t:F1}";
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientPlayUltimateEffect(Vector3 center)
+	{
 		GD.Print($"Ultimate effect at {center}");
+		// TODO: spawn visual/audio effect
 	}
 
-	/// <summary>
-	/// Server → all peers. Disables the player visually and blocks input.
-	/// </summary>
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
-		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void OnDiedOnAllPeers()
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientOnDied()
 	{
-		_isDead = true;
-		Visible = false; // hide the player model
+		_isDead  = true;
+		Visible  = false;
 
-		// Hide HUD on death (local player only)
 		if (isLocal && HUD != null)
 			HUD.Visible = false;
 	}
 
-	/// <summary>
-	/// Server → all peers. Re-enables the player at the spawn position.
-	/// </summary>
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
-		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void OnRespawnedOnAllPeers(Vector3 spawnPos)
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientOnRespawned(Vector3 spawnPos)
 	{
-		_isDead    = false;
-		CurrentHp  = MaxHp;
+		_isDead   = false;
+		CurrentHp = MaxHp;
 		ResetServerPosition(spawnPos);
-		Visible    = true;
+		Visible   = true;
 
-		// Restore HUD and refresh all values on respawn
 		if (isLocal)
 		{
 			if (HUD != null) HUD.Visible = true;
@@ -570,18 +490,10 @@ public partial class Player : BaseNetworkedPlayer
 		}
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
-	void UpdateRoundTimer(float t)
-	{
-		if(!isLocal) return;
+	// -------------------------------------------------------
+	//  Damage / Death / Respawn (server-authoritative)
+	// -------------------------------------------------------
 
-		RoundTimer.Text = $"{t:F1}";		
-		if(t < 0.1f) RoundTimer.Text = "SUDDEN DEATH";
-	}
-
-	/// <summary>
-	/// Called server-side only. Applies damage and handles death.
-	/// </summary>
 	public void TakeDamage(float amount)
 	{
 		if (!GenericCore.Instance.IsServer || _isDead || inBase) return;
@@ -589,8 +501,7 @@ public partial class Player : BaseNetworkedPlayer
 		CurrentHp = Mathf.Max(CurrentHp - amount, 0f);
 		GD.Print($"{Name} took {amount} damage, HP={CurrentHp}/{MaxHp}");
 
-		if (CurrentHp <= 0f)
-			Die();
+		if (CurrentHp <= 0f) Die();
 	}
 
 	private void Die()
@@ -599,11 +510,12 @@ public partial class Player : BaseNetworkedPlayer
 		_isDead = true;
 		GD.Print($"{Name} died");
 
-		Rpc(MethodName.OnDiedOnAllPeers);
+		Rpc(MethodName.ClientOnDied);
 
-		// Start respawn timer on the server if base is alive, otherwise player is eliminated
-		if(IsInstanceValid(PlayerBase)) GlobalTimers.Instance.OneShotTimer(RespawnDelay).Timeout += Respawn;
-		else GameMaster.Instance.PlayerEliminated();
+		if (IsInstanceValid(PlayerBase))
+			GlobalTimers.Instance.OneShotTimer(RespawnDelay).Timeout += Respawn;
+		else
+			GameMaster.Instance.PlayerEliminated();
 	}
 
 	private void Respawn()
@@ -611,40 +523,17 @@ public partial class Player : BaseNetworkedPlayer
 		if (!GenericCore.Instance.IsServer) return;
 
 		CurrentHp = MaxHp;
-		_isDead    = false;
+		_isDead   = false;
 
-		// Find a spawn point — looks for nodes in the SpawnPoints group
 		Vector3 spawnPos = PlayerBase.Spawnpoint.GlobalPosition;
 		GD.Print($"{Name} respawning at {spawnPos}");
 
-		Rpc(MethodName.OnRespawnedOnAllPeers, spawnPos);
+		Rpc(MethodName.ClientOnRespawned, spawnPos);
 	}
 
-	// --- Helper Functions ---
-
-	/// <summary>
-	/// Returns the world-space point the crosshair is aimed at.
-	/// Falls back to a point far ahead of the muzzle if nothing is hit.
-	/// </summary>
-	private Vector3 GetCrosshairAimPoint()
-	{
-		if (playerCam == null) return _muzzle.GlobalPosition + _muzzle.GlobalTransform.Basis.Z * 100f;
-
-		var viewport = GetViewport();
-		Vector2 screenCenter = viewport.GetVisibleRect().Size / 2f;
-
-		Vector3 rayOrigin = playerCam.ProjectRayOrigin(screenCenter);
-		Vector3 rayDir    = playerCam.ProjectRayNormal(screenCenter);
-		float   rayLength = 500f;
-		Vector3 rayEnd    = rayOrigin + rayDir * rayLength;
-
-		var spaceState = GetWorld3D().DirectSpaceState;
-		var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd, collisionMask: 0b11);
-		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
-
-		var result = spaceState.IntersectRay(query);
-		return result.Count > 0 ? result["position"].AsVector3() : rayEnd;
-	}
+	// -------------------------------------------------------
+	//  Ultimate helpers (local-only)
+	// -------------------------------------------------------
 
 	private void EnterUltimateAiming()
 	{
@@ -652,8 +541,7 @@ public partial class Player : BaseNetworkedPlayer
 		if (UltimateIndicator != null)
 		{
 			UltimateIndicator.Visible = true;
-			// Scale the indicator to match the configured radius
-			UltimateIndicator.Scale = Vector3.One * UltimateRadius;
+			UltimateIndicator.Scale   = Vector3.One * UltimateRadius;
 		}
 	}
 
@@ -667,52 +555,57 @@ public partial class Player : BaseNetworkedPlayer
 	private void ConfirmUltimate()
 	{
 		Vector3 aimPoint = GetGroundAimPoint();
-		CancelUltimate(); // hides indicator
-
+		CancelUltimate();
 		_ultimateTimer = UltimateCooldown;
-		Rpc(MethodName.ProcessUltimate, aimPoint);
+		RpcId(1, MethodName.ServerReceiveUltimate, aimPoint);
 	}
 
-	/// <summary>
-	/// Casts a ray from the camera to the ground plane only (layer 1),
-	/// so the indicator always lands on terrain rather than on characters.
-	/// </summary>
+	private void UpdateUltimateIndicator()
+	{
+		if (UltimateIndicator == null) return;
+		UltimateIndicator.GlobalPosition = GetGroundAimPoint() + Vector3.Up * 0.05f;
+	}
+
+	// -------------------------------------------------------
+	//  Raycasting helpers (local-only)
+	// -------------------------------------------------------
+
+	private Vector3 GetCrosshairAimPoint()
+	{
+		if (playerCam == null)
+			return _muzzle.GlobalPosition + _muzzle.GlobalTransform.Basis.Z * 100f;
+
+		var viewport     = GetViewport();
+		Vector2 center   = viewport.GetVisibleRect().Size / 2f;
+		Vector3 rayOrigin = playerCam.ProjectRayOrigin(center);
+		Vector3 rayEnd    = rayOrigin + playerCam.ProjectRayNormal(center) * 500f;
+
+		var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd, collisionMask: 0b11);
+		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
+
+		var result = GetWorld3D().DirectSpaceState.IntersectRay(query);
+		return result.Count > 0 ? result["position"].AsVector3() : rayEnd;
+	}
+
 	private Vector3 GetGroundAimPoint()
 	{
 		if (playerCam == null) return GlobalPosition;
 
-		var viewport = GetViewport();
-		Vector2 screenCenter = viewport.GetVisibleRect().Size / 2f;
+		var viewport     = GetViewport();
+		Vector2 center   = viewport.GetVisibleRect().Size / 2f;
+		Vector3 rayOrigin = playerCam.ProjectRayOrigin(center);
+		Vector3 rayEnd    = rayOrigin + playerCam.ProjectRayNormal(center) * 500f;
 
-		Vector3 rayOrigin = playerCam.ProjectRayOrigin(screenCenter);
-		Vector3 rayDir    = playerCam.ProjectRayNormal(screenCenter);
-		Vector3 rayEnd    = rayOrigin + rayDir * 500f;
-
-		var spaceState = GetWorld3D().DirectSpaceState;
-		var query = PhysicsRayQueryParameters3D.Create(
-			rayOrigin, rayEnd,
-			collisionMask: 1 | 2 // terrain/static layer only
-		);
+		var query = PhysicsRayQueryParameters3D.Create(rayOrigin, rayEnd, collisionMask: 1 | 2);
 		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() };
 
-		var result = spaceState.IntersectRay(query);
+		var result = GetWorld3D().DirectSpaceState.IntersectRay(query);
 		return result.Count > 0 ? result["position"].AsVector3() : GlobalPosition;
 	}
 
-	/// <summary>
-	/// Called every frame while aiming — moves the indicator to where the
-	/// crosshair ray hits the ground.
-	/// </summary>
-	private void UpdateUltimateIndicator()
-	{
-		if (UltimateIndicator == null) return;
-		Vector3 groundPoint = GetGroundAimPoint();
-		// Lift slightly off the ground so it isn't clipped by the terrain
-		UltimateIndicator.GlobalPosition = groundPoint + Vector3.Up * 0.05f;
-	}
-	
-	public void ApplyKnockback(Vector3 force)
-	{
-		_knockbackVelocity = force;
-	}
+	// -------------------------------------------------------
+	//  Misc
+	// -------------------------------------------------------
+
+	public void ApplyKnockback(Vector3 force) => _knockbackVelocity = force;
 }

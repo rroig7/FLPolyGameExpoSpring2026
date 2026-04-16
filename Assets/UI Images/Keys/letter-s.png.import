@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://l2wyeejcyvak"
-path="res://.godot/imported/letter-q.png-5dc7e77a1a11b1feb24948b0db299bdb.ctex"
+uid="uid://6kg875ihq6d6"
+path="res://.godot/imported/letter-s.png-cb70f5f3e2c9aa44b860c676f160f9f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/UI Images/letter-q.png"
-dest_files=["res://.godot/imported/letter-q.png-5dc7e77a1a11b1feb24948b0db299bdb.ctex"]
+source_file="res://Assets/UI Images/Keys/letter-s.png"
+dest_files=["res://.godot/imported/letter-s.png-cb70f5f3e2c9aa44b860c676f160f9f2.ctex"]
 
 [params]
 

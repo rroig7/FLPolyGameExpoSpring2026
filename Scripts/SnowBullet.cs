@@ -1,49 +1,47 @@
 using Godot;
 
-/// <summary>
-/// Deterministic projectile — no MultiplayerSynchronizer needed or wanted.
-///
-/// Both peers spawn the bullet at the same GlobalTransform via the
-/// SpawnBulletOnAllPeers RPC and apply the same Velocity, so physics keeps
-/// them in lock-step automatically.
-///
-/// When the server detects a collision it calls NotifyHitOnClients() which
-/// RPCs every peer to destroy their local copy at the impact point, giving
-/// clean visual confirmation without any sync overhead.
-/// </summary>
-public partial class SnowBullet : CharacterBody3D
+public partial class SnowBullet : RigidBody3D
 {
-	[Export] public float BulletSpeed = 30f;
-	[Export] public float MaxLifetime  = 3f;
+	// ── Configuration ────────────────────────────────────────────────
 
-	/// <summary>True on the server instance; false on every client.</summary>
-	public bool IsAuthoritative { get; set; } = false;
+	[Export] Area3D CollisionArea;
 
-	/// <summary>Multiplayer authority id of the player who fired.</summary>
+	/// <summary>Bullet travel speed in units/second. Set by Level after spawn.</summary>
+	[Export] public float Speed = 30f;
+
+	/// <summary>Maximum lifetime in seconds before auto-despawn.</summary>
+	[Export] public float MaxLifetime = 3f;
+
+	/// <summary>Multiplayer authority id of the player who fired. Set by Level after spawn.</summary>
 	public int ShooterId { get; set; } = 1;
 
 	/// <summary>
-	/// Unique id stamped by the spawner so every peer can look up and destroy
-	/// the correct local bullet instance when the server confirms a hit.
+	/// Travel direction (normalised). Set by Level immediately after spawn,
+	/// matching the Direction/Speed pattern used by PlayerProjectile.
 	/// </summary>
-	public int BulletId { get; set; } = -1;
+	public Vector3 Direction { get; set; } = Vector3.Zero;
+
+	// ── Internal state ───────────────────────────────────────────────
 
 	private float _lifetime = 0f;
 	private bool  _dead     = false;
 
+	// ── Lifecycle ────────────────────────────────────────────────────
+
 	public override void _Ready()
 	{
-		// Defensive: strip any leftover NetID from the packed scene.
-		foreach (var child in GetChildren())
-		{
-			if (child is MultiplayerSynchronizer || child is NetID)
-			{
-				GD.PushWarning($"SnowBullet: removing unexpected synchronizer '{child.Name}'. Delete it from the packed scene.");
-				child.QueueFree();
-			}
-		}
+		// RigidBody3D: disable gravity to drive movement manually.
+		GravityScale = 0f;
 
-		Velocity = GlobalTransform.Basis.Z * BulletSpeed;
+		// --- ADJUSTMENT: Use the Exported Area3D for collision detection ---
+		if (CollisionArea != null)
+		{
+			CollisionArea.BodyEntered += OnBodyEntered;
+		}
+		else
+		{
+			GD.PushError("SnowBullet: CollisionArea is not assigned in the inspector!");
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -53,76 +51,69 @@ public partial class SnowBullet : CharacterBody3D
 		_lifetime += (float)delta;
 		if (_lifetime >= MaxLifetime)
 		{
-			_dead = true;
-			QueueFree();
+			MarkDeadAndFree();
 			return;
 		}
 
-		if (IsAuthoritative)
-			HandleAuthoritativeMovement();
-		else
-			HandleClientMovement((float)delta);
+		// Drive movement every frame by setting LinearVelocity.
+		if (Direction != Vector3.Zero)
+			LinearVelocity = Direction * Speed;
 	}
 
-	// ── Server ────────────────────────────────────────────────────────
+	// ── Collision (server-authoritative) ────────────────────────────
 
-	private void HandleAuthoritativeMovement()
+	private void OnBodyEntered(Node body)
 	{
-		KinematicCollision3D collision = MoveAndCollide(Velocity * (float)GetPhysicsProcessDeltaTime());
-		if (collision == null) return;
+		if (_dead) return;
 
-		Node collider = collision.GetCollider() as Node;
-		GD.Print($"SnowBullet: hit something: {(collider as Node)?.Name ?? "unknown"}, type={collider?.GetType().Name}");
+		// Resolved on server only.
+		if (!Multiplayer.IsServer()) return;
 
-		if (collider is MeleeEnemy enemy)
+		GD.Print($"SnowBullet: Area hit '{body.Name}' (type={body.GetType().Name})");
+
+		switch (body)
 		{
-			enemy.OnHitByBullet(ShooterId);
-		}
-		else if (collider is Player player)
-		{
-			GD.Print($"SnowBullet: collider IS a Player, ShooterId={ShooterId}, playerAuthority={player.GetMultiplayerAuthority()}");
-			if (player.GetMultiplayerAuthority() != ShooterId)
-				player.TakeDamage(player.BulletDamage);
-			else
-				GD.Print("SnowBullet: skipping damage, player is the shooter");
-		}
-		else if(collider is Base playerBase)
-		{
-			playerBase.Hit(ShooterId, 1);
-		}
-		else
-		{
-			GD.Print("SnowBullet: hit something that is neither enemy nor Player");
+			case MeleeEnemy meleeEnemy:
+				meleeEnemy.OnHitByBullet(ShooterId);
+				break;
+
+			case Player player:
+				// Do not damage the shooter.
+				if (player.GetMultiplayerAuthority() != ShooterId)
+					player.TakeDamage(player.BulletDamage);
+				break;
+
+			case Base playerBase:
+				playerBase.Hit(ShooterId, 1);
+				break;
+
+			default:
+				GD.Print("SnowBullet: Area hit geometry or unhandled type");
+				break;
 		}
 
-		Rpc(MethodName.DestroyOnClient, GlobalPosition);
-		_dead = true;
-		QueueFree();
+		// Confirm hit to all clients via RPC.
+		Rpc(MethodName.ClientDestroyOnHit, GlobalPosition);
+		MarkDeadAndFree();
 	}
 
-	// ── Client ────────────────────────────────────────────────────────
+	// ── RPC ─────────────────────────────────────────────────────────
 
-	private void HandleClientMovement(float delta)
-	{
-		// Deterministic movement — same velocity, same fixed delta on all peers,
-		// so client position stays in lock-step with the server without syncing.
-		GlobalPosition += Velocity * delta;
-	}
-
-	// ── RPC ───────────────────────────────────────────────────────────
-
-	/// <summary>
-	/// Server → all clients. Destroys the client-side bullet at the confirmed
-	/// impact position. Snapping to hitPos corrects any tiny drift before death.
-	/// </summary>
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
 		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void DestroyOnClient(Vector3 hitPos)
+	private void ClientDestroyOnHit(Vector3 hitPos)
+	{
+		if (_dead) return;
+		GlobalPosition = hitPos; // snap to server-confirmed impact point
+		MarkDeadAndFree();
+	}
+
+	// ── Helpers ──────────────────────────────────────────────────────
+
+	private void MarkDeadAndFree()
 	{
 		if (_dead) return;
 		_dead = true;
-		GlobalPosition = hitPos; // snap to server-confirmed impact point
-		// TODO: spawn a hit-effect particle here if desired
 		QueueFree();
 	}
 }

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://btsjmr3f6prtv"
-path="res://.godot/imported/Ulty_Logo.png-5f7a3abd41c14654831b7c4a1518dbe4.ctex"
+uid="uid://tbfwxwumpemj"
+path="res://.godot/imported/LongSnow.png-6ef74c8451d40bea586aac2058465df2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/UI Images/Ulty_Logo.png"
-dest_files=["res://.godot/imported/Ulty_Logo.png-5f7a3abd41c14654831b7c4a1518dbe4.ctex"]
+source_file="res://Assets/UI Images/LongSnow.png"
+dest_files=["res://.godot/imported/LongSnow.png-6ef74c8451d40bea586aac2058465df2.ctex"]
 
 [params]
 

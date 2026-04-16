@@ -1,0 +1,179 @@
+[gd_scene format=3 uid="uid://dbatqgebrq3gi"]
+
+[ext_resource type="FontFile" uid="uid://m58jjc3281g1" path="res://Assets/UI Images/Amonk Ice-SVG.ttf" id="1_kirp1"]
+[ext_resource type="Texture2D" uid="uid://cqkeb3pauuxh" path="res://Assets/UI Images/Keys/letter-a.png" id="2_x15vo"]
+[ext_resource type="Texture2D" uid="uid://b7kea7qx8gn2w" path="res://Assets/UI Images/Keys/letter-f.png" id="3_0c5lp"]
+[ext_resource type="Texture2D" uid="uid://dslnssois7fne" path="res://Assets/UI Images/Keys/letter-d.png" id="4_su4b7"]
+[ext_resource type="Texture2D" uid="uid://rtplb8gu1xr4" path="res://Assets/UI Images/Keys/letter-w.png" id="5_vq434"]
+[ext_resource type="Texture2D" uid="uid://6kg875ihq6d6" path="res://Assets/UI Images/Keys/letter-s.png" id="6_1211r"]
+[ext_resource type="Texture2D" uid="uid://2kmjs8w06u4f" path="res://Assets/UI Images/Keys/shift.png" id="7_vueim"]
+[ext_resource type="Texture2D" uid="uid://l2wyeejcyvak" path="res://Assets/UI Images/Keys/letter-q.png" id="8_dwjft"]
+[ext_resource type="Texture2D" uid="uid://bxc5hyeb6co0g" path="res://Assets/UI Images/Keys/left.png" id="9_8vfdq"]
+
+[node name="Tutorial" type="Control" unique_id=1462516669]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="Label" parent="." unique_id=1417526990]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -282.5
+offset_top = 32.0
+offset_right = 282.5
+offset_bottom = 85.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("1_kirp1")
+theme_override_font_sizes/font_size = 51
+text = "Learn how to Play"
+
+[node name="A" type="TextureRect" parent="." unique_id=1386277176]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 184.0
+offset_right = 104.0
+offset_bottom = 224.0
+texture = ExtResource("2_x15vo")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="A" unique_id=785565162]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 209.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "MOVE LEFT"
+
+[node name="F" type="TextureRect" parent="." unique_id=1501101869]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 440.0
+offset_right = 104.0
+offset_bottom = 480.0
+texture = ExtResource("3_0c5lp")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="F" unique_id=639347417]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 272.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "MOVE FOWARD"
+
+[node name="D" type="TextureRect" parent="." unique_id=1129903746]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 312.0
+offset_right = 104.0
+offset_bottom = 352.0
+texture = ExtResource("4_su4b7")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="D" unique_id=1595987306]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 232.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "MOVE RIGHT"
+
+[node name="W" type="TextureRect" parent="." unique_id=1500974052]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 120.0
+offset_right = 104.0
+offset_bottom = 160.0
+texture = ExtResource("5_vq434")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="W" unique_id=1923222012]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 8.0
+offset_right = 88.0
+offset_bottom = 31.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "MOVE FOWARD"
+
+[node name="S" type="TextureRect" parent="." unique_id=1472483190]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 248.0
+offset_right = 104.0
+offset_bottom = 288.0
+texture = ExtResource("6_1211r")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="S" unique_id=2139581949]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 326.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "MOVE BACKWARDS"
+
+[node name="Shift" type="TextureRect" parent="." unique_id=2133477861]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 504.0
+offset_right = 104.0
+offset_bottom = 544.0
+scale = Vector2(1.6, 1.36)
+texture = ExtResource("7_vueim")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Shift" unique_id=1479516786]
+layout_mode = 0
+offset_left = 49.999996
+offset_right = 131.0
+offset_bottom = 41.999996
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "SLIDE"
+
+[node name="Q" type="TextureRect" parent="." unique_id=359182953]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 376.0
+offset_right = 104.0
+offset_bottom = 416.0
+texture = ExtResource("8_dwjft")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Q" unique_id=968262913]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 258.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "USE ULTIMATE"
+
+[node name="LEft Click" type="TextureRect" parent="." unique_id=425011916]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 576.0
+offset_right = 104.0
+offset_bottom = 616.0
+texture = ExtResource("9_8vfdq")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="LEft Click" unique_id=1480294625]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 340.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "SNOW BALL ATTACK"
