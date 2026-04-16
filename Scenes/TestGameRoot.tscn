@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://n2h3r5cr70se" path="res://NetworkCore/GenericCore.cs" id="1_ul1ws"]
 [ext_resource type="Script" uid="uid://dyi38axdfgo8m" path="res://Scripts/GameMaster.cs" id="2_bousw"]
 [ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="3_5ftxa"]
+[ext_resource type="Texture2D" uid="uid://cvnuhodc506x4" path="res://Assets/UI Images/BackgroundImage.png" id="4_5ftxa"]
 
 [sub_resource type="Theme" id="Theme_ul1ws"]
 default_font_size = 50
@@ -18,8 +19,8 @@ script = ExtResource("1_ul1ws")
 PublicIP = "127.0.0.1"
 PrivateIP = "127.0.0.1"
 MainNetworkCore = NodePath("Main Spawner")
-_portMaximum = 7010
-_portMinimum = 7000
+_portMaximum = 7000
+_portMinimum = 7010
 _localPort = 7000
 _serverAddress = "127.0.0.1"
 _maxConnections = 4
@@ -48,15 +49,27 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer/Lobby UI" unique_id=1129308110]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.53436923, 0.54496837, 1, 1)
+color = Color(0.53333336, 0.54509807, 1, 1)
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Lobby UI" unique_id=1373559340]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_5ftxa")
+expand_mode = 1
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Lobby UI" unique_id=1725437401]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0

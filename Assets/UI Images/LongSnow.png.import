@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3amrfgy14fln"
-path="res://.godot/imported/Icy health bar with snowflakes.png-4c744ba89e7f92dcf67d735478ea4956.ctex"
+uid="uid://tbfwxwumpemj"
+path="res://.godot/imported/LongSnow.png-6ef74c8451d40bea586aac2058465df2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/UI Images/Icy health bar with snowflakes.png"
-dest_files=["res://.godot/imported/Icy health bar with snowflakes.png-4c744ba89e7f92dcf67d735478ea4956.ctex"]
+source_file="res://Assets/UI Images/LongSnow.png"
+dest_files=["res://.godot/imported/LongSnow.png-6ef74c8451d40bea586aac2058465df2.ctex"]
 
 [params]
 

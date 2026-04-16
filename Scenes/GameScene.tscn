@@ -31,7 +31,7 @@ sky = SubResource("Sky_x6js8")
 tonemap_mode = 2
 glow_enabled = true
 fog_enabled = true
-fog_light_color = Color(0.35791326, 0.4088019, 0.4491557, 1)
+fog_light_color = Color(0.20113349, 0.3466988, 0.6714859, 1)
 fog_sun_scatter = 0.05
 fog_density = 0.03
 

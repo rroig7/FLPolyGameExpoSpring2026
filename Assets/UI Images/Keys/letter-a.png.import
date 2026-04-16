@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nefsmlesim77"
-path="res://.godot/imported/play-button-arrowhead.png-f40b17e86346f9d132da542e4734c4fe.ctex"
+uid="uid://cqkeb3pauuxh"
+path="res://.godot/imported/letter-a.png-f1edea7666d39736ab2eedd611410810.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/UI Images/play-button-arrowhead.png"
-dest_files=["res://.godot/imported/play-button-arrowhead.png-f40b17e86346f9d132da542e4734c4fe.ctex"]
+source_file="res://Assets/UI Images/Keys/letter-a.png"
+dest_files=["res://.godot/imported/letter-a.png-f1edea7666d39736ab2eedd611410810.ctex"]
 
 [params]
 

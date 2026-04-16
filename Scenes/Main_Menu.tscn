@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://0klwesxe0ocy"]
 
 [ext_resource type="Script" uid="uid://qnt2wmwec57u" path="res://Assets/MainMenu.cs" id="1_00u4r"]
-[ext_resource type="FontFile" uid="uid://cjhmlf66vdsar" path="res://Assets/UI Images/Amonk Outline.ttf" id="1_rmbjf"]
 [ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="2_00u4r"]
 [ext_resource type="FontFile" uid="uid://m58jjc3281g1" path="res://Assets/UI Images/Amonk Ice-SVG.ttf" id="2_b7rmo"]
+[ext_resource type="Texture2D" uid="uid://tbfwxwumpemj" path="res://Assets/UI Images/LongSnow.png" id="4_00u4r"]
+[ext_resource type="Texture2D" uid="uid://cmgb6433d4wtt" path="res://Assets/UI Images/CornerSnow.png" id="5_anlgx"]
+[ext_resource type="PackedScene" uid="uid://dbatqgebrq3gi" path="res://Scenes/Tutorial_Scenel.tscn" id="6_xvotp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00u4r"]
-bg_color = Color(1, 1, 1, 1)
+bg_color = Color(0.23705456, 0.24262893, 1, 1)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
@@ -41,52 +43,121 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3498249, 0)
 
 [node name="Control" type="Control" parent="." unique_id=511156035]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="PlayButton" type="Button" parent="Control" unique_id=234554178]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 360.0
-offset_top = 456.0
-offset_right = 752.5
-offset_bottom = 532.0
+anchor_bottom = 1.0
+offset_left = -195.0
+offset_top = -294.0
+offset_right = 197.5
+offset_bottom = -218.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0.5103321, 0.79892313, 1)
 theme_override_colors/font_pressed_color = Color(0.56077003, 0.7992531, 1, 1)
 theme_override_colors/font_hover_color = Color(0, 0.50980395, 0.8, 1)
-theme_override_fonts/font = ExtResource("1_rmbjf")
-theme_override_font_sizes/font_size = 30
+theme_override_fonts/font = ExtResource("2_b7rmo")
+theme_override_font_sizes/font_size = 47
 theme_override_styles/normal = SubResource("StyleBoxFlat_00u4r")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_anlgx")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xvotp")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_rmbjf")
 text = "START GAME"
 
+[node name="TextureRect" type="TextureRect" parent="Control/PlayButton" unique_id=1803787822]
+layout_mode = 0
+offset_top = -50.000008
+offset_right = 40.0
+offset_bottom = -10.000008
+scale = Vector2(9.72, 3.1999977)
+texture = ExtResource("4_00u4r")
+expand_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Control/PlayButton" unique_id=1787734898]
+layout_mode = 0
+offset_left = 6.9999995
+offset_top = 110.999985
+offset_right = 47.0
+offset_bottom = 150.99998
+scale = Vector2(3.875554, -2.3409367)
+texture = ExtResource("4_00u4r")
+expand_mode = 2
+
+[node name="TutorialButton" type="Button" parent="Control" unique_id=1654575052]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -195.0
+offset_top = -169.0
+offset_right = 197.5
+offset_bottom = -93.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0, 0.5103321, 0.79892313, 1)
+theme_override_colors/font_pressed_color = Color(0.56077003, 0.7992531, 1, 1)
+theme_override_colors/font_hover_color = Color(0, 0.50980395, 0.8, 1)
+theme_override_fonts/font = ExtResource("2_b7rmo")
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_00u4r")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_anlgx")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xvotp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_rmbjf")
+text = "TUTORIAL"
+
+[node name="TextureRect2" type="TextureRect" parent="Control/TutorialButton" unique_id=135611878]
+layout_mode = 0
+offset_left = 244.99997
+offset_top = -48.000008
+offset_right = 284.99997
+offset_bottom = -8.000008
+scale = Vector2(4.0000005, 3.1999977)
+texture = ExtResource("4_00u4r")
+expand_mode = 2
+
+[node name="TextureRect3" type="TextureRect" parent="Control/TutorialButton" unique_id=1586492373]
+layout_mode = 0
+offset_left = -31.0
+offset_top = -9.999992
+offset_right = 9.0
+offset_bottom = 30.0
+scale = Vector2(2.8800013, 2.7673988)
+texture = ExtResource("5_anlgx")
+expand_mode = 2
+
 [node name="Label" type="Label" parent="Control" unique_id=1527034036]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 214.0
-offset_top = 41.0
-offset_right = 897.0
-offset_bottom = 263.0
+offset_left = -341.5
+offset_right = 341.5
+offset_bottom = 222.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.15780741, 0.45483285, 1, 1)
 theme_override_colors/font_outline_color = Color(0.24705882, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_b7rmo")
-theme_override_font_sizes/font_size = 70
-text = "League
-OF
-Penguins"
+theme_override_font_sizes/font_size = 87
+text = "Operation 
+Permafrost"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Tutorial" parent="." unique_id=1462516669 instance=ExtResource("6_xvotp")]
+visible = false
+
 [connection signal="pressed" from="Control/PlayButton" to="." method="_on_Start_pressed"]
+[connection signal="pressed" from="Control/TutorialButton" to="." method="_on_Start_pressed"]

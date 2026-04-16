@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://btsjmr3f6prtv"
-path="res://.godot/imported/Ulty_Logo.png-5f7a3abd41c14654831b7c4a1518dbe4.ctex"
+uid="uid://dsf2cungb818r"
+path="res://.godot/imported/wasd.png-121ae8aaf1a9af20606d1b3a520ae7a0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/UI Images/Ulty_Logo.png"
-dest_files=["res://.godot/imported/Ulty_Logo.png-5f7a3abd41c14654831b7c4a1518dbe4.ctex"]
+source_file="res://Assets/UI Images/Keys/wasd.png"
+dest_files=["res://.godot/imported/wasd.png-121ae8aaf1a9af20606d1b3a520ae7a0.ctex"]
 
 [params]
 
