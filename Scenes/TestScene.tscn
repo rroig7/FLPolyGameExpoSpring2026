@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bmv65ueb31brc" path="res://Scripts/GlobalTimers.cs" id="4_0f5h7"]
 [ext_resource type="PackedScene" uid="uid://c1c7lhj7yfvoa" path="res://Scenes/GameScene.tscn" id="5_0f5h7"]
 [ext_resource type="Script" uid="uid://c6ua4gj4ih8nn" path="res://Scripts/NetworkCore/SpawnEgg.cs" id="5_qsjrb"]
+[ext_resource type="PackedScene" uid="uid://bk40tsh7xhgns" path="res://Scenes/Turret.tscn" id="6_qsjrb"]
 
 [node name="TestScene" type="Node3D" unique_id=2078605398]
 
@@ -135,3 +136,6 @@ script = ExtResource("5_qsjrb")
 SpawnIndex = 2
 Respawn = true
 TimeToRespawn = 3.0
+
+[node name="Turret" parent="." unique_id=1336070727 instance=ExtResource("6_qsjrb")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 1.9588041, 0.20351559, 5.4743614)

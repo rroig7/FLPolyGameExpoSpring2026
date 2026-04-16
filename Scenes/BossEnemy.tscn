@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://b1p3cox5ob4mr"]
 
-[ext_resource type="Script" uid="uid://bomgoj5cimfhd" path="res://Scripts/Enemy2.cs" id="1_7j2nt"]
+[ext_resource type="Script" uid="uid://d325a0or3migs" path="res://Scripts/BossEnemy.cs" id="1_jfpgj"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_jfpgj"]
+[ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_lj6qe"]
 [ext_resource type="PackedScene" uid="uid://colw7gw6y0qmh" path="res://Assets/PolarBear/mad_polar_bear_game_ready_3d_model.glb" id="3_jfpgj"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7sgnn"]
@@ -37,10 +38,14 @@ radius = 13.064
 radius = 1.90625
 height = 8.793823
 
-[node name="BossCube" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "patrolPoints")]
-script = ExtResource("1_7j2nt")
+[node name="BossEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "Muzzle")]
+script = ExtResource("1_jfpgj")
 myId = NodePath("MultiplayerSynchronizer")
-patrolPoints = []
+BulletScene = ExtResource("2_lj6qe")
+BulletSpeed = 0.4
+MeleeDamage = 40.0
+CollisionMask = 3
+Muzzle = NodePath("")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1602294620]
 
@@ -48,9 +53,11 @@ patrolPoints = []
 replication_config = SubResource("SceneReplicationConfig_7sgnn")
 script = ExtResource("2_jfpgj")
 
-[node name="DetectionArea" type="Area3D" parent="." unique_id=1473774793]
+[node name="BossFOV" type="Area3D" parent="." unique_id=1473774793]
+collision_mask = 5
+monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1968873893]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BossFOV" unique_id=1968873893]
 shape = SubResource("SphereShape3D_7j2nt")
 
 [node name="Sketchfab_Scene" parent="." unique_id=929004655 instance=ExtResource("3_jfpgj")]
@@ -59,3 +66,6 @@ transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 0, 0)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1868736931]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.4054565, 0)
 shape = SubResource("CapsuleShape3D_lj6qe")
+
+[node name="BossMuzzle" type="Marker3D" parent="." unique_id=8249607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1560183, 4.9381, 1.2015911)

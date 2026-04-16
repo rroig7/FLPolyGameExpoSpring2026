@@ -8,6 +8,8 @@ public partial class Turret : Node3D
 	[Export] public float BulletSpeed = 20.0f;
 	[Export] public PackedScene BulletScene;
 
+	[Export] public NetID MyID;
+
 	[Export] public Node3D TurretHead;
 	[Export] public Node3D Muzzle;
 	[Export] public Area3D TurretFOV;
@@ -51,7 +53,7 @@ public partial class Turret : Node3D
 
 		if (!_isAcquiring && _fireCooldown <= 0f && IsAimedAt(_currentTarget))
 		{
-			Fire();
+			Rpc(MethodName.SpawnBulletOnAllPeers, Muzzle.GlobalPosition, ))
 			_fireCooldown = 1f / FireRate;
 		}
 	}
@@ -112,30 +114,57 @@ public partial class Turret : Node3D
 
 	// ── Firing ────────────────────────────────────────────────────────────────
 
-	private void Fire()
+	// private void Fire()
+	// {
+	// 	if (BulletScene is null)
+	// 	{
+	// 		GD.PushWarning("Turret: BulletScene is not assigned.");
+	// 		return;
+	// 	}
+	//
+	// 	var bullet = BulletScene.Instantiate<Node3D>();
+	//
+	// 	var t = Transform3D.Identity;
+	// 	t.Origin = Muzzle.GlobalPosition;
+	// 	t.Basis  = new Basis(Muzzle.GlobalTransform.Basis.GetRotationQuaternion());
+	// 	bullet.GlobalTransform = t;
+	//
+	// 	// DO NOT TOUCH THIS CODE HOLY FUCK
+	// 	Vector3 muzzleFwd = -Muzzle.GlobalTransform.Basis.Z;
+	// 	bullet.GlobalTransform = new Transform3D(
+	// 		Basis.LookingAt(-muzzleFwd, Vector3.Up),
+	// 		Muzzle.GlobalPosition
+	// 	);
+	// 	// DO NOT TOUCH THIS CODE HOLY FUCK
+	//
+	// 	GetTree().Root.AddChild(bullet);
+	// }
+	
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void SpawnBulletOnAllPeers(Vector3 spawnPos, Quaternion spawnRot, int bulletId)
 	{
-		if (BulletScene is null)
+		if (BulletScene == null)
 		{
-			GD.PushWarning("Turret: BulletScene is not assigned.");
+			GD.PushWarning("Player: SnowBulletScene is not assigned!");
 			return;
 		}
-
-		var bullet = BulletScene.Instantiate<Node3D>();
-
+	
+		var bullet = BulletScene.Instantiate<SnowBullet>();
+		bullet.IsAuthoritative = GenericCore.Instance.IsServer;
+		bullet.ShooterId       = (int)MyId.OwnerId;
+		bullet.BulletId        = bulletId;
+	
+		// Authority must be the server (1) so the bullet's Rpc(DestroyOnClient)
+		// call is permitted — RpcMode.Authority means "only the authority may call this"
+		bullet.SetMultiplayerAuthority(1);
+	
 		var t = Transform3D.Identity;
-		t.Origin = Muzzle.GlobalPosition;
-		t.Basis  = new Basis(Muzzle.GlobalTransform.Basis.GetRotationQuaternion());
+		t.Origin = spawnPos;
+		t.Basis  = new Basis(spawnRot);
 		bullet.GlobalTransform = t;
-
-		// DO NOT TOUCH THIS CODE HOLY FUCK
-		Vector3 muzzleFwd = -Muzzle.GlobalTransform.Basis.Z;
-		bullet.GlobalTransform = new Transform3D(
-			Basis.LookingAt(-muzzleFwd, Vector3.Up),
-			Muzzle.GlobalPosition
-		);
-		// DO NOT TOUCH THIS CODE HOLY FUCK
-
-		GetTree().Root.AddChild(bullet);
+	
+		GetTree().CurrentScene.AddChild(bullet);
 	}
 
 	// ── FOV callbacks ─────────────────────────────────────────────────────────
