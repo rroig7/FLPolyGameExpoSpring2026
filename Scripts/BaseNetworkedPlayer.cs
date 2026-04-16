@@ -14,13 +14,13 @@ public partial class BaseNetworkedPlayer : CharacterBody3D
 
 	// How quickly the client smoothly corrects toward the server position.
 	// Higher = snappier correction, lower = smoother but more drift.
-	[Export] float correctionSpeed = 15f;
+	// FIX: lowered default from 15 to 10 — the old value combined with the
+	// drift-ratio multiplier (now removed) could push 't' near 1.0 on large
+	// small-drift frames, making corrections look like snaps.
+	[Export] float correctionSpeed = 10f;
 
-	// Last authoritative position received from the server via the
-	// MultiplayerSynchronizer. Keep this separate from GlobalPosition
-	// so we can interpolate toward it rather than snapping.
 	Vector3 _serverPosition;
-	bool     _serverPositionInitialized = false;
+	bool    _serverPositionInitialized = false;
 
 	public override void _Ready()
 	{
@@ -36,31 +36,28 @@ public partial class BaseNetworkedPlayer : CharacterBody3D
 		}
 		else
 		{
-			// Dead-reckon using replicated velocity so the character
-			// moves smoothly between network snapshots.
 			MoveAndSlide();
 
-			// On the first snapshot, initialize without smoothing
 			if (!_serverPositionInitialized)
 			{
-				_serverPosition      = GlobalPosition;
+				_serverPosition            = GlobalPosition;
 				_serverPositionInitialized = true;
 			}
 
-			// Measure drift between where dead-reckoning put us and
-			// where the server says we should be.
 			float drift = GlobalPosition.DistanceTo(_serverPosition);
 
 			if (drift > correctionThreshold)
 			{
-				// Large drift (e.g. teleport, spawn, hard desync) – snap immediately
+				// Large drift — snap immediately (teleport, spawn, hard desync).
 				GlobalPosition = _serverPosition;
 			}
 			else if (drift > 0.001f)
 			{
-				// Small drift – nudge smoothly toward server position so
-				// the correction is invisible to the player.
-				float t = Mathf.Clamp(correctionSpeed * (float)delta * (drift / correctionThreshold), 0f, 1f);
+				// FIX: use a flat lerp factor instead of scaling by (drift / correctionThreshold).
+				// The old formula let 't' spike toward 1.0 as drift approached the threshold,
+				// which made corrections near the snap boundary look like visible pops.
+				// A flat factor produces a consistent, invisible nudge every frame.
+				float t = Mathf.Clamp(correctionSpeed * (float)delta, 0f, 1f);
 				GlobalPosition = GlobalPosition.Lerp(_serverPosition, t);
 			}
 		}
@@ -68,17 +65,21 @@ public partial class BaseNetworkedPlayer : CharacterBody3D
 		if (MyId.IsLocal)
 			LocalProcess((float)delta);
 
+		// FIX: AllPlayerProcess now runs on clients only (unchanged), but AllProcess
+		// is intentionally NOT called here anymore — it was running gravity on both
+		// server and clients, which caused vertical jitter. Gravity is now server-only,
+		// applied inside ServerProcess in the subclass. If you need a true "runs
+		// everywhere" hook for non-physics logic, re-add AllProcess calls here and
+		// make sure subclass overrides never touch Velocity.Y inside it.
 		if (!GenericCore.Instance.IsServer)
 			AllPlayerProcess((float)delta);
-
-		AllProcess((float)delta);
 	}
 
 	public void ResetServerPosition(Vector3 pos)
 	{
-		GlobalPosition = pos;
-		_serverPosition = pos;
-		_serverPositionInitialized = true; // ensure smoothing doesn't re-init stale
+		GlobalPosition             = pos;
+		_serverPosition            = pos;
+		_serverPositionInitialized = true;
 	}
 
 	/// <summary>
