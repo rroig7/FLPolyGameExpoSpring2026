@@ -149,7 +149,7 @@ shadow_size = 11
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m0x7a"]
 bg_color = Color(1.2513996e-06, 0.5956993, 0.84199774, 1)
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "MyId") groups=["players"]]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "UpgradeUI", "MyId") groups=["players"]]
 collision_layer = 4
 collision_mask = 15
 floor_max_angle = 1.5707964
@@ -159,6 +159,14 @@ _muzzle = NodePath("Muzzle")
 UltimateRadius = 6.0
 UltimateIndicator = NodePath("UltimateIndicator")
 HUD = NodePath("HUD")
+HpBar = NodePath("HUD/HealthBar")
+XpLabel = NodePath("HUD/XP_ Label")
+UltIcon = NodePath("HUD/Habilities/Ulty")
+UltCDLabel = NodePath("HUD/Habilities/Coldown")
+DashIcon = NodePath("HUD/Habilities/Slide/Slide")
+DashCDLabel = NodePath("HUD/Habilities/Slide/Coldown2")
+RoundTimer = NodePath("HUD/Timer_Label")
+UpgradeUI = NodePath("HUD/UpGrades")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
 
@@ -376,6 +384,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="UpGrades" type="Control" parent="HUD" unique_id=1617456860]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

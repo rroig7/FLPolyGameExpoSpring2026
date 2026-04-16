@@ -25,8 +25,9 @@ _localPort = 7000
 _serverAddress = "127.0.0.1"
 _maxConnections = 4
 
-[node name="GameMaster" type="Node" parent="." unique_id=1902878242]
+[node name="GameMaster" type="Node" parent="." unique_id=1902878242 node_paths=PackedStringArray("MainSpawner")]
 script = ExtResource("2_bousw")
+MainSpawner = NodePath("../Main Spawner")
 minPlayerCount = 1
 TotalRoundLength = 1.0
 BossSpawn = 0.2
@@ -149,7 +150,7 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
-_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3")
+_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3", "uid://c73y4jqgjuev")
 spawn_path = NodePath("../Level")
 script = ExtResource("3_5ftxa")
 
