@@ -54,7 +54,13 @@ public partial class MapShrink : Node
 		// Skip those — we only want to react to bodies that legitimately left.
 		if (!IsInstanceValid(obj) || obj.IsQueuedForDeletion()) return;
 
-		GD.Print($"{obj.Name} fell off the map");
-		obj.GetParent().QueueFree();
+		var parent = (Node3D)obj.GetParent();
+		//GD.Print($"{obj.Name} fell off the map");
+		var tween =GetTree().CreateTween()
+			.SetEase(Tween.EaseType.In)
+			.SetTrans(Tween.TransitionType.Back)
+			.TweenProperty(obj.GetParent(), "position:y", parent.GlobalPosition.Y - parent.Scale.Y, 5);
+
+		tween.Finished += () => parent.QueueFree();
 	}
 }
