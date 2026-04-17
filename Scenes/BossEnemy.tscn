@@ -71,7 +71,10 @@ BulletSpeed = 0.4
 MeleeDamage = 40.0
 CollisionMask = 3
 Muzzle = NodePath("BossMuzzle")
+CurrentHp = 4000.0
+MaxHp = 4000.0
 TargetAimHeight = 0.3
+XP_Value = 200
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1602294620]
 

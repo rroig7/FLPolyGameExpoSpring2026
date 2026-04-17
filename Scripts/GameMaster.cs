@@ -115,10 +115,13 @@ public partial class GameMaster : Node
 
 		if (node is SnowBullet bullet && IsInstanceValid(bullet))
 		{
+			bool isBossBullet = shooterId == -1;
 			bullet.Direction = new Basis(rotation).Z;
-			bullet.Speed = 30f;
+			bullet.Speed = isBossBullet ? 80f : 30f;
 			bullet.ShooterId = shooterId;
 			bullet.GlobalPosition = origin;
+			if (isBossBullet)
+				bullet.Scale = Vector3.One * 4f;
 		}
 	}
 
