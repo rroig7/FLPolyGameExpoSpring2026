@@ -248,6 +248,7 @@ public partial class GenericCore : Node
 
 			IsGenericCoreConnected = false;
 			IsServer = false;
+			EmitSignalServerDisconnected();
 		}
 	}
 

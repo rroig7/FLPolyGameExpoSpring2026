@@ -184,9 +184,11 @@ public partial class GameMaster : Node
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	async void GameEnd()
+	async void GameEnd(string winnerName)
 	{
 		GameActive = false;
+		var winnerLabel = EndScreen?.GetNodeOrNull<Label>("Panel/Player Name");
+		if (winnerLabel != null) winnerLabel.Text = winnerName;
 		EmitSignal(SignalName.GameEndTrigger);
 
 		if (!GenericCore.Instance.IsServer) return;
@@ -277,7 +279,11 @@ public partial class GameMaster : Node
 	public void PlayerEliminated()
 	{
 		if (!GenericCore.Instance.IsServer) return;
-		if (++Eliminations >= Players.Count - 1) Rpc(MethodName.GameEnd);
+		if (++Eliminations >= Players.Count - 1)
+		{
+			var winner = Players.FirstOrDefault(p => p.PlayerCharacter != null && !p.PlayerCharacter.IsDead);
+			Rpc(MethodName.GameEnd, winner?.PlayerName ?? "???");
+		}
 	}
 	
 	
