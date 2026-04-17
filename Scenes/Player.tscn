@@ -219,15 +219,6 @@ corner_detail = 10
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o3h8g"]
 bg_color = Color(18.892157, 18.892157, 18.892157, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lslt6"]
-bg_color = Color(1, 0, 0, 1)
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-corner_detail = 1
-shadow_size = 15
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1iu4k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_glx4g"]
@@ -269,7 +260,7 @@ transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
 
 [node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1387458358) index="0" unique_id=792688820]
 bones/1/rotation = Quaternion(-0.12325293, 0.038744338, -0.6634553, 0.7369768)
-bones/2/rotation = Quaternion(0.012671388, 0.12228154, -0.38392767, 0.9151427)
+bones/2/rotation = Quaternion(0.0045603774, 0.14015645, -0.48649696, 0.86235505)
 bones/9/rotation = Quaternion(-0.06805276, 0.036168437, 0.9969895, 0.008532995)
 bones/10/rotation = Quaternion(-0.12672412, -0.042977255, 0.6316057, 0.76365453)
 bones/11/rotation = Quaternion(-0.012576958, 0.0087000895, -0.6321124, 0.77472585)
@@ -283,11 +274,11 @@ bones/21/rotation = Quaternion(0.6767889, -0.14890395, -0.06572424, 0.7179587)
 bones/22/rotation = Quaternion(0.08919531, 0.66119796, 0.72170025, -0.18441887)
 bones/26/rotation = Quaternion(-0.06805032, 0.036168218, 0.9969896, -0.0085330065)
 bones/27/rotation = Quaternion(-0.12325293, -0.038744338, 0.6634553, 0.7369768)
-bones/28/rotation = Quaternion(0.028016126, -0.055839717, 0.3834592, 0.92144245)
+bones/28/rotation = Quaternion(0.010916377, -0.07396021, 0.4945639, 0.86592)
 bones/31/rotation = Quaternion(-0.0842318, -0.09535109, 0.9539156, -0.27176875)
 bones/32/rotation = Quaternion(-0.060962133, -0.014415726, 0.97727567, -0.2025046)
 bones/33/rotation = Quaternion(-0.070427716, -0.0209309, 0.95163924, -0.29830316)
-bones/36/rotation = Quaternion(6.716838e-08, -1.2169503e-09, 0.018114917, 0.99983597)
+bones/36/rotation = Quaternion(6.713617e-08, -2.4095619e-09, 0.035867553, 0.99935657)
 bones/37/rotation = Quaternion(0.71665454, -0.026875671, 0.017527992, 0.6966899)
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1733513987]
@@ -644,11 +635,18 @@ XPLabel = NodePath("XP Label")
 
 [node name="BG-Slide-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=760471210]
 visible = false
-layout_mode = 0
-offset_left = 64.0
-offset_top = 64.0
-offset_right = 1088.0
-offset_bottom = 576.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -512.0
+offset_top = -256.0
+offset_right = 512.0
+offset_bottom = 256.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ksbbd")
 
 [node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=221392318 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
@@ -700,6 +698,24 @@ offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#1/Panel2" unique_id=219122395]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -15.5
+offset_right = 71.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "+ Dash Speed"
+horizontal_alignment = 1
 
 [node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#1" unique_id=877143517]
 layout_mode = 1
@@ -767,6 +783,25 @@ offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#2/Panel2" unique_id=492793795]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "+ Dash 
+Duration"
+horizontal_alignment = 1
 
 [node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#2" unique_id=668593900]
 layout_mode = 1
@@ -836,6 +871,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#3/Panel2" unique_id=1653605080]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "- Dash 
+Cooldown"
+horizontal_alignment = 1
+
 [node name="Price_Button3" type="Button" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#3" unique_id=945933107]
 layout_mode = 1
 anchors_preset = 7
@@ -869,15 +923,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o3h8g")
 text = "PENGUIN DASH"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Exit-Button" type="Button" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=304545116]
-layout_mode = 1
-offset_right = 64.0
-offset_bottom = 66.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 42
-theme_override_styles/normal = SubResource("StyleBoxFlat_lslt6")
-text = "x"
 
 [node name="BG-ULTIMATE-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=346564780]
 visible = false
@@ -938,6 +983,25 @@ offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#1/Panel2" unique_id=2146533272]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "- Ultimate 
+Cooldown"
+horizontal_alignment = 1
 
 [node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#1" unique_id=45414124]
 layout_mode = 1
@@ -1006,6 +1070,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#2/Panel2" unique_id=1734197448]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "+ Ultimate 
+Radius"
+horizontal_alignment = 1
+
 [node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#2" unique_id=1558127799]
 layout_mode = 1
 anchors_preset = 7
@@ -1073,6 +1156,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#3/Panel2" unique_id=691997757]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "+ Ultimate 
+Damage"
+horizontal_alignment = 1
+
 [node name="Price_Button3" type="Button" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#3" unique_id=309786243]
 layout_mode = 1
 anchors_preset = 7
@@ -1106,15 +1208,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o3h8g")
 text = "ULTIMATE UPGRADE"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Exit-Button" type="Button" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=686017602]
-layout_mode = 1
-offset_right = 64.0
-offset_bottom = 66.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 42
-theme_override_styles/normal = SubResource("StyleBoxFlat_lslt6")
-text = "x"
 
 [node name="BG-Snow-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=566598063]
 visible = false
@@ -1174,6 +1267,25 @@ offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#1/Panel2" unique_id=132508040]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "+ Snowball 
+Damage"
+horizontal_alignment = 1
 
 [node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#1" unique_id=1209267749]
 layout_mode = 1
@@ -1243,6 +1355,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#2/Panel2" unique_id=1715754933]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "+ Snowball 
+Fire Rate"
+horizontal_alignment = 1
+
 [node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#2" unique_id=1179729562]
 layout_mode = 1
 anchors_preset = 7
@@ -1276,15 +1407,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o3h8g")
 text = "Snowball upgrades"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Exit-Button" type="Button" parent="HUD/UpGrades/BG-Snow-Upgrades" unique_id=1653356586]
-layout_mode = 1
-offset_right = 64.0
-offset_bottom = 66.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 42
-theme_override_styles/normal = SubResource("StyleBoxFlat_lslt6")
-text = "x"
 
 [node name="BG-Base-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=115443853]
 visible = false
@@ -1344,6 +1466,24 @@ offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
+
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#1/Panel2" unique_id=2037561439]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "+ Igloo HP"
+horizontal_alignment = 1
 
 [node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#1" unique_id=1967921399]
 layout_mode = 1
@@ -1411,6 +1551,25 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
+[node name="Label" type="Label" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#2/Panel2" unique_id=401064140]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.5
+offset_top = -32.5
+offset_right = 71.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "Spawn Base
+Turrets"
+horizontal_alignment = 1
+
 [node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#2" unique_id=998584581]
 layout_mode = 1
 anchors_preset = 7
@@ -1444,15 +1603,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_o3h8g")
 text = "Snowball upgrades"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Exit-Button" type="Button" parent="HUD/UpGrades/BG-Base-Upgrades" unique_id=1453822347]
-layout_mode = 1
-offset_right = 64.0
-offset_bottom = 66.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 42
-theme_override_styles/normal = SubResource("StyleBoxFlat_lslt6")
-text = "x"
 
 [node name="Ultimate" type="Button" parent="HUD/UpGrades" unique_id=546463765]
 layout_mode = 1
@@ -1536,6 +1686,44 @@ offset_bottom = 529.32
 text = "XP"
 label_settings = SubResource("LabelSettings_glx4g")
 horizontal_alignment = 1
+
+[node name="Upgrade" type="Control" parent="HUD/UpGrades" unique_id=253236615]
+layout_mode = 1
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="HUD/UpGrades/Upgrade" unique_id=1740552557]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.65
+anchor_top = 1.675
+anchor_right = 4.3994994
+anchor_bottom = 4.175
+offset_right = 0.019958496
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_glx4g")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect2" type="TextureRect" parent="HUD/UpGrades/Upgrade" unique_id=1074355894]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.9000015
+anchor_top = 4.125
+anchor_right = 4.249504
+anchor_bottom = 4.9250016
+offset_left = -6.1035156e-05
+offset_right = 0.019897461
+offset_bottom = -3.0517578e-05
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_miouo")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
 
 [node name="Timer_Label" type="Label" parent="HUD" unique_id=1861699097]
 anchors_preset = 5

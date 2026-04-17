@@ -80,10 +80,15 @@ public partial class Upgrades : Control
 	void PurchaseComplete(bool success, string description, float modifier, float min)
 	{
 		processingPurchase = false;
-		XPLabel.Text = "XP: " + Player.XP.ToString();
+		RefreshXpLabel();
 		// Skip on host: server already applied in ApplyPurchase and shares the same node
 		if (success && !string.IsNullOrEmpty(description) && !GenericCore.Instance.IsServer)
 			ApplyUpgrade(description, modifier, min);
+	}
+
+	public void RefreshXpLabel()
+	{
+		if (XPLabel != null) XPLabel.Text = "XP: " + Player.XP.ToString();
 	}
 
 

@@ -36,6 +36,7 @@ public partial class Player : BaseNetworkedPlayer
 		set { _xp = value; if (isLocal) UpdateXpLabel(); }
 	}
 	[Export] public float RespawnDelay = 3f;
+	[Export] public float BaseHealRate = 15f;
 
 	private float _currentHp = 100f;
 	private int   _xp        = 0;
@@ -204,8 +205,9 @@ public partial class Player : BaseNetworkedPlayer
 
 	private void UpdateXpLabel()
 	{
-		if (!isLocal || XpLabel == null) return;
-		XpLabel.Text = $"XP: {XP}";
+		if (!isLocal) return;
+		if (XpLabel != null) XpLabel.Text = $"XP: {XP}";
+		if (UpgradeMenu != null) UpgradeMenu.RefreshXpLabel();
 	}
 
 	private void UpdateUltimateHud()
@@ -365,6 +367,9 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		if (!IsOnFloor())
 			Velocity -= new Vector3(0, gravity * delta, 0);
+
+		if (inBase && !_isDead && CurrentHp < MaxHp)
+			CurrentHp = Mathf.Min(MaxHp, CurrentHp + BaseHealRate * delta);
 
 		if (_isDashing)
 		{
