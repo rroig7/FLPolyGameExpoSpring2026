@@ -19,6 +19,7 @@ public partial class GameMaster : Node
 	float BossTime => BossSpawn * 60;
 
 	[Export] float EndScreenDuration = 10f;
+	[Export] Control EndScreen;
 
 	public List<NetworkPlayerManager> Players = new();
 	public Timer RoundTimer;
@@ -133,6 +134,9 @@ public partial class GameMaster : Node
 	{
 		GameActive = false;
 		EmitSignal(SignalName.GameEndTrigger);
+
+		EndScreen.Show();
+
 		if (!GenericCore.Instance.IsServer) return;
 
 		await ToSignal(GlobalTimers.Instance.OneShotTimer(EndScreenDuration), Timer.SignalName.Timeout);
