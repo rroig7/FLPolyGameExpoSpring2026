@@ -79,7 +79,7 @@ script = ExtResource("4_tljqb")
 
 [node name="TurretFOV" type="Area3D" parent="." unique_id=1003731732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58052105, -0.79471636)
-collision_mask = 5
+collision_mask = 21
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TurretFOV" unique_id=323324034]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.09578034, -0.2850344, -5.3006396)

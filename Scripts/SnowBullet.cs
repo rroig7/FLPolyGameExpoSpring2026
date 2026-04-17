@@ -86,7 +86,10 @@ public partial class SnowBullet : RigidBody3D
 				// Do not damage the shooter.
 				if (player.GetMultiplayerAuthority() != ShooterId)
 				{
-					player.TakeDamage(Damage);
+					var attacker = GetTree().GetNodesInGroup("players")
+						.OfType<Player>()
+						.FirstOrDefault(p => p.MyId.OwnerId == ShooterId);
+					player.TakeDamage(Damage, attacker);
 					validHit = true;
 				}
 				break;

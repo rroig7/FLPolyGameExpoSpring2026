@@ -106,6 +106,8 @@ public partial class Turret : Node3D
 			Node3D body = _targetsInFOV[i];
 			if (!IsInstanceValid(body)) { _targetsInFOV.RemoveAt(i); continue; }
 			if (body is Player p && p.IsDead) { _targetsInFOV.RemoveAt(i); continue; }
+			if (body is MeleeEnemy me && me.CurrentHp <= 0) { _targetsInFOV.RemoveAt(i); continue; }
+			if (body is BossEnemy be && be.CurrentHp <= 0) { _targetsInFOV.RemoveAt(i); continue; }
 
 			float d = GlobalPosition.DistanceSquaredTo(body.GlobalPosition);
 			if (d < minDist) { minDist = d; closest = body; }
@@ -155,9 +157,10 @@ public partial class Turret : Node3D
 
 	private void OnBodyEntered(Node3D body)
 	{
-		if (!body.IsInGroup("players") || _targetsInFOV.Contains(body)) return;
+		if (_targetsInFOV.Contains(body)) return;
+		bool isTargetable = body.IsInGroup("players") || body.IsInGroup("enemies") || body.IsInGroup("boss");
+		if (!isTargetable) return;
 		if (body is Player p && p.MyId.OwnerId == OwnerPeerId) return;
-		
 		_targetsInFOV.Add(body);
 	}
 
