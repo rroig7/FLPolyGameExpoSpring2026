@@ -161,6 +161,12 @@ public partial class GameMaster : Node
 		}
 	}
 	
+	public void RegisterTurret(Turret turret)
+	{
+		if (!turret.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int>(OnBulletSpawnRequested)))
+			turret.BulletSpawnRequested += OnBulletSpawnRequested;
+	}
+
 	void TriggerSuddenDeath() { EmitSignal(SignalName.SuddenDeathTrigger); SuddenDeath = true; }
 
 	public void AddPlayer(NetworkPlayerManager npm)

@@ -6,18 +6,23 @@ public partial class Turret : Node3D
 	[Export] public float RotationSpeed = 5.0f;
 	[Export] public float FireRate = 1.0f;
 	[Export] public float BulletSpeed = 20.0f;
-	[Export] public PackedScene BulletScene;
 
 	[Export] public NetID MyID;
 
 	[Export] public Node3D TurretHead;
 	[Export] public Node3D Muzzle;
 	[Export] public Area3D TurretFOV;
+	
+	/// <summary>Peer ID of the player who placed this turret. Set before the turret enters the tree.</summary>
+	[Export] public int OwnerPeerId = -1;
+
+	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
 
 	private readonly List<Node3D> _targetsInFOV = new();
 	private Node3D _currentTarget;
 	private float _fireCooldown = 0.25f;
 	private bool _isAcquiring = false;
+	private int _bulletCounter = 0;
 
 	[Export] public uint CollisionMask = 1;
 
@@ -29,6 +34,10 @@ public partial class Turret : Node3D
 
 		TurretFOV.BodyEntered += OnBodyEntered;
 		TurretFOV.BodyExited  += OnBodyExited;
+
+		GameMaster.Instance?.RegisterTurret(this);
+		
+		GD.Print($"[Turret] OwnerPeerId set to {OwnerPeerId}");
 	}
 
 	public override void _Process(double delta)
@@ -36,6 +45,8 @@ public partial class Turret : Node3D
 		_fireCooldown -= (float)delta;
 
 		Node3D newTarget = GetClosestTarget();
+
+
 
 		if (newTarget != _currentTarget)
 		{
@@ -45,17 +56,47 @@ public partial class Turret : Node3D
 
 		if (_currentTarget is null)
 			return;
+		;
+		
+		
 
-		AimAt(_currentTarget, (float)delta);
-
+		// DEBUG
+		if (_currentTarget is Player p && p.MyId.netObjectID != OwnerPeerId)
+		{
+			GD.Print($"[Turret] [OnBodyEntered] p.MyId.netObjectID = {p.MyId.netObjectID}");
+			GD.Print($"[Turret] [OnBodyEntered] OwnerPeerId = {OwnerPeerId}");
+			AimAt(_currentTarget, (float)delta);
+		}
+		// DEBUG
+		
 		if (_isAcquiring && IsAimedAt(_currentTarget))
 			_isAcquiring = false;
 
 		if (!_isAcquiring && _fireCooldown <= 0f && IsAimedAt(_currentTarget))
 		{
-			// Rpc(MethodName.SpawnBulletOnAllPeers, Muzzle.GlobalPosition, ))
+			if (GenericCore.Instance.IsServer)
+				Fire();
 			_fireCooldown = 1f / FireRate;
 		}
+	}
+
+	// ── Firing ────────────────────────────────────────────────────────────────
+
+	private void Fire()
+	{
+		if (_currentTarget is null) return;
+		if (_currentTarget is Player p && p.MyId.netObjectID == OwnerPeerId) return;
+
+		// Use muzzle orientation (consistent with IsAimedAt); avoids LookingAt failure
+		// when target is near-vertical relative to turret (aimDir ≈ Vector3.Up/Down).
+		Vector3 aimDir = -Muzzle.GlobalTransform.Basis.Z;
+
+		int bulletId = _bulletCounter++;
+		Quaternion spawnRot = Transform3D.Identity
+			.LookingAt(-aimDir, Vector3.Up)
+			.Basis.GetRotationQuaternion();
+
+		EmitSignal(SignalName.BulletSpawnRequested, Muzzle.GlobalPosition, spawnRot, bulletId, OwnerPeerId);
 	}
 
 	// ── Targeting ─────────────────────────────────────────────────────────────
@@ -65,9 +106,12 @@ public partial class Turret : Node3D
 		Node3D closest = null;
 		float  minDist = float.MaxValue;
 
-		foreach (Node3D body in _targetsInFOV)
+		for (int i = _targetsInFOV.Count - 1; i >= 0; i--)
 		{
-			if (!IsInstanceValid(body)) continue;
+			Node3D body = _targetsInFOV[i];
+			if (!IsInstanceValid(body)) { _targetsInFOV.RemoveAt(i); continue; }
+			if (body is Player p && p.IsDead) { _targetsInFOV.RemoveAt(i); continue; }
+
 			float d = GlobalPosition.DistanceSquaredTo(body.GlobalPosition);
 			if (d < minDist) { minDist = d; closest = body; }
 		}
@@ -112,67 +156,14 @@ public partial class Turret : Node3D
 		return muzzleFwd.Dot(toTarget) > 0.996f;
 	}
 
-	// ── Firing ────────────────────────────────────────────────────────────────
-
-	// private void Fire()
-	// {
-	// 	if (BulletScene is null)
-	// 	{
-	// 		GD.PushWarning("Turret: BulletScene is not assigned.");
-	// 		return;
-	// 	}
-	//
-	// 	var bullet = BulletScene.Instantiate<Node3D>();
-	//
-	// 	var t = Transform3D.Identity;
-	// 	t.Origin = Muzzle.GlobalPosition;
-	// 	t.Basis  = new Basis(Muzzle.GlobalTransform.Basis.GetRotationQuaternion());
-	// 	bullet.GlobalTransform = t;
-	//
-	// 	// DO NOT TOUCH THIS CODE HOLY FUCK
-	// 	Vector3 muzzleFwd = -Muzzle.GlobalTransform.Basis.Z;
-	// 	bullet.GlobalTransform = new Transform3D(
-	// 		Basis.LookingAt(-muzzleFwd, Vector3.Up),
-	// 		Muzzle.GlobalPosition
-	// 	);
-	// 	// DO NOT TOUCH THIS CODE HOLY FUCK
-	//
-	// 	GetTree().Root.AddChild(bullet);
-	// }
-	
-	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
-		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	// void SpawnBulletOnAllPeers(Vector3 spawnPos, Quaternion spawnRot, int bulletId)
-	// {
-	// 	if (BulletScene == null)
-	// 	{
-	// 		GD.PushWarning("Player: SnowBulletScene is not assigned!");
-	// 		return;
-	// 	}
-	//
-	// 	var bullet = BulletScene.Instantiate<SnowBullet>();
-	// 	bullet.IsAuthoritative = GenericCore.Instance.IsServer;
-	// 	bullet.ShooterId       = (int)MyId.OwnerId;
-	// 	bullet.BulletId        = bulletId;
-	//
-	// 	// Authority must be the server (1) so the bullet's Rpc(DestroyOnClient)
-	// 	// call is permitted — RpcMode.Authority means "only the authority may call this"
-	// 	bullet.SetMultiplayerAuthority(1);
-	//
-	// 	var t = Transform3D.Identity;
-	// 	t.Origin = spawnPos;
-	// 	t.Basis  = new Basis(spawnRot);
-	// 	bullet.GlobalTransform = t;
-	//
-	// 	GetTree().CurrentScene.AddChild(bullet);
-	// }
-
 	// ── FOV callbacks ─────────────────────────────────────────────────────────
 
 	private void OnBodyEntered(Node3D body)
 	{
-		if (body.IsInGroup("players") && !_targetsInFOV.Contains(body))
-			_targetsInFOV.Add(body);
+		if (!body.IsInGroup("players") || _targetsInFOV.Contains(body)) return;
+		if (body is Player p && p.MyId.netObjectID == OwnerPeerId) return;
+		
+		_targetsInFOV.Add(body);
 	}
 
 	private void OnBodyExited(Node3D body) => _targetsInFOV.Remove(body);
