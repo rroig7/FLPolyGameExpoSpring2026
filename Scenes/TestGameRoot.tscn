@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dyi38axdfgo8m" path="res://Scripts/GameMaster.cs" id="2_bousw"]
 [ext_resource type="Script" uid="uid://b2fb80xs807f4" path="res://NetworkCore/NetworkCore.cs" id="3_5ftxa"]
 [ext_resource type="Texture2D" uid="uid://cvnuhodc506x4" path="res://Assets/UI Images/BackgroundImage.png" id="4_5ftxa"]
+[ext_resource type="PackedScene" uid="uid://dy75bc2cwvbfp" path="res://Scenes/VictoryPanel.tscn" id="5_s1eg2"]
 
 [sub_resource type="Theme" id="Theme_ul1ws"]
 default_font_size = 50
@@ -25,12 +26,13 @@ _localPort = 7000
 _serverAddress = "127.0.0.1"
 _maxConnections = 4
 
-[node name="GameMaster" type="Node" parent="." unique_id=1902878242 node_paths=PackedStringArray("MainSpawner")]
+[node name="GameMaster" type="Node" parent="." unique_id=1902878242 node_paths=PackedStringArray("MainSpawner", "EndScreen")]
 script = ExtResource("2_bousw")
 MainSpawner = NodePath("../Main Spawner")
 minPlayerCount = 1
 TotalRoundLength = 1.0
 BossSpawn = 0.05
+EndScreen = NodePath("../Victory")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
 layer = 0
@@ -42,6 +44,7 @@ script = ExtResource("3_5ftxa")
 SpawnInexZeroOnConnect = true
 
 [node name="Lobby UI" type="Control" parent="CanvasLayer" unique_id=1167481812]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -148,6 +151,9 @@ label_settings = SubResource("LabelSettings_bousw")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
+
+[node name="Victory" parent="." unique_id=1671002876 instance=ExtResource("5_s1eg2")]
+visible = false
 
 [node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
 _spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3", "uid://c73y4jqgjuev", "uid://b1p3cox5ob4mr")

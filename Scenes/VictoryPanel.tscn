@@ -19,20 +19,6 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 corner_detail = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhetc"]
-bg_color = Color(1, 1, 1, 1)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0, 0, 0, 1)
-border_blend = true
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-corner_detail = 3
-
 [node name="Control" type="Control" unique_id=1671002876]
 layout_mode = 3
 anchors_preset = 15
@@ -98,22 +84,6 @@ theme_override_font_sizes/font_size = 40
 text = "ARIEL"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Button" type="Button" parent="Panel" unique_id=1188229078]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.125
-anchor_top = 0.83950615
-anchor_right = 0.875
-anchor_bottom = 0.9382716
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("1_i22jn")
-theme_override_font_sizes/font_size = 30
-theme_override_styles/normal = SubResource("StyleBoxFlat_uhetc")
-text = "BACK TO MAIN"
-metadata/_edit_use_anchors_ = true
 
 [node name="Snow3" type="TextureRect" parent="Panel" unique_id=326146608]
 layout_mode = 1
