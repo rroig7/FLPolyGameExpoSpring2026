@@ -93,6 +93,9 @@ public partial class Player : BaseNetworkedPlayer
 	[ExportGroup("HUD")]
 	[Export] CanvasLayer HUD;
 	[Export] Label NameLabel;
+	[Export] Control HitMarker;
+	[Export] public float HitMarkerDuration = 0.15f;
+	private Tween _hitMarkerTween;
 	[Export] ProgressBar HpBar;
 	[Export] Label XpLabel;
 	[Export] TextureRect UltIcon;
@@ -579,6 +582,23 @@ public partial class Player : BaseNetworkedPlayer
 		// Caster already played the effect locally in ConfirmUltimate; skip to avoid double-play.
 		if (!isLocal)
 			PlayUltimateRiseFall(center);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void ClientShowHitMarker()
+	{
+		if (!isLocal || HitMarker == null) return;
+
+		if (_hitMarkerTween != null && _hitMarkerTween.IsValid())
+			_hitMarkerTween.Kill();
+
+		HitMarker.Visible  = true;
+		HitMarker.Modulate = new Color(1, 1, 1, 1);
+
+		_hitMarkerTween = CreateTween();
+		_hitMarkerTween.TweenProperty(HitMarker, "modulate:a", 0f, HitMarkerDuration);
+		_hitMarkerTween.TweenCallback(Callable.From(() => HitMarker.Visible = false));
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,

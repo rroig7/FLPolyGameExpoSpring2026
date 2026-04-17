@@ -74,36 +74,44 @@ public partial class SnowBullet : RigidBody3D
 
 		GD.Print($"SnowBullet: Area hit '{body.Name}' (type={body.GetType().Name})");
 
+		bool validHit = false;
 		switch (body)
 		{
 			case MeleeEnemy meleeEnemy:
 				meleeEnemy.OnHitByBullet(ShooterId, Damage);
+				validHit = true;
 				break;
 
 			case Player player:
 				// Do not damage the shooter.
 				if (player.GetMultiplayerAuthority() != ShooterId)
 				{
-					Player shooter = GetTree().GetNodesInGroup("players")
-						.OfType<Player>()
-						.FirstOrDefault(p => p.MyId.OwnerId == ShooterId);
-					player.TakeDamage(Damage, shooter);
+					player.TakeDamage(Damage);
+					validHit = true;
 				}
 				break;
 
 			case Base playerBase:
 				playerBase.Hit(ShooterId, Damage);
+				validHit = true;
 				break;
-			
+
 			case BossEnemy boss:
 				// ShooterId == -1 is the sentinel for boss-fired bullets; don't self-damage.
-				if (ShooterId != -1) boss.OnHitByBullet(ShooterId, Damage);
+				if (ShooterId != -1)
+				{
+					boss.OnHitByBullet(ShooterId, Damage);
+					validHit = true;
+				}
 				break;
-			
+
 			default:
 				GD.Print("SnowBullet: Area hit geometry or unhandled type");
 				break;
 		}
+
+		if (validHit && ShooterId != -1)
+			GameMaster.Instance.NotifyHit(ShooterId);
 
 		// Confirm hit to all clients via RPC.
 		Rpc(MethodName.ClientDestroyOnHit, GlobalPosition);

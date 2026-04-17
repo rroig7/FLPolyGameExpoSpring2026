@@ -172,6 +172,20 @@ public partial class GameMaster : Node
 		}
 	}
 	
+	public void NotifyHit(int shooterId)
+	{
+		if (shooterId <= 0) return;
+
+		foreach (Node node in GetTree().GetNodesInGroup("players"))
+		{
+			if (node is Player p && p.MyId.OwnerId == shooterId)
+			{
+				p.RpcId(shooterId, Player.MethodName.ClientShowHitMarker);
+				return;
+			}
+		}
+	}
+
 	public void RegisterTurret(Turret turret)
 	{
 		if (!turret.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int, float>(OnBulletSpawnRequested)))
