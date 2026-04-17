@@ -173,7 +173,18 @@ public partial class Upgrades : Control
 			
 			case "damage":
 				Player.BulletDamage += modifier;
+				SyncTurretDamage();
 				break;
+		}
+	}
+
+	void SyncTurretDamage()
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		foreach (Node node in GetTree().GetNodesInGroup("turrets"))
+		{
+			if (node is Turret turret && turret.OwnerPeerId == (int)Player.MyId.OwnerId)
+				turret.BulletDamage = Player.BulletDamage;
 		}
 	}
 

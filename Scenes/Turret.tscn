@@ -37,7 +37,7 @@ size = Vector3(18.010979, 12.181368, 3.69458)
 [sub_resource type="BoxShape3D" id="BoxShape3D_64uvh"]
 size = Vector3(0.6890564, 0.83703613, 0.7871094)
 
-[node name="Turret" type="CharacterBody3D" unique_id=1336070727 node_paths=PackedStringArray("Muzzle")]
+[node name="Turret" type="CharacterBody3D" unique_id=1336070727 node_paths=PackedStringArray("Muzzle") groups=["turrets"]]
 transform = Transform3D(-8.742278e-08, 0, -2, 0, 2, 0, 2, 0, -8.742278e-08, 0, 0, 0)
 script = ExtResource("1_i4wwf")
 BulletSpeed = 1.0

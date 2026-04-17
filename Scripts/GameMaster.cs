@@ -163,6 +163,12 @@ public partial class GameMaster : Node
 		if (node is Turret turret && IsInstanceValid(turret))
 		{
 			turret.OwnerPeerId = ownerId;
+
+			var owner = GetTree().GetNodesInGroup("players")
+				.OfType<Player>()
+				.FirstOrDefault(p => p.MyId.OwnerId == ownerId);
+			if (owner != null)
+				turret.BulletDamage = owner.BulletDamage;
 		}
 	}
 
@@ -226,10 +232,32 @@ public partial class GameMaster : Node
 		}
 	}
 
+	public async void OnTurretBulletSpawnRequested(Vector3 origin, Quaternion rotation, int bulletId, int shooterId, float dmg)
+	{
+		var node = MainSpawner.NetCreateObject(
+			index: 3, // SnowBullet
+			initialPosition: origin,
+			rotation: rotation,
+			owner: 1
+		);
+
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+		if (node is SnowBullet bullet && IsInstanceValid(bullet))
+		{
+			bullet.Direction = new Basis(rotation).Z;
+			bullet.Speed = 60f;
+			bullet.ShooterId = shooterId;
+			bullet.Damage = dmg;
+			bullet.GlobalPosition = origin;
+			bullet.Scale = Vector3.One * 2.5f;
+		}
+	}
+
 	public void RegisterTurret(Turret turret)
 	{
-		if (!turret.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int, float>(OnBulletSpawnRequested)))
-			turret.BulletSpawnRequested += OnBulletSpawnRequested;
+		if (!turret.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int, float>(OnTurretBulletSpawnRequested)))
+			turret.BulletSpawnRequested += OnTurretBulletSpawnRequested;
 	}
 
 	void TriggerSuddenDeath() { EmitSignal(SignalName.SuddenDeathTrigger); SuddenDeath = true; }
