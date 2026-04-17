@@ -30,7 +30,7 @@ _maxConnections = 4
 script = ExtResource("2_bousw")
 MainSpawner = NodePath("../Main Spawner")
 TotalRoundLength = 6.0
-EndScreen = NodePath("../Victory")
+EndScreen = NodePath("../CanvasLayer/Victory")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
 layer = 0
@@ -150,7 +150,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Victory" parent="." unique_id=1671002876 instance=ExtResource("5_s1eg2")]
+[node name="Victory" parent="CanvasLayer" unique_id=1671002876 instance=ExtResource("5_s1eg2")]
 visible = false
 
 [node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
