@@ -103,5 +103,3 @@ SpawnInexZeroOnConnect = true
 [node name="TestGameRoot" parent="." unique_id=1127935270 instance=ExtResource("3_nacce")]
 
 [connection signal="pressed" from="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu/Button" to="GenericLobbySystem" method="CreatNewGameServer"]
-[connection signal="ServerDisconnected" from="TestGameRoot" to="TestGameRoot/CanvasLayer/Lobby UI" method="show"]
-[connection signal="ServerDisconnected" from="TestGameRoot" to="TestGameRoot/CanvasLayer/Loading Screen" method="hide"]

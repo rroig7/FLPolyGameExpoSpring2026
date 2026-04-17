@@ -126,8 +126,12 @@ public partial class GameMaster : Node
 
 	void RemoveBase(Base b) => GenericCore.Instance.MainNetworkCore.NetDestroyObject(b.MyID);
 
-	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void ReturnToLobby() => GenericCore.Instance.DisconnectFromGame();
+	[Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	void ReturnToLobby()
+	{
+		GenericCore.Instance.DisconnectFromGame();
+		Input.MouseMode = Input.MouseModeEnum.Visible;
+	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	async void GameEnd()
@@ -135,12 +139,11 @@ public partial class GameMaster : Node
 		GameActive = false;
 		EmitSignal(SignalName.GameEndTrigger);
 
-		EndScreen.Show();
-
 		if (!GenericCore.Instance.IsServer) return;
 
 		await ToSignal(GlobalTimers.Instance.OneShotTimer(EndScreenDuration), Timer.SignalName.Timeout);
 		Rpc("ReturnToLobby");
+		
 		LobbyStreamlined.Instance.DisconnectFromLobbySystem();
 		GetTree().Quit();
 	}
