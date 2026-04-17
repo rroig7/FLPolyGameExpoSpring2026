@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://msedbhss8q55"]
+
+[ext_resource type="Texture2D" uid="uid://da3pvs2jt3t3j" path="res://Assets/orca/Material_albedo.jpg" id="1_j7td5"]
+[ext_resource type="Texture2D" uid="uid://1rtdl7icepoh" path="res://Assets/orca/Material_normal.png" id="2_1b3ai"]
+[ext_resource type="Texture2D" uid="uid://dybpcdmr8x2s5" path="res://Assets/orca/Material_roughness.jpg" id="3_2ir3k"]
+
+[resource]
+albedo_texture = ExtResource("1_j7td5")
+roughness_texture = ExtResource("3_2ir3k")
+normal_enabled = true
+normal_texture = ExtResource("2_1b3ai")

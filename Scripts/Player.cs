@@ -75,6 +75,14 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] public float UltimateRadius   = 5f;
 	[Export] public float UltimateDamage   = 80f;
 	[Export] public Node3D UltimateIndicator;
+	[Export] public Node3D UltimateModel;
+	[Export] public float UltimateRiseHeight   = 3f;
+	[Export] public float UltimateRiseDuration = 0.4f;
+	[Export] public float UltimateFallDuration = 0.3f;
+	[Export] public float UltimateGroundOffset = 0f;
+	[Export] public float UltimateSubmergeDepth = 2f;
+	[Export] public AnimationPlayer UltimateAnimPlayer;
+	[Export] public string UltimateAnimName = "";
 
 	private float _ultimateTimer    = 0f;
 	private bool  _isAimingUltimate = false;
@@ -90,6 +98,11 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] Label DashCDLabel;
 	[Export] Label RoundTimer;
 	[Export] Control UpgradeUI;
+
+	[ExportGroup("Animation")]
+	[Export] public AnimationTree AnimTree;
+	private AnimationNodeStateMachinePlayback StateMachine;
+	private StringName _pendingActionAnim = null;
 
 	// --- Internal state ---
 	private Vector3 _knockbackVelocity = Vector3.Zero;
@@ -109,6 +122,9 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (HUD != null)
 			HUD.Visible = false;
+
+		StateMachine = (AnimationNodeStateMachinePlayback)
+			AnimTree.Get("parameters/playback");
 
 		MyId.NetIDReady += SlowStart;
 	}
@@ -210,6 +226,20 @@ public partial class Player : BaseNetworkedPlayer
 	//  Per-frame — client input collection
 	// -------------------------------------------------------
 
+	// -------------------------------------------------------
+	//  Animation Handling
+	// -------------------------------------------------------
+
+	public override void _Process(double delta)
+	{
+		base._Process(delta);
+
+		if (_isDead || StateMachine == null) return;
+
+		bool isMoving = new Vector2(Velocity.X, Velocity.Z).LengthSquared() > 0.05f;
+		UpdateAnimation(isMoving);
+	}
+
 	public override void LocalProcess(float delta)
 	{
 		if (_isDead || !GameMaster.GameActive) return;
@@ -223,8 +253,8 @@ public partial class Player : BaseNetworkedPlayer
 
 		if (playerCam == null) { TryAssignCamera(); return; }
 
-		float  camYaw  = playerCam.GetFacingYaw();
-		var    input   = Input.GetVector("Left", "Right", "Forward", "Back");
+		float  camYaw   = playerCam.GetFacingYaw();
+		var    input    = Input.GetVector("Left", "Right", "Forward", "Back");
 		var    inputVec = new Vector3(input.X, 0, input.Y);
 
 		bool inputChanged = inputVec != _lastSentInput;
@@ -237,9 +267,13 @@ public partial class Player : BaseNetworkedPlayer
 			RpcId(1, MethodName.ServerReceiveMovement, inputVec, camYaw);
 		}
 
+		// ── Jump ─────────────────────────────────────────────
 		if (Input.IsActionJustPressed("Jump"))
+		{
 			RpcId(1, MethodName.ServerReceiveJump);
+		}
 
+		// ── Dash ──────────────────────────────────────────────
 		if (Input.IsActionJustPressed("Dash") && _dashCooldownTimer <= 0f && input != Vector2.Zero)
 		{
 			_dashCooldownTimer = dashCooldown;
@@ -370,8 +404,7 @@ public partial class Player : BaseNetworkedPlayer
 			Velocity = new Vector3(Velocity.X, JumpVelocity, Velocity.Z);
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
-		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void ServerReceiveDash()
 	{
 		if (!GenericCore.Instance.IsServer) return;
@@ -381,10 +414,12 @@ public partial class Player : BaseNetworkedPlayer
 		_isDashing         = true;
 		_dashDurationTimer = dashDuration;
 		Velocity           = Basis.Z * dashSpeed;
+
+		// Broadcast the Dash animation to all clients
+		Rpc(MethodName.ClientPlayActionAnim, "Dash");
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
-		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void ServerReceiveFire(Vector3 aimDir)
 	{
 		if (!GenericCore.Instance.IsServer) return;
@@ -396,8 +431,10 @@ public partial class Player : BaseNetworkedPlayer
 			.LookingAt(-aimDir, Vector3.Up)
 			.Basis.GetRotationQuaternion();
 
-		// Signal Level to spawn the bullet (server-side instantiation via NetworkCore).
 		EmitSignal(SignalName.BulletSpawnRequested, spawnPos, spawnRot, bulletId, (int)MyId.OwnerId);
+
+		// Broadcast the SnowBall animation for a standard shot
+		Rpc(MethodName.ClientPlayActionAnim, "SnowBall");
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
@@ -443,6 +480,12 @@ public partial class Player : BaseNetworkedPlayer
 	//  Authority → all clients RPCs
 	// -------------------------------------------------------
 
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientPlayActionAnim(string animName)
+	{
+		_pendingActionAnim = animName;
+	}
+
 	/// <summary>Broadcasts authoritative round-timer value to all clients.</summary>
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
 		 TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
@@ -457,15 +500,19 @@ public partial class Player : BaseNetworkedPlayer
 	private void ClientPlayUltimateEffect(Vector3 center)
 	{
 		GD.Print($"Ultimate effect at {center}");
-		// TODO: spawn visual/audio effect
+		_pendingActionAnim = "SnowBall";
+
+		// Caster already played the effect locally in ConfirmUltimate; skip to avoid double-play.
+		if (!isLocal)
+			PlayUltimateRiseFall(center);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
 		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void ClientOnDied()
 	{
-		_isDead  = true;
-		Visible  = false;
+		_isDead = true;
+		Visible = false;
 
 		if (isLocal && HUD != null)
 			HUD.Visible = false;
@@ -475,10 +522,10 @@ public partial class Player : BaseNetworkedPlayer
 		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void ClientOnRespawned(Vector3 spawnPos)
 	{
-		_isDead   = false;
-		CurrentHp = MaxHp;
+		_isDead               = false;
+		CurrentHp             = MaxHp;
 		ResetServerPosition(spawnPos);
-		Visible   = true;
+		Visible               = true;
 
 		if (isLocal)
 		{
@@ -557,7 +604,43 @@ public partial class Player : BaseNetworkedPlayer
 		Vector3 aimPoint = GetGroundAimPoint();
 		CancelUltimate();
 		_ultimateTimer = UltimateCooldown;
+		PlayUltimateRiseFall(aimPoint); // Immediate local feedback for the caster.
 		RpcId(1, MethodName.ServerReceiveUltimate, aimPoint);
+	}
+
+	private void PlayUltimateRiseFall(Vector3 groundPos)
+	{
+		if (UltimateModel == null) return;
+
+		// If the model is childed to the indicator (which gets hidden + scaled
+		// during aiming), reparent to the scene root so it animates independently
+		// and doesn't inherit the indicator's scale. Do NOT keep global transform —
+		// we want the model to use its own authored scale, not the indicator's.
+		var desiredParent = GetTree().CurrentScene;
+		if (desiredParent != null && UltimateModel.GetParent() != desiredParent)
+		{
+			var originalScale = UltimateModel.Scale;
+			UltimateModel.Reparent(desiredParent, keepGlobalTransform: false);
+			UltimateModel.Scale = originalScale;
+		}
+
+		Vector3 groundedPos  = groundPos   + Vector3.Up * UltimateGroundOffset;
+		Vector3 submergedPos = groundedPos - Vector3.Up * UltimateSubmergeDepth;
+		Vector3 peakPos      = groundedPos + Vector3.Up * UltimateRiseHeight;
+
+		UltimateModel.Visible        = true;
+		UltimateModel.GlobalPosition = submergedPos;
+
+		// Play the model's animation alongside the tween, if configured.
+		if (UltimateAnimPlayer != null && !string.IsNullOrEmpty(UltimateAnimName))
+			UltimateAnimPlayer.Play(UltimateAnimName);
+
+		var tween = CreateTween();
+		tween.TweenProperty(UltimateModel, "global_position", peakPos, UltimateRiseDuration)
+			 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+		tween.TweenProperty(UltimateModel, "global_position", submergedPos, UltimateFallDuration)
+			 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+		tween.TweenCallback(Callable.From(() => UltimateModel.Visible = false));
 	}
 
 	private void UpdateUltimateIndicator()
@@ -601,6 +684,33 @@ public partial class Player : BaseNetworkedPlayer
 
 		var result = GetWorld3D().DirectSpaceState.IntersectRay(query);
 		return result.Count > 0 ? result["position"].AsVector3() : GlobalPosition;
+	}
+
+	private void UpdateAnimation(bool isMoving)
+	{
+		if (StateMachine == null) return;
+
+		// Consume any pending action anim here so it's the last Travel() call this frame,
+		// preventing _Process locomotion Travel() from overriding the RPC-triggered anim.
+		if (_pendingActionAnim != null)
+		{
+			StateMachine.Travel(_pendingActionAnim);
+			_pendingActionAnim = null;
+			return;
+		}
+
+		// Once Travel() is processed by the AnimationTree, GetCurrentNode() returns the
+		// action state — guard against locomotion overriding it on subsequent frames.
+		StringName currentState = StateMachine.GetCurrentNode();
+		if (currentState == "Dash" || currentState == "SnowBall")
+			return;
+
+		if (!IsOnFloor())
+			StateMachine.Travel("Jump");
+		else if (isMoving)
+			StateMachine.Travel("Walk");
+		else
+			StateMachine.Travel("Idle");
 	}
 
 	// -------------------------------------------------------

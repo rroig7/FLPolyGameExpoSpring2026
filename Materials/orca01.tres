@@ -1,0 +1,17 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dr6of5b0bqepr"]
+
+[ext_resource type="Texture2D" uid="uid://dw0u6ooumspjg" path="res://Assets/orca/Material.001_albedo.jpg" id="1_rspj0"]
+[ext_resource type="Texture2D" uid="uid://qv3tgclhvogm" path="res://Assets/orca/Material.001_AO.jpg" id="2_35utp"]
+[ext_resource type="Texture2D" uid="uid://bv6bwdk36oj6c" path="res://Assets/orca/Material.001_metallic.jpg" id="3_78wjx"]
+[ext_resource type="Texture2D" uid="uid://blotuhl5mr1ol" path="res://Assets/orca/Material.001_normal.png" id="4_mxix6"]
+[ext_resource type="Texture2D" uid="uid://cku2alw1xw7ne" path="res://Assets/orca/Material.001_roughness.jpg" id="5_c403o"]
+
+[resource]
+albedo_texture = ExtResource("1_rspj0")
+metallic = 1.0
+metallic_texture = ExtResource("3_78wjx")
+roughness_texture = ExtResource("5_c403o")
+normal_enabled = true
+normal_texture = ExtResource("4_mxix6")
+ao_enabled = true
+ao_texture = ExtResource("2_35utp")

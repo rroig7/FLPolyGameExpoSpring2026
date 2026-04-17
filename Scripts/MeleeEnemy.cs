@@ -162,7 +162,7 @@ public partial class MeleeEnemy : CharacterBody3D
 		knockbackDir += new Vector3(0, 0.15f, 0);
 
 		player.ApplyKnockback(knockbackDir * knockbackForce);
-		player.TakeDamage(20f);
+		player.TakeDamage(10f);
 	}
 
 	private void UpdateAnimation()
@@ -170,11 +170,9 @@ public partial class MeleeEnemy : CharacterBody3D
 		if (myAnimation == null) return;
 
 		if (!SyncedIsMoving)
-			myAnimation.Play("Attacking");
-		else if (SyncedIsChasing)
-			myAnimation.Play("Running");
+			myAnimation.Play("seal_idle_flutter");
 		else
-			myAnimation.Play("Walking");
+			myAnimation.Play("seal_hop_slow");
 	}
 
 	private void ScanForPlayers()

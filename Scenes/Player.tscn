@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://dqt54rh3b3x66"]
 
 [ext_resource type="Script" uid="uid://bfw5hdcj0yn71" path="res://Scripts/Player.cs" id="1_rpqav"]
-[ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_dewec"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="2_kyqiw"]
-[ext_resource type="PackedScene" uid="uid://bk2q30hrnqy0m" path="res://Assets/FuckingPenguin/FuckingPenguin.glb" id="3_gntrk"]
+[ext_resource type="PackedScene" uid="uid://dfhtf5i03aj84" path="res://Assets/Penguin2/FuckingPenguinAnimations2.glb" id="2_yoq75"]
 [ext_resource type="PackedScene" uid="uid://b31jlpgk0cqgo" path="res://Scenes/UltimateIndicator.tscn" id="5_5ixxa"]
 [ext_resource type="Texture2D" uid="uid://btsjmr3f6prtv" path="res://Assets/UI Images/Keys/Ulty_Logo.png" id="5_52ee3"]
 [ext_resource type="FontFile" uid="uid://cjhmlf66vdsar" path="res://Assets/UI Images/Amonk Outline.ttf" id="6_bhhdu"]
@@ -11,6 +10,91 @@
 [ext_resource type="Texture2D" uid="uid://2kmjs8w06u4f" path="res://Assets/UI Images/Keys/shift.png" id="8_yoq75"]
 [ext_resource type="Texture2D" uid="uid://bc0h7ftjrguek" path="res://Assets/UI Images/Keys/SlideIcon.png" id="9_ksbbd"]
 [ext_resource type="FontFile" uid="uid://m58jjc3281g1" path="res://Assets/UI Images/Amonk Ice-SVG.ttf" id="10_ksbbd"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yoq75"]
+animation = &"Dash"
+use_custom_timeline = true
+timeline_length = 0.5
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_glx4g"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_miouo"]
+animation = &"Jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1e7my"]
+animation = &"SnowBall"
+use_custom_timeline = true
+timeline_length = 0.3
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o3h8g"]
+animation = &"Walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1e7my"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_arntx"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lslt6"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ulo2v"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qidb7"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_70hv0"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8flut"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ksbbd"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_glx4g"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_miouo"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o3h8g"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yoq75"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1iu4k"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_m0x7a"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5v66d"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_x63xi"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_i2e8t"]
+switch_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_yoq75"]
+states/Dash/node = SubResource("AnimationNodeAnimation_yoq75")
+states/Dash/position = Vector2(537, 189)
+states/Idle/node = SubResource("AnimationNodeAnimation_glx4g")
+states/Idle/position = Vector2(315, 96)
+states/Jump/node = SubResource("AnimationNodeAnimation_miouo")
+states/Jump/position = Vector2(505, 17)
+states/SnowBall/node = SubResource("AnimationNodeAnimation_1e7my")
+states/SnowBall/position = Vector2(355, -16)
+states/Walk/node = SubResource("AnimationNodeAnimation_o3h8g")
+states/Walk/position = Vector2(437, 96)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_1e7my"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_arntx"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_lslt6"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_ulo2v"), "Idle", "SnowBall", SubResource("AnimationNodeStateMachineTransition_qidb7"), "Walk", "SnowBall", SubResource("AnimationNodeStateMachineTransition_70hv0"), "Jump", "SnowBall", SubResource("AnimationNodeStateMachineTransition_8flut"), "Jump", "Dash", SubResource("AnimationNodeStateMachineTransition_ksbbd"), "Walk", "Dash", SubResource("AnimationNodeStateMachineTransition_glx4g"), "Dash", "Walk", SubResource("AnimationNodeStateMachineTransition_miouo"), "Dash", "Idle", SubResource("AnimationNodeStateMachineTransition_o3h8g"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_yoq75"), "Jump", "Idle", SubResource("AnimationNodeStateMachineTransition_1iu4k"), "Jump", "Walk", SubResource("AnimationNodeStateMachineTransition_m0x7a"), "SnowBall", "Idle", SubResource("AnimationNodeStateMachineTransition_5v66d"), "SnowBall", "Walk", SubResource("AnimationNodeStateMachineTransition_x63xi"), "SnowBall", "Jump", SubResource("AnimationNodeStateMachineTransition_i2e8t")]
+graph_offset = Vector2(-152, -33)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gntrk"]
 radius = 0.15332031
@@ -149,15 +233,18 @@ shadow_size = 11
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m0x7a"]
 bg_color = Color(1.2513996e-06, 0.5956993, 0.84199774, 1)
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "UpgradeUI", "MyId") groups=["players"]]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "UltimateModel", "UltimateAnimPlayer", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "UpgradeUI", "AnimTree", "MyId") groups=["players"]]
 collision_layer = 4
 collision_mask = 15
 floor_max_angle = 1.5707964
 script = ExtResource("1_rpqav")
-SnowBulletScene = ExtResource("2_dewec")
 _muzzle = NodePath("Muzzle")
 UltimateRadius = 6.0
 UltimateIndicator = NodePath("UltimateIndicator")
+UltimateModel = NodePath("UltimateIndicator/OrcaAnimation")
+UltimateRiseHeight = 0.1
+UltimateAnimPlayer = NodePath("UltimateIndicator/OrcaAnimation/AnimationPlayer")
+UltimateAnimName = "ArmatureAction"
 HUD = NodePath("HUD")
 HpBar = NodePath("HUD/HealthBar")
 XpLabel = NodePath("HUD/XP_ Label")
@@ -167,8 +254,40 @@ DashIcon = NodePath("HUD/Habilities/Slide/Slide")
 DashCDLabel = NodePath("HUD/Habilities/Slide/Coldown2")
 RoundTimer = NodePath("HUD/Timer_Label")
 UpgradeUI = NodePath("HUD/UpGrades")
+AnimTree = NodePath("AnimationTree")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
+
+[node name="FuckingPenguinAnimations2" parent="." unique_id=1900623258 instance=ExtResource("2_yoq75")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
+
+[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1387458358) index="0" unique_id=792688820]
+bones/1/rotation = Quaternion(-0.12325293, 0.038744338, -0.6634553, 0.7369768)
+bones/2/rotation = Quaternion(0.003363689, 0.14262055, -0.5010026, 0.8536067)
+bones/9/rotation = Quaternion(-0.06805276, 0.036168437, 0.9969895, 0.008532995)
+bones/10/rotation = Quaternion(-0.12672412, -0.042977255, 0.6316057, 0.76365453)
+bones/11/rotation = Quaternion(-0.012576958, 0.0087000895, -0.6321124, 0.77472585)
+bones/13/rotation = Quaternion(0.6798383, 0.05738528, 0.07464397, 0.7272931)
+bones/15/rotation = Quaternion(0.046383955, -0.0025522436, 0.9988977, -0.0067464095)
+bones/16/rotation = Quaternion(0.046450775, -0.050698232, 0.9976316, -0.0017853229)
+bones/18/position = Vector3(-0.017070051, 0.39237872, -0.0023277234)
+bones/18/rotation = Quaternion(-0.04115667, -0.063360244, -0.62602884, 0.77613115)
+bones/19/rotation = Quaternion(-0.030909114, 0.049675528, 0.6357416, 0.7696815)
+bones/21/rotation = Quaternion(0.6767889, -0.14890395, -0.06572424, 0.7179587)
+bones/22/rotation = Quaternion(0.08919531, 0.66119796, 0.72170025, -0.18441887)
+bones/26/rotation = Quaternion(-0.06805032, 0.036168218, 0.9969896, -0.0085330065)
+bones/27/rotation = Quaternion(-0.12325293, -0.038744338, 0.6634553, 0.7369768)
+bones/28/rotation = Quaternion(0.008588443, -0.07632168, 0.5089925, 0.8573378)
+bones/31/rotation = Quaternion(-0.0842318, -0.09535109, 0.9539156, -0.27176875)
+bones/32/rotation = Quaternion(-0.060962133, -0.014415726, 0.97727567, -0.2025046)
+bones/33/rotation = Quaternion(-0.070427716, -0.0209309, 0.95163924, -0.29830316)
+bones/36/rotation = Quaternion(6.714767e-08, -2.064186e-09, 0.030726468, 0.9995279)
+bones/37/rotation = Quaternion(0.71665454, -0.026875671, 0.017527992, 0.6966899)
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1733513987]
+root_node = NodePath("../FuckingPenguinAnimations2")
+tree_root = SubResource("AnimationNodeStateMachine_yoq75")
+anim_player = NodePath("../FuckingPenguinAnimations2/AnimationPlayer")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=825879414]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.30937195, 0)
@@ -178,15 +297,15 @@ shape = SubResource("CapsuleShape3D_gntrk")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6592022, 0)
 shape = SubResource("SphereShape3D_5ixxa")
 
+[node name="UltimateIndicator" parent="." unique_id=134195759 instance=ExtResource("5_5ixxa")]
+visible = false
+
+[node name="Muzzle" type="Node3D" parent="." unique_id=2096701833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21472505, 0.5851183, 0.28961182)
+
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=486744588]
 replication_config = SubResource("SceneReplicationConfig_gntrk")
 script = ExtResource("2_kyqiw")
-
-[node name="FuckingPenguin" parent="." unique_id=1565179669 instance=ExtResource("3_gntrk")]
-transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.42324185, 0)
-
-[node name="Muzzle" type="Node3D" parent="." unique_id=2096701833]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19521835, 0.5851183, 0.38866067)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=199841574]
 
@@ -1318,5 +1437,6 @@ theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 40
 text = "TIME LEFT: 30:00"
 
-[node name="UltimateIndicator" parent="." unique_id=134195759 instance=ExtResource("5_5ixxa")]
-visible = false
+[editable path="FuckingPenguinAnimations2"]
+[editable path="UltimateIndicator"]
+[editable path="UltimateIndicator/OrcaAnimation"]

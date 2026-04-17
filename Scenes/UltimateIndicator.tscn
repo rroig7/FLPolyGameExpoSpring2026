@@ -1,8 +1,18 @@
 [gd_scene format=3 uid="uid://b31jlpgk0cqgo"]
 
 [ext_resource type="PackedScene" uid="uid://b0p3mj5h18ylj" path="res://Assets/mesh/player_select_effect.tscn" id="1_pbfrb"]
+[ext_resource type="PackedScene" uid="uid://cb8tnncmm6mmq" path="res://Assets/orca/OrcaAnimation.glb" id="2_qbv21"]
 
 [node name="UltimateIndicator" type="Node3D" unique_id=134195759]
 
 [node name="Player_Select_effect" parent="." unique_id=6067337 instance=ExtResource("1_pbfrb")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="OrcaAnimation" parent="." unique_id=1843260664 instance=ExtResource("2_qbv21")]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, -7.916933, 0)
+
+[node name="Skeleton3D" parent="OrcaAnimation/Armature" parent_id_path=PackedInt32Array(1843260664, 435587464) index="0" unique_id=549225595]
+bones/3/rotation = Quaternion(0.03390997, -0.026860163, -0.42794126, 0.90277076)
+bones/5/rotation = Quaternion(0.29794508, 0.01397486, 0.45649078, 0.838242)
+
+[editable path="OrcaAnimation"]
