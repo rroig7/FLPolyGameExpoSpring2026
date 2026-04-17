@@ -251,7 +251,13 @@ public partial class Player : BaseNetworkedPlayer
 
 		bool isMoving = new Vector2(Velocity.X, Velocity.Z).LengthSquared() > 0.05f;
 		UpdateAnimation(isMoving);
-	}
+
+		// Check if player fell out of map, if they did, then kill them.
+		if (GlobalPosition.Y < -20f)
+		{
+			Die();
+		}
+}
 
 	public override void LocalProcess(float delta)
 	{
