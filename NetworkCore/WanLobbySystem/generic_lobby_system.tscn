@@ -12,8 +12,8 @@ bg_color = Color(0, 0, 0, 1)
 
 [node name="GenericLobbySystem" type="CanvasLayer" parent="." unique_id=1822693811 node_paths=PackedStringArray("AgentSpawner", "GameNameBox")]
 script = ExtResource("1_nacce")
-PublicIP = "127.0.0.1"
-PrivateIP = "127.0.0.1"
+PublicIP = "23.128.112.68"
+PrivateIP = "10.200.208.187"
 PortMinimum = 7000
 AgentSpawner = NodePath("HBoxContainer/ColorRect2/ActiveGames/ActiveGames/MultiplayerSpawner")
 GameNameBox = NodePath("HBoxContainer/ColorRect/MarginContainer/LeftMenu/GameName")
@@ -101,8 +101,6 @@ script = ExtResource("2_nacce")
 SpawnInexZeroOnConnect = true
 
 [node name="TestGameRoot" parent="." unique_id=1127935270 instance=ExtResource("3_nacce")]
-_portMaximum = 7010
-_portMinimum = 7000
 
 [connection signal="pressed" from="GenericLobbySystem/HBoxContainer/ColorRect/MarginContainer/LeftMenu/Button" to="GenericLobbySystem" method="CreatNewGameServer"]
 [connection signal="ServerDisconnected" from="TestGameRoot" to="TestGameRoot/CanvasLayer/Lobby UI" method="show"]
