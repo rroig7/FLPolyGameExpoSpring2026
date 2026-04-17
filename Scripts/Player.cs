@@ -42,13 +42,14 @@ public partial class Player : BaseNetworkedPlayer
 	private bool  _isDead    = false;
 	public bool IsDead => _isDead;
 	public Base PlayerBase;
+	public string PName = "Player";
 	[Export] public bool inBase = true;
 
 	// --- Dash Settings ---
 	[ExportGroup("Dash Settings")]
-	[Export] float dashSpeed    = 15f;
+	[Export] public float dashSpeed    = 15f;
 	[Export] public float dashDuration = 0.10f;
-	[Export] float dashCooldown = 3.0f;
+	[Export] public float dashCooldown = 3.0f;
 
 	float _dashCooldownTimer = 0f;
 	float _dashDurationTimer = 0f;
@@ -91,6 +92,7 @@ public partial class Player : BaseNetworkedPlayer
 	// --- HUD ---
 	[ExportGroup("HUD")]
 	[Export] CanvasLayer HUD;
+	[Export] Label NameLabel;
 	[Export] ProgressBar HpBar;
 	[Export] Label XpLabel;
 	[Export] TextureRect UltIcon;
@@ -128,6 +130,7 @@ public partial class Player : BaseNetworkedPlayer
 		StateMachine = (AnimationNodeStateMachinePlayback)
 			AnimTree.Get("parameters/playback");
 
+		UpdatePName(); // show whatever we have initially
 		MyId.NetIDReady += SlowStart;
 	}
 
@@ -149,6 +152,7 @@ public partial class Player : BaseNetworkedPlayer
 		UpdateXpLabel();
 		UpdateUltimateHud();
 		UpdateDashHud();
+		UpdatePName();
 		GameMaster.Instance.SuddenDeathTrigger += ExitBase;
 	}
 
@@ -169,6 +173,12 @@ public partial class Player : BaseNetworkedPlayer
 	// -------------------------------------------------------
 	//  HUD Helpers
 	// -------------------------------------------------------
+
+	private void UpdatePName()
+	{
+		if (NameLabel != null)
+			NameLabel.Text = PName;
+	}
 
 	private void UpdateHpBar()
 	{
@@ -522,6 +532,14 @@ public partial class Player : BaseNetworkedPlayer
 	// -------------------------------------------------------
 	//  Authority → all clients RPCs
 	// -------------------------------------------------------
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+	 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void SetPlayerName(string newName)
+	{
+		PName = newName;
+		UpdatePName();
+	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void ClientPlayActionAnim(string animName)

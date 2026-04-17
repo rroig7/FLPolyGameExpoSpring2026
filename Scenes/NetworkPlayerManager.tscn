@@ -52,7 +52,7 @@ replication_config = SubResource("SceneReplicationConfig_wv0xt")
 script = ExtResource("1_k28jr")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1912154378]
-custom_minimum_size = Vector2(400, 100)
+custom_minimum_size = Vector2(550, 300)
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.347

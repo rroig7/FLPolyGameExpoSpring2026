@@ -37,7 +37,7 @@ layer = 0
 
 [node name="NPM Spawner" type="MultiplayerSpawner" parent="CanvasLayer" unique_id=124614511]
 _spawnable_scenes = PackedStringArray("uid://chrro2jpws6el")
-spawn_path = NodePath("../Lobby UI/VBoxContainer")
+spawn_path = NodePath("../Lobby UI/GridContainer")
 script = ExtResource("3_5ftxa")
 SpawnInexZeroOnConnect = true
 
@@ -102,17 +102,17 @@ grow_vertical = 2
 theme = SubResource("Theme_bousw")
 text = "JOIN"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Lobby UI" unique_id=1532125644]
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Lobby UI" unique_id=406858819]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.56
-anchor_top = 0.0050000004
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -0.11999512
-offset_top = -0.24000025
-offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/h_separation = 602
+theme_override_constants/v_separation = 48
+columns = 2
 
 [node name="Loading Screen" type="Control" parent="CanvasLayer" unique_id=1711164017 groups=["LoadingScreen"]]
 visible = false

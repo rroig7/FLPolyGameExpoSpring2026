@@ -86,6 +86,7 @@ public partial class NetworkPlayerManager : Control
 			.NetCreateObject(1, playerSpawn.GlobalPosition, (PlayerBase.GetParent() as Node3D).Quaternion, MyNetID.OwnerId) as Player;
 		
 		PlayerCharacter.PlayerBase = PlayerBase;
+		PlayerCharacter.Rpc(Player.MethodName.SetPlayerName, PlayerName);
 	}
 
 	public override void _Process(double delta) {

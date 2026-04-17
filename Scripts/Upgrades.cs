@@ -48,12 +48,21 @@ public partial class Upgrades : Control
 		if(GenericCore.Instance.IsServer)
 		{
 			var upgrade = GetNode<UpgradeInfo>(path);
-			//Modify player to apply upgrade
 
+			
+			if(upgrade.UpgradeDescription.ToLower().Contains("health") && Player.PlayerBase.currentHP == Player.PlayerBase.MaxHp)
+			{
+				//Refund if trying to upgrade health at max
+				RpcId(id, MethodName.PurchaseComplete, false);
+				GD.Print($"Player {id} failed to purchase {upgrade.UpgradeName} (health already at max)");
+				return;
+			}
+
+			//Modify player to apply upgrade
 			if(Player.XP >= upgrade.Cost)
 			{
 				Player.XP -= upgrade.Cost;
-				ApplyUpgrade(upgrade.UpgradeDescription);
+				ApplyUpgrade(upgrade.UpgradeDescription, upgrade.modifier, upgrade.minValue);
 
 				RpcId(id, MethodName.PurchaseComplete, true);
 				GD.Print($"Player {id} purchased {upgrade.UpgradeName}");
@@ -75,7 +84,7 @@ public partial class Upgrades : Control
 	}
 
 
-	void ApplyUpgrade(string description)
+	void ApplyUpgrade(string description, float modifier, float min = -1)
 	{
 		var parts = description.Split("/");
 		var target = parts[0];
@@ -83,17 +92,95 @@ public partial class Upgrades : Control
 		if(target.ToLower() == "player")
 		{
 			var ability = parts[1];
-			var modifier = float.Parse(parts[2]);
-
+			var property = parts[2];
+	
 			switch(ability.ToLower())
 			{
 				case "dash":
-					Player.dashDuration += modifier;
+					ModDash(property, modifier, min);
 					break;
 				
 				case "shoot":
+					ModShoot(property, modifier, min);
+					break;
+				
+				case "ult":
+					ModUlt(property, modifier, min);
+					break;
+				
+				case "base":
+					ModBase(property, modifier);
 					break;
 			}
 		}
 	}
+
+	void ModDash(string property, float modifier, float min)
+	{
+		switch(property.ToLower())
+		{	
+			case "speed":
+				Player.dashSpeed += modifier;
+				break;
+
+			case "duration":
+				Player.dashDuration += modifier;
+				break;
+			
+			case "cooldown":
+				Player.dashCooldown = Mathf.Lerp(Player.dashCooldown, min, modifier);
+				GD.PushWarning($"New dash cooldown: {Player.dashCooldown}");
+				break;
+		}
+	}
+
+	void ModUlt(string property, float modifier, float min)
+	{
+		switch(property.ToLower())
+		{
+			case "cooldown":
+				Player.UltimateCooldown = Mathf.Lerp(Player.UltimateCooldown, min, modifier);
+				GD.PushWarning($"New ultimate cooldown: {Player.UltimateCooldown}");
+				break;
+			
+			case "radius":
+				Player.UltimateRadius += modifier;
+				Player.UltimateModel.Scale *= 1.1f;
+				break;
+			
+			case "damage":
+				Player.UltimateDamage += modifier;
+				break;
+		}
+	}
+
+	void ModShoot(string property, float modifier, float min)
+	{
+		switch(property.ToLower())
+		{
+			case "cooldown":
+				Player.FireRate = Mathf.Lerp(Player.FireRate, min, modifier);
+				GD.PushWarning($"New fire rate: {Player.FireRate}");
+				break;
+			
+			case "damage":
+				Player.BulletDamage += modifier;
+				break;
+		}
+	}
+
+	void ModBase(string property, float modifier)
+	{
+		switch(property.ToLower())
+		{
+			case "health":
+				Player.PlayerBase.currentHP = (int)Mathf.Clamp(Player.PlayerBase.currentHP + modifier, 0, Player.PlayerBase.MaxHp);
+				break;
+			
+			case "turret":
+				//Spawn a turret near the base
+				break;
+		}
+	}
+
 }
