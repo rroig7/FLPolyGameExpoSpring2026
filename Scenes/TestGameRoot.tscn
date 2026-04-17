@@ -43,7 +43,6 @@ script = ExtResource("3_5ftxa")
 SpawnInexZeroOnConnect = true
 
 [node name="Lobby UI" type="Control" parent="CanvasLayer" unique_id=1167481812]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,6 +71,7 @@ texture = ExtResource("4_5ftxa")
 expand_mode = 1
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Lobby UI" unique_id=1725437401]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
