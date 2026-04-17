@@ -29,8 +29,7 @@ _maxConnections = 4
 [node name="GameMaster" type="Node" parent="." unique_id=1902878242 node_paths=PackedStringArray("MainSpawner", "EndScreen")]
 script = ExtResource("2_bousw")
 MainSpawner = NodePath("../Main Spawner")
-TotalRoundLength = 1.0
-BossSpawn = 0.05
+TotalRoundLength = 6.0
 EndScreen = NodePath("../Victory")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
