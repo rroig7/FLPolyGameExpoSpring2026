@@ -67,6 +67,8 @@ public partial class BossEnemy : CharacterBody3D
         _bossFOV = GetNode<Area3D>("BossFOV");
         _bossFOV.BodyEntered += OnBodyEntered;
         _bossFOV.BodyExited  += OnBodyExited;
+        
+        GameMaster.Instance.SuddenDeathTrigger += Die;
     }
 
     public override void _Process(double delta)
