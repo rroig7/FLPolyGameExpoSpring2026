@@ -216,7 +216,7 @@ public partial class Player : BaseNetworkedPlayer
 		if (UltCDLabel != null)
 		{
 			UltCDLabel.Visible = onCooldown;
-			if (onCooldown) UltCDLabel.Text = Mathf.CeilToInt(_ultimateTimer).ToString();
+			if (onCooldown) UltCDLabel.Text = _ultimateTimer.ToString("F1");
 		}
 	}
 
@@ -231,7 +231,7 @@ public partial class Player : BaseNetworkedPlayer
 		if (DashCDLabel != null)
 		{
 			DashCDLabel.Visible = onCooldown;
-			if (onCooldown) DashCDLabel.Text = Mathf.CeilToInt(_dashCooldownTimer).ToString();
+			if (onCooldown) DashCDLabel.Text = _dashCooldownTimer.ToString("F1");
 		}
 	}
 
