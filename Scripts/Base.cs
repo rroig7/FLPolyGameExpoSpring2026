@@ -4,9 +4,9 @@ using System;
 public partial class Base : StaticBody3D
 {
 	[Export] ProgressBar HealthBar;
-	[Export] public int MaxHp;
+	[Export] public int MaxHp = 750;
 	[Export] public NetID MyID {get; private set;}
-	public float _currentHp = 100f;
+	public float _currentHp = 750f;
 	[Export] public float CurrentHp
 	{
 		get => _currentHp;
@@ -31,7 +31,7 @@ public partial class Base : StaticBody3D
 		}
 	}
 	
-	public void Hit(int owner, int dmg)
+	public void Hit(int owner, float dmg)
 	{
 		GD.PushWarning($"Player Base {MyID.OwnerId} was hit by {owner}");
 

@@ -15,6 +15,8 @@ public partial class SnowBullet : RigidBody3D
 	/// <summary>Multiplayer authority id of the player who fired. Set by Level after spawn.</summary>
 	public int ShooterId { get; set; } = 1;
 
+	public float Damage;
+
 	/// <summary>
 	/// Travel direction (normalised). Set by Level immediately after spawn,
 	/// matching the Direction/Speed pattern used by PlayerProjectile.
@@ -74,22 +76,22 @@ public partial class SnowBullet : RigidBody3D
 		switch (body)
 		{
 			case MeleeEnemy meleeEnemy:
-				meleeEnemy.OnHitByBullet(ShooterId);
+				meleeEnemy.OnHitByBullet(ShooterId, Damage);
 				break;
 
 			case Player player:
 				// Do not damage the shooter.
 				if (player.GetMultiplayerAuthority() != ShooterId)
-					player.TakeDamage(player.BulletDamage);
+					player.TakeDamage(Damage);
 				break;
 
 			case Base playerBase:
-				playerBase.Hit(ShooterId, 1);
+				playerBase.Hit(ShooterId, Damage);
 				break;
 			
 			case BossEnemy boss:
 				// ShooterId == -1 is the sentinel for boss-fired bullets; don't self-damage.
-				if (ShooterId != -1) boss.OnHitByBullet(ShooterId);
+				if (ShooterId != -1) boss.OnHitByBullet(ShooterId, Damage);
 				break;
 			
 			default:

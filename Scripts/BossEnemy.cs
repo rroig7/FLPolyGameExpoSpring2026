@@ -11,6 +11,7 @@ public partial class BossEnemy : CharacterBody3D
 
 	[Export] public float FireRate       = 1.0f;
 	[Export] public float BulletSpeed    = 20.0f;
+	[Export] public float BulletDamage = 20.0f;
 	[Export] public float RotationSpeed  = 5.0f;
 
 	[Export] public float MeleeRange     = 2.5f;
@@ -42,7 +43,7 @@ public partial class BossEnemy : CharacterBody3D
 
 	[Export] public int XP_Value = 100;
 	
-	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
+	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId, float dmg);
 
 	// ── Synced properties (matched to MeleeEnemy pattern) ────────────────────
 	[Export] public Vector3 SyncedVelocity
@@ -332,10 +333,10 @@ public partial class BossEnemy : CharacterBody3D
 		// Signal Level to spawn the bullet (server-side instantiation via NetworkCore).
 		// Use -1 as shooter sentinel so the host player (auth=1) isn't treated
 		// as the shooter of the boss's own bullets.
-		EmitSignal(BossEnemy.SignalName.BulletSpawnRequested, spawnPos, spawnRot, bulletId, -1);
+		EmitSignal(BossEnemy.SignalName.BulletSpawnRequested, spawnPos, spawnRot, bulletId, -1, BulletDamage);
 	}
 	
-	public void OnHitByBullet(int id)
+	public void OnHitByBullet(int id, float dmg)
 	{
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDying) return;

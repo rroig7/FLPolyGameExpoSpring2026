@@ -67,7 +67,7 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] public float shootTimer   = 0f;
 	[Export] public Node3D _muzzle;
 
-	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
+	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId, float dmg);
 
 	private int _bulletCounter = 0;
 
@@ -490,7 +490,7 @@ public partial class Player : BaseNetworkedPlayer
 			.LookingAt(-aimDir, Vector3.Up)
 			.Basis.GetRotationQuaternion();
 
-		EmitSignal(SignalName.BulletSpawnRequested, spawnPos, spawnRot, bulletId, (int)MyId.OwnerId);
+		EmitSignal(SignalName.BulletSpawnRequested, spawnPos, spawnRot, bulletId, (int)MyId.OwnerId, BulletDamage);
 
 		// Broadcast the SnowBall animation for a standard shot
 		Rpc(MethodName.ClientPlayActionAnim, "SnowBall");

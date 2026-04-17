@@ -6,6 +6,7 @@ public partial class Turret : Node3D
 	[Export] public float RotationSpeed = 5.0f;
 	[Export] public float FireRate = 1.0f;
 	[Export] public float BulletSpeed = 20.0f;
+	[Export] public float BulletDamage = 10.0f;
 
 	[Export] public NetID MyID;
 
@@ -16,7 +17,7 @@ public partial class Turret : Node3D
 	/// <summary>Peer ID of the player who placed this turret. Set before the turret enters the tree.</summary>
 	[Export] public int OwnerPeerId = -2;
 
-	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
+	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId, float dmg);
 
 	private readonly List<Node3D> _targetsInFOV = new();
 	private Node3D _currentTarget;
@@ -96,7 +97,7 @@ public partial class Turret : Node3D
 			.LookingAt(-aimDir, Vector3.Up)
 			.Basis.GetRotationQuaternion();
 
-		EmitSignal(SignalName.BulletSpawnRequested, Muzzle.GlobalPosition, spawnRot, bulletId, OwnerPeerId);
+		EmitSignal(SignalName.BulletSpawnRequested, Muzzle.GlobalPosition, spawnRot, bulletId, OwnerPeerId, BulletDamage);
 	}
 
 	// ── Targeting ─────────────────────────────────────────────────────────────

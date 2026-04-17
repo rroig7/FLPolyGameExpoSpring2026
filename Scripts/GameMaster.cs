@@ -94,7 +94,7 @@ public partial class GameMaster : Node
 			if (node is Player player)
 			{
 				// Ensure we don't double-connect if this is called multiple times
-				if (!player.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int>(OnBulletSpawnRequested)))
+				if (!player.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int, float>(OnBulletSpawnRequested)))
 					player.BulletSpawnRequested += OnBulletSpawnRequested;
 			}
 		}
@@ -102,7 +102,7 @@ public partial class GameMaster : Node
 
 	// ── Projectile Handlers (Migrated from Level.cs) ──────────────────
 
-	public async void OnBulletSpawnRequested(Vector3 origin, Quaternion rotation, int bulletId, int shooterId)
+	public async void OnBulletSpawnRequested(Vector3 origin, Quaternion rotation, int bulletId, int shooterId, float dmg)
 	{
 		var node = MainSpawner.NetCreateObject(
 			index: 3, // SnowBullet
@@ -119,6 +119,7 @@ public partial class GameMaster : Node
 			bullet.Direction = new Basis(rotation).Z;
 			bullet.Speed = isBossBullet ? 80f : 30f;
 			bullet.ShooterId = shooterId;
+			bullet.Damage = dmg;
 			bullet.GlobalPosition = origin;
 			if (isBossBullet)
 				bullet.Scale = Vector3.One * 4f;
@@ -165,7 +166,7 @@ public partial class GameMaster : Node
 			if (bossNode is BossEnemy boss)
 			{
 				// Ensure we don't double-connect if this is called multiple times
-				if (!boss.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int>(OnBulletSpawnRequested)))
+				if (!boss.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int, float>(OnBulletSpawnRequested)))
 					boss.BulletSpawnRequested += OnBulletSpawnRequested;
 			}
 		}
@@ -173,7 +174,7 @@ public partial class GameMaster : Node
 	
 	public void RegisterTurret(Turret turret)
 	{
-		if (!turret.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int>(OnBulletSpawnRequested)))
+		if (!turret.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int, float>(OnBulletSpawnRequested)))
 			turret.BulletSpawnRequested += OnBulletSpawnRequested;
 	}
 

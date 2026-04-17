@@ -255,12 +255,12 @@ public partial class MeleeEnemy : CharacterBody3D
 		navAgent.TargetPosition = lastPatrolTarget;
 	}
 
-	public void OnHitByBullet(int id)
+	public void OnHitByBullet(int id, float dmg)
 	{
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDying) return;
 
-		CurrentHp -= 20f; // or wire this up to bullet damage later
+		CurrentHp -= dmg; // or wire this up to bullet damage later
 		GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
 
 		if (CurrentHp > 0f) return;
