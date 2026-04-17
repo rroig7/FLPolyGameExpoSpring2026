@@ -238,7 +238,6 @@ public partial class MeleeEnemy : CharacterBody3D
 		navAgent.TargetPosition = lastPatrolTarget;
 	}
 
-// Replace your existing OnHitByBullet with this:
 	public void OnHitByBullet(int id)
 	{
 		if (!GenericCore.Instance.IsServer) return;

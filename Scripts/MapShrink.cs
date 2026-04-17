@@ -50,7 +50,11 @@ public partial class MapShrink : Node
 	
 	void DeleteObj(Node obj)
 	{
-		GD.Print($"{obj.GetParent().Name} is to be deleted");
+		// Godot re-emits BodyExited when a body inside the area is freed.
+		// Skip those — we only want to react to bodies that legitimately left.
+		if (!IsInstanceValid(obj) || obj.IsQueuedForDeletion()) return;
+
+		GD.Print($"{obj.Name} fell off the map");
 		obj.GetParent().QueueFree();
 	}
 }

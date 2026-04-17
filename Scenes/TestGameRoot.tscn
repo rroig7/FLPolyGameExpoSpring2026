@@ -30,7 +30,7 @@ script = ExtResource("2_bousw")
 MainSpawner = NodePath("../Main Spawner")
 minPlayerCount = 1
 TotalRoundLength = 1.0
-BossSpawn = 0.2
+BossSpawn = 0.05
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
 layer = 0
@@ -150,7 +150,7 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
-_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3", "uid://c73y4jqgjuev")
+_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3", "uid://c73y4jqgjuev", "uid://b1p3cox5ob4mr")
 spawn_path = NodePath("../Level")
 script = ExtResource("3_5ftxa")
 

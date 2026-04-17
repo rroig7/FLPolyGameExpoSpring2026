@@ -86,7 +86,11 @@ public partial class SnowBullet : RigidBody3D
 			case Base playerBase:
 				playerBase.Hit(ShooterId, 1);
 				break;
-
+			
+			case BossEnemy boss:
+				boss.OnHitByBullet(ShooterId);
+				break;
+			
 			default:
 				GD.Print("SnowBullet: Area hit geometry or unhandled type");
 				break;

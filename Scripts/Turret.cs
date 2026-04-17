@@ -53,7 +53,7 @@ public partial class Turret : Node3D
 
 		if (!_isAcquiring && _fireCooldown <= 0f && IsAimedAt(_currentTarget))
 		{
-			Rpc(MethodName.SpawnBulletOnAllPeers, Muzzle.GlobalPosition, ))
+			// Rpc(MethodName.SpawnBulletOnAllPeers, Muzzle.GlobalPosition, ))
 			_fireCooldown = 1f / FireRate;
 		}
 	}
@@ -142,30 +142,30 @@ public partial class Turret : Node3D
 	
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
 		TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void SpawnBulletOnAllPeers(Vector3 spawnPos, Quaternion spawnRot, int bulletId)
-	{
-		if (BulletScene == null)
-		{
-			GD.PushWarning("Player: SnowBulletScene is not assigned!");
-			return;
-		}
-	
-		var bullet = BulletScene.Instantiate<SnowBullet>();
-		bullet.IsAuthoritative = GenericCore.Instance.IsServer;
-		bullet.ShooterId       = (int)MyId.OwnerId;
-		bullet.BulletId        = bulletId;
-	
-		// Authority must be the server (1) so the bullet's Rpc(DestroyOnClient)
-		// call is permitted — RpcMode.Authority means "only the authority may call this"
-		bullet.SetMultiplayerAuthority(1);
-	
-		var t = Transform3D.Identity;
-		t.Origin = spawnPos;
-		t.Basis  = new Basis(spawnRot);
-		bullet.GlobalTransform = t;
-	
-		GetTree().CurrentScene.AddChild(bullet);
-	}
+	// void SpawnBulletOnAllPeers(Vector3 spawnPos, Quaternion spawnRot, int bulletId)
+	// {
+	// 	if (BulletScene == null)
+	// 	{
+	// 		GD.PushWarning("Player: SnowBulletScene is not assigned!");
+	// 		return;
+	// 	}
+	//
+	// 	var bullet = BulletScene.Instantiate<SnowBullet>();
+	// 	bullet.IsAuthoritative = GenericCore.Instance.IsServer;
+	// 	bullet.ShooterId       = (int)MyId.OwnerId;
+	// 	bullet.BulletId        = bulletId;
+	//
+	// 	// Authority must be the server (1) so the bullet's Rpc(DestroyOnClient)
+	// 	// call is permitted — RpcMode.Authority means "only the authority may call this"
+	// 	bullet.SetMultiplayerAuthority(1);
+	//
+	// 	var t = Transform3D.Identity;
+	// 	t.Origin = spawnPos;
+	// 	t.Basis  = new Basis(spawnRot);
+	// 	bullet.GlobalTransform = t;
+	//
+	// 	GetTree().CurrentScene.AddChild(bullet);
+	// }
 
 	// ── FOV callbacks ─────────────────────────────────────────────────────────
 

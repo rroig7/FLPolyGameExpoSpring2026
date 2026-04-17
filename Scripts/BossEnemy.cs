@@ -1,12 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class BossEnemy : CharacterBody3D
 {
     // ── Exports ───────────────────────────────────────────────────────────────
     [Export] public NetID myId;
-    [Export] public PackedScene BulletScene;
 
     [Export] public float FireRate       = 1.0f;
     [Export] public float BulletSpeed    = 20.0f;
@@ -20,8 +20,17 @@ public partial class BossEnemy : CharacterBody3D
     [Export] public float PatrolRadius   = 20.0f;
 
     [Export] public uint CollisionMask   = 1;
+
+    [Export] private int _bulletCounter = 0;
     
     [Export] public Node3D Muzzle;
+
+    [Export] public float CurrentHp = 1000f;
+    [Export] public float MaxHp = 1000f;
+
+    [Export] public int XP_Value = 100;
+    
+    [Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
 
     // ── Synced properties (matched to MeleeEnemy pattern) ────────────────────
     [Export] public Vector3 SyncedVelocity
@@ -44,10 +53,13 @@ public partial class BossEnemy : CharacterBody3D
     private Vector3      _spawnPosition;
 
     private Area3D _bossFOV;
+    
+    private bool _isDying = false;
 
     public override void _Ready()
     {
         _spawnPosition = GlobalPosition;
+        CurrentHp = MaxHp;
 
         if (myId == null)
             myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
@@ -234,32 +246,16 @@ public partial class BossEnemy : CharacterBody3D
 
     private void Fire()
     {
-        if (BulletScene is null)
-        {
-            GD.PushWarning("BossEnemy: BulletScene is not assigned.");
-            return;
-        }
+        if (_currentTarget is null) return;
 
-        var bullet = BulletScene.Instantiate<Node3D>();
-
-        // DO NOT TOUCH THIS CODE HOLY FUCK
-        // Vector3 forward = -GlobalTransform.Basis.Z;
-        // bullet.GlobalTransform = new Transform3D(
-        //     Basis.LookingAt(forward, Vector3.Up),
-        //     Muzzle.GlobalPosition
-        // );
+        Vector3 aimDir = Muzzle.GlobalPosition.DirectionTo(_currentTarget.GlobalPosition).Normalized();
+        if (aimDir == Vector3.Zero)
+            aimDir = Muzzle.GlobalTransform.Basis.Z;
         
-        Vector3 forward = -GlobalTransform.Basis.Z;
-
-        bullet.GlobalTransform = new Transform3D(
-            Basis.LookingAt(Muzzle.GlobalPosition + forward, Vector3.Up),
-            Muzzle.GlobalPosition
-        );
-        // DO NOT TOUCH THIS CODE HOLY FUCK
-
-        GetTree().CurrentScene.AddChild(bullet);
-        // GetTree().Root.AddChild(bullet);
+        GD.Print("SENDING BOSS BULLET RPC CALL");
+        RpcId(1, MethodName.ServerReceiveFire, aimDir);
     }
+
 
     // ── Animation (clients only) ──────────────────────────────────────────────
 
@@ -290,4 +286,65 @@ public partial class BossEnemy : CharacterBody3D
     }
 
     private void OnBodyExited(Node3D body) => _targetsInFOV.Remove(body);
+    
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true,
+        TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void ServerReceiveFire(Vector3 aimDir)
+    {
+        if (!GenericCore.Instance.IsServer) return;
+        if (Multiplayer.GetRemoteSenderId() != myId.OwnerId) return;
+    
+        int      bulletId = _bulletCounter++;
+        Vector3  spawnPos = Muzzle.GlobalPosition;
+        Quaternion spawnRot = Transform3D.Identity
+            .LookingAt(-aimDir, Vector3.Up)
+            .Basis.GetRotationQuaternion();
+    
+        // Signal Level to spawn the bullet (server-side instantiation via NetworkCore).
+        // Use -1 as shooter sentinel so the host player (auth=1) isn't treated
+        // as the shooter of the boss's own bullets.
+        EmitSignal(BossEnemy.SignalName.BulletSpawnRequested, spawnPos, spawnRot, bulletId, -1);
+    }
+    
+    public void OnHitByBullet(int id)
+    {
+        if (!GenericCore.Instance.IsServer) return;
+        if (_isDying) return;
+
+        CurrentHp -= 20f; // or wire this up to bullet damage later
+        GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
+
+        if (CurrentHp > 0f) return;
+
+        var Players = GetTree().GetNodesInGroup("players").ToArray().Cast<Player>();
+
+        var player = Players.First(p => p.MyId.OwnerId == id);
+        player.XP += XP_Value;
+        GD.Print($"{player.Name} gained {XP_Value} XP, total XP={player.XP}");
+
+        Die();
+    }
+    
+    public void Die()
+    {
+        if (_isDying) return;
+        _isDying = true;
+
+        if (myId == null)
+            myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
+
+        if (myId != null && IsInstanceValid(myId))
+        {
+            myId.ProcessMode = ProcessModeEnum.Disabled;
+            try { myId.ReplicationConfig = null; } catch { }
+            myId.Rpc(NetID.MethodName.ManualDelete);
+        }
+        else
+        {
+            GD.PushWarning("BossEnemy.Die: no valid NetID found, freeing locally only.");
+            QueueFree();
+        }
+    }
+    
+
 }

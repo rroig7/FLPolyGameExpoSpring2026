@@ -141,7 +141,26 @@ public partial class GameMaster : Node
 		GetTree().Quit();
 	}
 
-	void SpawnBoss() => EmitSignal(SignalName.SpawnBossTrigger);
+	public void SpawnBoss()
+	{
+		var node = MainSpawner.NetCreateObject(
+			index: 4, // Boss
+			Vector3.Zero,
+			Quaternion.Identity,
+			owner: 1
+		);
+		
+		foreach (Node bossNode in GetTree().GetNodesInGroup("boss"))
+		{
+			if (bossNode is BossEnemy boss)
+			{
+				// Ensure we don't double-connect if this is called multiple times
+				if (!boss.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int>(OnBulletSpawnRequested)))
+					boss.BulletSpawnRequested += OnBulletSpawnRequested;
+			}
+		}
+	}
+	
 	void TriggerSuddenDeath() { EmitSignal(SignalName.SuddenDeathTrigger); SuddenDeath = true; }
 
 	public void AddPlayer(NetworkPlayerManager npm)
