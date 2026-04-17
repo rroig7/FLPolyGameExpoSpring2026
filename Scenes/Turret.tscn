@@ -27,15 +27,18 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath("MultiplayerSynchronizer:OwnerId")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+properties/5/path = NodePath(".:OwnerPeerId")
+properties/5/spawn = true
+properties/5/replication_mode = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_tljqb"]
-size = Vector3(5.561, 5.311295, 1)
+size = Vector3(18.010979, 12.181368, 3.69458)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_64uvh"]
 size = Vector3(0.6890564, 0.83703613, 0.7871094)
 
 [node name="Turret" type="CharacterBody3D" unique_id=1336070727 node_paths=PackedStringArray("Muzzle")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+transform = Transform3D(-8.742278e-08, 0, -2, 0, 2, 0, 2, 0, -8.742278e-08, 0, 0, 0)
 script = ExtResource("1_i4wwf")
 BulletSpeed = 1.0
 Muzzle = NodePath("TurretHead/TurretBarrel/Muzzle")
@@ -79,7 +82,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58052105, -0.79471636)
 collision_mask = 5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TurretFOV" unique_id=323324034]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.0076171756, -5.9604645e-08, -1.8656032)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -0.09578034, -0.2850344, -5.3006396)
 shape = SubResource("BoxShape3D_tljqb")
 
 [node name="TurretHitbox" type="CollisionShape3D" parent="." unique_id=1293028976]

@@ -118,7 +118,7 @@ public partial class GameMaster : Node
 			{
 				// Ensure we don't double-connect if this is called multiple times
 				if (!playerBase.IsConnected("TurretSpawnRequested",
-					    Callable.From<Vector3, int>(OnTurretSpawnRequested)))
+					    Callable.From<Vector3, Quaternion, int>(OnTurretSpawnRequested)))
 					playerBase.TurretSpawnRequested += OnTurretSpawnRequested;
 			}
 		}
@@ -151,18 +151,15 @@ public partial class GameMaster : Node
 		}
 	}
 
-	public async void OnTurretSpawnRequested(Vector3 spawnPos, int ownerId)
+	public void OnTurretSpawnRequested(Vector3 spawnPos, Quaternion spawnRot, int ownerId)
 	{
 		var node = MainSpawner.NetCreateObject(
 			index: 5, // Player Turrets
 			initialPosition: spawnPos,
-			rotation: Quaternion.Identity,
+			rotation: spawnRot,
 			owner: 1
 		);
-		
-		
-		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-		
+
 		if (node is Turret turret && IsInstanceValid(turret))
 		{
 			turret.OwnerPeerId = ownerId;

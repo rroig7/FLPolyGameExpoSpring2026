@@ -61,14 +61,8 @@ public partial class Turret : Node3D
 		
 		
 
-		// DEBUG
-		if (_currentTarget is Player p && p.MyId.netObjectID != OwnerPeerId)
-		{
-			GD.Print($"[Turret] [OnBodyEntered] p.MyId.netObjectID = {p.MyId.netObjectID}");
-			GD.Print($"[Turret] [OnBodyEntered] OwnerPeerId = {OwnerPeerId}");
+		if (_currentTarget is not Player p || p.MyId.OwnerId != OwnerPeerId)
 			AimAt(_currentTarget, (float)delta);
-		}
-		// DEBUG
 		
 		if (_isAcquiring && IsAimedAt(_currentTarget))
 			_isAcquiring = false;
@@ -86,7 +80,7 @@ public partial class Turret : Node3D
 	private void Fire()
 	{
 		if (_currentTarget is null) return;
-		if (_currentTarget is Player p && p.MyId.netObjectID == OwnerPeerId) return;
+		if (_currentTarget is Player p && p.MyId.OwnerId == OwnerPeerId) return;
 
 		// Use muzzle orientation (consistent with IsAimedAt); avoids LookingAt failure
 		// when target is near-vertical relative to turret (aimDir ≈ Vector3.Up/Down).
@@ -162,7 +156,7 @@ public partial class Turret : Node3D
 	private void OnBodyEntered(Node3D body)
 	{
 		if (!body.IsInGroup("players") || _targetsInFOV.Contains(body)) return;
-		if (body is Player p && p.MyId.netObjectID == OwnerPeerId) return;
+		if (body is Player p && p.MyId.OwnerId == OwnerPeerId) return;
 		
 		_targetsInFOV.Add(body);
 	}

@@ -28,7 +28,7 @@ public partial class Base : StaticBody3D
 	public bool isRightTurretSpawned;
 
 	[Signal]
-	public delegate void TurretSpawnRequestedEventHandler(Vector3 spawnPos, int ownerId);
+	public delegate void TurretSpawnRequestedEventHandler(Vector3 spawnPos, Quaternion spawnRot, int ownerId);
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -106,20 +106,20 @@ public partial class Base : StaticBody3D
 	{
 		if (!isLeftTurretSpawned)
 		{
-			RpcId(1, MethodName.ServerTurretSpawnRequest, _turretSpawnLeft.GlobalPosition);
+			RpcId(1, MethodName.ServerTurretSpawnRequest, _turretSpawnLeft.GlobalPosition, _turretSpawnLeft.GlobalBasis.GetRotationQuaternion());
 			isLeftTurretSpawned = true;
 		}
 		if (!isRightTurretSpawned)
 		{
-			RpcId(1, MethodName.ServerTurretSpawnRequest, _turretSpawnRight.GlobalPosition);
+			RpcId(1, MethodName.ServerTurretSpawnRequest, _turretSpawnRight.GlobalPosition, _turretSpawnRight.GlobalBasis.GetRotationQuaternion());
 			isRightTurretSpawned = true;
 		}
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	private void ServerTurretSpawnRequest(Vector3 spawnPos)
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ServerTurretSpawnRequest(Vector3 spawnPos, Quaternion spawnRot)
 	{
 		if (!GenericCore.Instance.IsServer) return;
-		EmitSignal(SignalName.TurretSpawnRequested, spawnPos, MyID.OwnerId);
+		EmitSignal(SignalName.TurretSpawnRequested, spawnPos, spawnRot, MyID.OwnerId);
 	}
 }
