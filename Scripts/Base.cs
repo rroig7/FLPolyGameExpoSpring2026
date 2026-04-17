@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Base : Node
+public partial class Base : StaticBody3D
 {
 
 	[Export] public int MaxHp;
