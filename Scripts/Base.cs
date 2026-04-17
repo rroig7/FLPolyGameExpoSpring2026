@@ -3,10 +3,19 @@ using System;
 
 public partial class Base : StaticBody3D
 {
-
+	[Export] ProgressBar HealthBar;
 	[Export] public int MaxHp;
 	[Export] public NetID MyID {get; private set;}
-	[Export] public int currentHP;
+	public float _currentHp = 100f;
+	[Export] public float CurrentHp
+	{
+		get => _currentHp;
+		set
+		{
+			_currentHp = value;
+			UpdateHealthBar();
+		}
+	}
 	[Export] public Node3D Spawnpoint {get; private set;}
 	[Export] Area3D Inside;
 
@@ -15,7 +24,7 @@ public partial class Base : StaticBody3D
 	{
 		if(GenericCore.Instance.IsServer)
 		{
-			currentHP = MaxHp;
+			_currentHp = MaxHp;
 			GameMaster.Instance.SuddenDeathTrigger += BaseDestroyed;
 			Inside.BodyEntered += BaseEntered;
 			Inside.BodyExited += BaseExited;
@@ -28,8 +37,8 @@ public partial class Base : StaticBody3D
 
 		if(owner == MyID.OwnerId) { return; }
 
-		currentHP -= dmg;
-		if(currentHP <= 0) BaseDestroyed();
+		_currentHp -= dmg;
+		if(_currentHp <= 0) BaseDestroyed();
 	}
 
 	void BaseDestroyed()
@@ -74,4 +83,11 @@ public partial class Base : StaticBody3D
 		}
 	}
 
+	private void UpdateHealthBar()
+	{
+		if (HealthBar == null) return;
+		HealthBar.MaxValue = MaxHp;
+		HealthBar.Value = _currentHp;
+		HealthBar.Visible = _currentHp < MaxHp; // optional: hide at full HP
+	}
 }

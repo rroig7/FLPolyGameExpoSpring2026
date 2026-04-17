@@ -50,7 +50,7 @@ public partial class Upgrades : Control
 			var upgrade = GetNode<UpgradeInfo>(path);
 
 			
-			if(upgrade.UpgradeDescription.ToLower().Contains("health") && Player.PlayerBase.currentHP == Player.PlayerBase.MaxHp)
+			if(upgrade.UpgradeDescription.ToLower().Contains("health") && Player.PlayerBase._currentHp == Player.PlayerBase.MaxHp)
 			{
 				//Refund if trying to upgrade health at max
 				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f);
@@ -177,7 +177,7 @@ public partial class Upgrades : Control
 		switch(property.ToLower())
 		{
 			case "health":
-				Player.PlayerBase.currentHP = (int)Mathf.Clamp(Player.PlayerBase.currentHP + modifier, 0, Player.PlayerBase.MaxHp);
+				Player.PlayerBase._currentHp = (int)Mathf.Clamp(Player.PlayerBase._currentHp + modifier, 0, Player.PlayerBase.MaxHp);
 				break;
 			
 			case "turret":
