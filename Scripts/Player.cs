@@ -46,9 +46,9 @@ public partial class Player : BaseNetworkedPlayer
 
 	// --- Dash Settings ---
 	[ExportGroup("Dash Settings")]
-	[Export] float dashSpeed    = 15f;
+	[Export] public float dashSpeed    = 15f;
 	[Export] public float dashDuration = 0.10f;
-	[Export] float dashCooldown = 3.0f;
+	[Export] public float dashCooldown = 3.0f;
 
 	float _dashCooldownTimer = 0f;
 	float _dashDurationTimer = 0f;

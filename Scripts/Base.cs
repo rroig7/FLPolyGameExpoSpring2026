@@ -4,9 +4,9 @@ using System;
 public partial class Base : Node
 {
 
-	[Export] int MaxHp;
+	[Export] public int MaxHp;
 	[Export] public NetID MyID {get; private set;}
-	[Export] int currentHP;
+	[Export] public int currentHP;
 	[Export] public Node3D Spawnpoint {get; private set;}
 	[Export] Area3D Inside;
 

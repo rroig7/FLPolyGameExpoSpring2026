@@ -6,6 +6,8 @@ public partial class UpgradeInfo : Node
 {
     [Export] public string UpgradeName;
     [Export] public int Cost;
+    [Export] public float modifier;
+    [Export] public float minValue;
     [Export] Label NameLabel;
     [Export] Button UpgradeButton;
     [Export] public string UpgradeDescription;
