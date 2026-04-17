@@ -38,9 +38,11 @@ public partial class BossEnemy : CharacterBody3D
 	}
 	[Export] public float MaxHp = 1000f;
 
-	[Export] public int XP_Value = 100;
-	
-	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
+    [Export] public float TargetAimHeight = 1.0f;
+
+    [Export] public int XP_Value = 100;
+    
+    [Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
 
 	// ── Synced properties (matched to MeleeEnemy pattern) ────────────────────
 	[Export] public Vector3 SyncedVelocity
@@ -100,7 +102,10 @@ public partial class BossEnemy : CharacterBody3D
 				_isAcquiring   = true;
 			}
 
-			_state = ChooseState();
+            if (_currentTarget is Player tp && tp.IsDead) _currentTarget = null;
+            if (_currentTarget != null && !IsInstanceValid(_currentTarget)) _currentTarget = null;
+
+            _state = ChooseState();
 
 			switch (_state)
 			{
@@ -160,14 +165,14 @@ public partial class BossEnemy : CharacterBody3D
 
 		float dist = GlobalPosition.DistanceTo(_currentTarget.GlobalPosition);
 
-		if (GlobalPosition.DistanceTo(_spawnPosition) > PatrolRadius)
-			return BossState.Ranged;
+        if (dist <= MeleeRange)
+            return BossState.Melee;
 
-		if (dist <= MeleeRange)
-			return BossState.Melee;
+        if (GlobalPosition.DistanceTo(_spawnPosition) > PatrolRadius)
+            return BossState.Ranged;
 
-		if (!HasLineOfSight(_currentTarget))
-			return BossState.Chase;
+        if (!HasLineOfSight(_currentTarget))
+            return BossState.Chase;
 
 		return BossState.Ranged;
 	}
@@ -179,14 +184,17 @@ public partial class BossEnemy : CharacterBody3D
 		Node3D closest = null;
 		float  minDist = float.MaxValue;
 
-		foreach (Node3D body in _targetsInFOV)
-		{
-			if (!IsInstanceValid(body)) continue;
-			float d = GlobalPosition.DistanceSquaredTo(body.GlobalPosition);
-			if (d < minDist) { minDist = d; closest = body; }
-		}
-		return closest;
-	}
+        for (int i = _targetsInFOV.Count - 1; i >= 0; i--)
+        {
+            Node3D body = _targetsInFOV[i];
+            if (!IsInstanceValid(body)) { _targetsInFOV.RemoveAt(i); continue; }
+            if (body is Player p && p.IsDead) { _targetsInFOV.RemoveAt(i); continue; }
+
+            float d = GlobalPosition.DistanceSquaredTo(body.GlobalPosition);
+            if (d < minDist) { minDist = d; closest = body; }
+        }
+        return closest;
+    }
 
 	// ── Movement ──────────────────────────────────────────────────────────────
 
@@ -260,13 +268,14 @@ public partial class BossEnemy : CharacterBody3D
 	{
 		if (_currentTarget is null) return;
 
-		Vector3 aimDir = Muzzle.GlobalPosition.DirectionTo(_currentTarget.GlobalPosition).Normalized();
-		if (aimDir == Vector3.Zero)
-			aimDir = Muzzle.GlobalTransform.Basis.Z;
-		
-		GD.Print("SENDING BOSS BULLET RPC CALL");
-		RpcId(1, MethodName.ServerReceiveFire, aimDir);
-	}
+        Vector3 aimPoint = _currentTarget.GlobalPosition + Vector3.Up * TargetAimHeight;
+        Vector3 aimDir = Muzzle.GlobalPosition.DirectionTo(aimPoint).Normalized();
+        if (aimDir == Vector3.Zero)
+            aimDir = Muzzle.GlobalTransform.Basis.Z;
+        
+        GD.Print("SENDING BOSS BULLET RPC CALL");
+        RpcId(1, MethodName.ServerReceiveFire, aimDir);
+    }
 
 
 	// ── Animation (clients only) ──────────────────────────────────────────────
@@ -331,16 +340,23 @@ public partial class BossEnemy : CharacterBody3D
 		if (!GenericCore.Instance.IsServer) return;
 		if (_isDying) return;
 
-		CurrentHp -= 20f; // or wire this up to bullet damage later
-		GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
+        var shooter = GetTree().GetNodesInGroup("players")
+            .OfType<Player>()
+            .FirstOrDefault(p => p.MyId.OwnerId == id);
+
+        if (shooter != null && !_targetsInFOV.Contains(shooter))
+            _targetsInFOV.Add(shooter);
+
+        CurrentHp -= 20f; // or wire this up to bullet damage later
+        GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
 
 		if (CurrentHp > 0f) return;
 
-		var Players = GetTree().GetNodesInGroup("players").ToArray().Cast<Player>();
-
-		var player = Players.First(p => p.MyId.OwnerId == id);
-		player.XP += XP_Value;
-		GD.Print($"{player.Name} gained {XP_Value} XP, total XP={player.XP}");
+        if (shooter != null)
+        {
+            shooter.XP += XP_Value;
+            GD.Print($"{shooter.Name} gained {XP_Value} XP, total XP={shooter.XP}");
+        }
 
 		Die();
 	}

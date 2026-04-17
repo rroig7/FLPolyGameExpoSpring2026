@@ -88,7 +88,8 @@ public partial class SnowBullet : RigidBody3D
 				break;
 			
 			case BossEnemy boss:
-				boss.OnHitByBullet(ShooterId);
+				// ShooterId == -1 is the sentinel for boss-fired bullets; don't self-damage.
+				if (ShooterId != -1) boss.OnHitByBullet(ShooterId);
 				break;
 			
 			default:

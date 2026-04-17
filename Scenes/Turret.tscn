@@ -2,7 +2,6 @@
 
 [ext_resource type="Material" uid="uid://dskdn3ka6oec6" path="res://Materials/TurretColor.tres" id="1_8m3st"]
 [ext_resource type="Script" uid="uid://q8q0ok1tglc3" path="res://Scripts/Turret.cs" id="1_i4wwf"]
-[ext_resource type="PackedScene" uid="uid://c73y4jqgjuev" path="res://Scenes/Snowball.tscn" id="2_tljqb"]
 [ext_resource type="Script" uid="uid://yo2i7m3b6pph" path="res://NetworkCore/NetID.cs" id="4_tljqb"]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_i4wwf"]
@@ -33,12 +32,12 @@ properties/4/replication_mode = 1
 size = Vector3(5.561, 5.311295, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_64uvh"]
-size = Vector3(1, 0.83703613, 1)
+size = Vector3(0.6890564, 0.83703613, 0.7871094)
 
 [node name="Turret" type="CharacterBody3D" unique_id=1336070727 node_paths=PackedStringArray("Muzzle")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 script = ExtResource("1_i4wwf")
-BulletScene = ExtResource("2_tljqb")
+BulletSpeed = 1.0
 Muzzle = NodePath("TurretHead/TurretBarrel/Muzzle")
 CollisionMask = 3
 
@@ -58,7 +57,7 @@ mesh = SubResource("BoxMesh_tljqb")
 [node name="TurretBarrel" type="Node3D" parent="TurretHead" unique_id=187413955]
 
 [node name="Muzzle" type="Node3D" parent="TurretHead/TurretBarrel" unique_id=1127508369]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0077872276, 0.117611945, -0.47632542)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0077872276, 0.117611945, -0.57961816)
 
 [node name="TurretBase" type="Node3D" parent="." unique_id=1557450699]
 
@@ -84,5 +83,5 @@ transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.00
 shape = SubResource("BoxShape3D_tljqb")
 
 [node name="TurretHitbox" type="CollisionShape3D" parent="." unique_id=1293028976]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36716253, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03541565, 0.36716253, 0.10644531)
 shape = SubResource("BoxShape3D_64uvh")

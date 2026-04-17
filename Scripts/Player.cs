@@ -40,6 +40,7 @@ public partial class Player : BaseNetworkedPlayer
 	private float _currentHp = 100f;
 	private int   _xp        = 0;
 	private bool  _isDead    = false;
+	public bool IsDead => _isDead;
 	public Base PlayerBase;
 	public string PName = "Player";
 	[Export] public bool inBase = true;
