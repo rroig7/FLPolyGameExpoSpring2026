@@ -25,10 +25,17 @@ public partial class GameMaster : Node
 	public Timer RoundTimer;
 	float Eliminations = 0;
 
-	[Signal] public delegate void GameStartTriggerEventHandler();
-	[Signal] public delegate void GameEndTriggerEventHandler();
-	[Signal] public delegate void SpawnBossTriggerEventHandler();
-	[Signal] public delegate void SuddenDeathTriggerEventHandler();
+	[Signal]
+	public delegate void GameStartTriggerEventHandler();
+
+	[Signal]
+	public delegate void GameEndTriggerEventHandler();
+
+	[Signal]
+	public delegate void SpawnBossTriggerEventHandler();
+
+	[Signal]
+	public delegate void SuddenDeathTriggerEventHandler();
 
 	public async override void _Ready()
 	{
@@ -37,7 +44,12 @@ public partial class GameMaster : Node
 
 		GenericCore.Instance.ClientDisconnected += PlayerDC;
 
-		if (Instance != this && Instance != null) { QueueFree(); return; }
+		if (Instance != this && Instance != null)
+		{
+			QueueFree();
+			return;
+		}
+
 		Instance = this;
 	}
 
@@ -60,7 +72,7 @@ public partial class GameMaster : Node
 		if (!GenericCore.Instance.IsServer) return;
 
 		var level = GenericCore.Instance.MainNetworkCore.NetCreateObject(0, Vector3.Zero, Quaternion.Identity);
-		
+
 		RoundTimer = GlobalTimers.Instance.OneShotTimer(RoundTime);
 		RoundTimer.Timeout += TriggerSuddenDeath;
 		GlobalTimers.Instance.OneShotTimer(BossTime).Timeout += SpawnBoss;
@@ -70,16 +82,16 @@ public partial class GameMaster : Node
 		var Bases = GetTree().GetNodesInGroup("PlayerBase");
 		for (int i = 0; i < Bases.Count; i++)
 		{
-			if (i < Players.Count) 
+			if (i < Players.Count)
 				Players[i].SpawnPlayer((Base)Bases.First(p => p.GetParent().Name == $"Igloo{i + 1}"));
-			else 
+			else
 				RemoveBase(Bases.First(p => p.GetParent().Name == $"Igloo{i + 1}") as Base);
 		}
 
 		// --- NEW: Wait for nodes to initialize and then connect signals ---
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		ConnectObjectSignals();
-		
+
 		GD.PushWarning("Game Started and Signals Connected");
 	}
 
@@ -94,15 +106,28 @@ public partial class GameMaster : Node
 			if (node is Player player)
 			{
 				// Ensure we don't double-connect if this is called multiple times
-				if (!player.IsConnected("BulletSpawnRequested", Callable.From<Vector3, Quaternion, int, int, float>(OnBulletSpawnRequested)))
+				if (!player.IsConnected("BulletSpawnRequested",
+					    Callable.From<Vector3, Quaternion, int, int, float>(OnBulletSpawnRequested)))
 					player.BulletSpawnRequested += OnBulletSpawnRequested;
+			}
+		}
+
+		foreach (Node node in GetTree().GetNodesInGroup("PlayerBase"))
+		{
+			if (node is Base playerBase)
+			{
+				// Ensure we don't double-connect if this is called multiple times
+				if (!playerBase.IsConnected("TurretSpawnRequested",
+					    Callable.From<Vector3, int>(OnTurretSpawnRequested)))
+					playerBase.TurretSpawnRequested += OnTurretSpawnRequested;
 			}
 		}
 	}
 
 	// ── Projectile Handlers (Migrated from Level.cs) ──────────────────
 
-	public async void OnBulletSpawnRequested(Vector3 origin, Quaternion rotation, int bulletId, int shooterId, float dmg)
+	public async void OnBulletSpawnRequested(Vector3 origin, Quaternion rotation, int bulletId, int shooterId,
+		float dmg)
 	{
 		var node = MainSpawner.NetCreateObject(
 			index: 3, // SnowBullet
@@ -126,7 +151,25 @@ public partial class GameMaster : Node
 		}
 	}
 
-	// ── Existing Boilerplate ─────────────────────────────────────────
+	public async void OnTurretSpawnRequested(Vector3 spawnPos, int ownerId)
+	{
+		var node = MainSpawner.NetCreateObject(
+			index: 5, // Player Turrets
+			initialPosition: spawnPos,
+			rotation: Quaternion.Identity,
+			owner: 1
+		);
+		
+		
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		
+		if (node is Turret turret && IsInstanceValid(turret))
+		{
+			turret.OwnerPeerId = ownerId;
+		}
+	}
+
+// ── Existing Boilerplate ─────────────────────────────────────────
 
 	void RemoveBase(Base b) => GenericCore.Instance.MainNetworkCore.NetDestroyObject(b.MyID);
 
@@ -211,4 +254,6 @@ public partial class GameMaster : Node
 		if (!GenericCore.Instance.IsServer) return;
 		if (++Eliminations >= Players.Count - 1) Rpc(MethodName.GameEnd);
 	}
+	
+	
 }

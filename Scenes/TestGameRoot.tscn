@@ -154,7 +154,7 @@ metadata/_edit_use_anchors_ = true
 visible = false
 
 [node name="Main Spawner" type="MultiplayerSpawner" parent="." unique_id=1218732796]
-_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3", "uid://c73y4jqgjuev", "uid://b1p3cox5ob4mr")
+_spawnable_scenes = PackedStringArray("uid://nsjin1m5p7kp", "uid://dqt54rh3b3x66", "uid://5nuoosjopxg3", "uid://c73y4jqgjuev", "uid://b1p3cox5ob4mr", "uid://bk40tsh7xhgns")
 spawn_path = NodePath("../Level")
 script = ExtResource("3_5ftxa")
 

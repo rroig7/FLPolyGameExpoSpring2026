@@ -17,5 +17,13 @@ transform = Transform3D(-0.024220055, 0, 1.7498324, 0, 2, 0, -1.4998564, 0, -0.0
 [node name="IceBlock02_4" parent="." unique_id=299506546 instance=ExtResource("4_8q1us")]
 transform = Transform3D(-0.024220055, 0, 1.7498324, 0, 2, 0, -1.4998564, 0, -0.020760069, 9.225601, -3.2843869, -0.06390672)
 
-[node name="Igloo" parent="." unique_id=2106285624 instance=ExtResource("2_yam4p")]
+[node name="Igloo" parent="." unique_id=2106285624 node_paths=PackedStringArray("_turretSpawnLeft", "_turretSpawnRight") instance=ExtResource("2_yam4p")]
 transform = Transform3D(-1.5298986e-07, 0, 3.5, 0, 3.5, 0, -3.5, 0, -1.5298986e-07, 0, 0.1237185, 0)
+_turretSpawnLeft = NodePath("../TurretSpawnLeft")
+_turretSpawnRight = NodePath("../TurretSpawnRight")
+
+[node name="TurretSpawnLeft" type="Marker3D" parent="." unique_id=415972141]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8506184, 0.22207344, 3.0240135)
+
+[node name="TurretSpawnRight" type="Marker3D" parent="." unique_id=2122503548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8506184, -0.09656292, -2.9759865)

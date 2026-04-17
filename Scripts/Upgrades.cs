@@ -181,9 +181,13 @@ public partial class Upgrades : Control
 				break;
 			
 			case "turret":
-				//Spawn a turret near the base
+				if (!Player.PlayerBase.isLeftTurretSpawned || !Player.PlayerBase.isRightTurretSpawned)
+				{
+					Player.PlayerBase.SpawnTurret();
+				}
 				break;
 		}
 	}
-
+	
+	
 }

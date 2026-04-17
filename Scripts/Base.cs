@@ -19,6 +19,17 @@ public partial class Base : StaticBody3D
 	[Export] public Node3D Spawnpoint {get; private set;}
 	[Export] Area3D Inside;
 
+	
+	// --- Turret Variables ---
+	[Export] public Marker3D _turretSpawnLeft;
+	[Export] public Marker3D _turretSpawnRight;
+
+	public bool isLeftTurretSpawned;
+	public bool isRightTurretSpawned;
+
+	[Signal]
+	public delegate void TurretSpawnRequestedEventHandler(Vector3 spawnPos, int ownerId);
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -89,5 +100,26 @@ public partial class Base : StaticBody3D
 		HealthBar.MaxValue = MaxHp;
 		HealthBar.Value = _currentHp;
 		HealthBar.Visible = _currentHp < MaxHp; // optional: hide at full HP
+	}
+
+	public void SpawnTurret()
+	{
+		if (!isLeftTurretSpawned)
+		{
+			RpcId(1, MethodName.ServerTurretSpawnRequest, _turretSpawnLeft.GlobalPosition);
+			isLeftTurretSpawned = true;
+		}
+		if (!isRightTurretSpawned)
+		{
+			RpcId(1, MethodName.ServerTurretSpawnRequest, _turretSpawnRight.GlobalPosition);
+			isRightTurretSpawned = true;
+		}
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ServerTurretSpawnRequest(Vector3 spawnPos)
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		EmitSignal(SignalName.TurretSpawnRequested, spawnPos, MyID.OwnerId);
 	}
 }
