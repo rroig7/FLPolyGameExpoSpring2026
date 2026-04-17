@@ -1,4 +1,5 @@
 using Godot;
+using System.Linq;
 
 public partial class SnowBullet : RigidBody3D
 {
@@ -82,7 +83,12 @@ public partial class SnowBullet : RigidBody3D
 			case Player player:
 				// Do not damage the shooter.
 				if (player.GetMultiplayerAuthority() != ShooterId)
-					player.TakeDamage(Damage);
+				{
+					Player shooter = GetTree().GetNodesInGroup("players")
+						.OfType<Player>()
+						.FirstOrDefault(p => p.MyId.OwnerId == ShooterId);
+					player.TakeDamage(Damage, shooter);
+				}
 				break;
 
 			case Base playerBase:

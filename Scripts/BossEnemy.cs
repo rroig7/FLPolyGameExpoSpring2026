@@ -259,7 +259,9 @@ public partial class BossEnemy : CharacterBody3D
 	{
 		_meleeCooldown = MeleeCooldown;
 
-		if (_currentTarget != null && _currentTarget.HasMethod("TakeDamage"))
+		if (_currentTarget is Player playerTarget)
+			playerTarget.TakeDamage(MeleeDamage);
+		else if (_currentTarget != null && _currentTarget.HasMethod("TakeDamage"))
 			_currentTarget.Call("TakeDamage", MeleeDamage);
 	}
 

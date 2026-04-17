@@ -535,7 +535,7 @@ public partial class Player : BaseNetworkedPlayer
 			else if (collider is Player hitPlayer && hitPlayer.MyId.OwnerId != MyId.OwnerId)
 			{
 				if (hitPlayers.Add(hitPlayer))
-					hitPlayer.TakeDamage(UltimateDamage);
+					hitPlayer.TakeDamage(UltimateDamage, this);
 			}
 		}
 
@@ -615,21 +615,32 @@ public partial class Player : BaseNetworkedPlayer
 	//  Damage / Death / Respawn (server-authoritative)
 	// -------------------------------------------------------
 
-	public void TakeDamage(float amount)
+	public void TakeDamage(float amount, Player attacker = null)
 	{
 		if (!GenericCore.Instance.IsServer || _isDead || inBase) return;
 
 		CurrentHp = Mathf.Max(CurrentHp - amount, 0f);
 		GD.Print($"{Name} took {amount} damage, HP={CurrentHp}/{MaxHp}");
 
-		if (CurrentHp <= 0f) Die();
+		if (CurrentHp <= 0f) Die(attacker);
 	}
 
-	private void Die()
+	private void Die(Player killer = null)
 	{
 		if (_isDead) return;
 		_isDead = true;
 		GD.Print($"{Name} died");
+
+		if (GenericCore.Instance.IsServer)
+		{
+			int stolenXP = XP / 2;
+			XP -= stolenXP;
+			if (killer != null && killer != this)
+			{
+				killer.XP += stolenXP;
+				GD.Print($"{killer.Name} stole {stolenXP} XP from {Name}, total XP={killer.XP}");
+			}
+		}
 
 		Rpc(MethodName.ClientOnDied);
 
