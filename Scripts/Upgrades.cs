@@ -53,7 +53,7 @@ public partial class Upgrades : Control
 			if(upgrade.UpgradeDescription.ToLower().Contains("health") && Player.PlayerBase.currentHP == Player.PlayerBase.MaxHp)
 			{
 				//Refund if trying to upgrade health at max
-				RpcId(id, MethodName.PurchaseComplete, false);
+				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f);
 				GD.Print($"Player {id} failed to purchase {upgrade.UpgradeName} (health already at max)");
 				return;
 			}
@@ -64,12 +64,12 @@ public partial class Upgrades : Control
 				Player.XP -= upgrade.Cost;
 				ApplyUpgrade(upgrade.UpgradeDescription, upgrade.modifier, upgrade.minValue);
 
-				RpcId(id, MethodName.PurchaseComplete, true);
+				RpcId(id, MethodName.PurchaseComplete, true, upgrade.UpgradeDescription, upgrade.modifier, upgrade.minValue);
 				GD.Print($"Player {id} purchased {upgrade.UpgradeName}");
 			}
 			else
 			{
-				RpcId(id, MethodName.PurchaseComplete, false);
+				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f);
 				GD.Print($"Player {id} failed to purchase {upgrade.UpgradeName}");
 			}
 		}
@@ -77,10 +77,13 @@ public partial class Upgrades : Control
 
 	//Server -> Client
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void PurchaseComplete(bool success)
+	void PurchaseComplete(bool success, string description, float modifier, float min)
 	{
 		processingPurchase = false;
 		XPLabel.Text = "XP: " + Player.XP.ToString();
+		// Skip on host: server already applied in ApplyPurchase and shares the same node
+		if (success && !string.IsNullOrEmpty(description) && !GenericCore.Instance.IsServer)
+			ApplyUpgrade(description, modifier, min);
 	}
 
 
