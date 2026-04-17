@@ -518,17 +518,24 @@ public partial class Player : BaseNetworkedPlayer
 		var results = spaceState.IntersectShape(query);
 		GD.Print($"ServerReceiveUltimate: found {results.Count} colliders in range");
 
+		var hitPlayers  = new System.Collections.Generic.HashSet<Player>();
+		var hitEnemies  = new System.Collections.Generic.HashSet<MeleeEnemy>();
+
 		foreach (var hit in results)
 		{
 			var collider = ((Godot.Collections.Dictionary)hit)["collider"].As<GodotObject>();
 			if (collider is MeleeEnemy enemy)
 			{
-				enemy.Die();
-				XP += enemy.XP_Value;
+				if (hitEnemies.Add(enemy))
+				{
+					enemy.Die();
+					XP += enemy.XP_Value;
+				}
 			}
 			else if (collider is Player hitPlayer && hitPlayer.MyId.OwnerId != MyId.OwnerId)
 			{
-				hitPlayer.TakeDamage(UltimateDamage);
+				if (hitPlayers.Add(hitPlayer))
+					hitPlayer.TakeDamage(UltimateDamage);
 			}
 		}
 

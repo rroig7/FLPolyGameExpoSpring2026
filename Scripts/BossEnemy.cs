@@ -348,7 +348,7 @@ public partial class BossEnemy : CharacterBody3D
 		if (shooter != null && !_targetsInFOV.Contains(shooter))
 			_targetsInFOV.Add(shooter);
 
-		CurrentHp -= 20f; // or wire this up to bullet damage later
+		CurrentHp -= dmg; // or wire this up to bullet damage later
 		GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
 
 		if (CurrentHp > 0f) return;
