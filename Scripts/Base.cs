@@ -48,9 +48,11 @@ public partial class Base : Node
 	{
 		if(body is Player player)
 		{
+			GD.PushWarning($"Player {player.MyId.OwnerId} entered base {MyID.OwnerId}");
 			if(player.MyId.OwnerId == MyID.OwnerId)
 			{
-				player.EnteredBase();
+				player.inBase = true;
+				player.Rpc(Player.MethodName.EnteredBase);
 			}
 			else
 			{
@@ -66,7 +68,9 @@ public partial class Base : Node
 	{
 		if(body is Player player && player.MyId.OwnerId == MyID.OwnerId)
 		{
-			player.ExitBase();
+			player.inBase = false;
+			GD.PushWarning($"Player {player.MyId.OwnerId} exited base {MyID.OwnerId}");
+			player.Rpc(Player.MethodName.ExitBase);
 		}
 	}
 

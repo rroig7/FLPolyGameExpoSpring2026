@@ -9,7 +9,14 @@
 [ext_resource type="Texture2D" uid="uid://l2wyeejcyvak" path="res://Assets/UI Images/Keys/letter-q.png" id="6_megsn"]
 [ext_resource type="Texture2D" uid="uid://2kmjs8w06u4f" path="res://Assets/UI Images/Keys/shift.png" id="8_yoq75"]
 [ext_resource type="Texture2D" uid="uid://bc0h7ftjrguek" path="res://Assets/UI Images/Keys/SlideIcon.png" id="9_ksbbd"]
+[ext_resource type="Texture2D" uid="uid://c8ji5jrvvn6vw" path="res://Assets/UI Images/Keys/upgrade.png" id="10_glx4g"]
 [ext_resource type="FontFile" uid="uid://m58jjc3281g1" path="res://Assets/UI Images/Amonk Ice-SVG.ttf" id="10_ksbbd"]
+[ext_resource type="Texture2D" uid="uid://b7kea7qx8gn2w" path="res://Assets/UI Images/Keys/letter-f.png" id="11_miouo"]
+[ext_resource type="Script" uid="uid://cbervodq76wcq" path="res://Scripts/Upgrades.cs" id="12_lslt6"]
+[ext_resource type="Script" uid="uid://dn5m8bddsb4mt" path="res://Scripts/UpgradeInfo.cs" id="13_ulo2v"]
+[ext_resource type="StyleBox" uid="uid://b8cuqrjpjl1yr" path="res://Assets/Local Resources/UpgradeButton_Normal.tres" id="15_1iu4k"]
+[ext_resource type="StyleBox" uid="uid://h3wxqk7n6hic" path="res://Assets/Local Resources/UpgradeButton_Pressed.tres" id="16_m0x7a"]
+[ext_resource type="ButtonGroup" uid="uid://c77q1otpbrqkl" path="res://Assets/Local Resources/UpgradeButtonGroup.tres" id="17_5v66d"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_yoq75"]
 animation = &"Dash"
@@ -131,6 +138,9 @@ properties/7/replication_mode = 2
 properties/8/path = NodePath(".:XP")
 properties/8/spawn = true
 properties/8/replication_mode = 2
+properties/9/path = NodePath(".:inBase")
+properties/9/spawn = true
+properties/9/replication_mode = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ixxa"]
 bg_color = Color(0, 0, 0, 1)
@@ -193,8 +203,8 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 corner_detail = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arntx"]
-bg_color = Color(6.9789587e-07, 0.40253568, 0.19961837, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ulo2v"]
+bg_color = Color(0, 0.40392157, 0.2, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -204,7 +214,7 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-corner_detail = 5
+corner_detail = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o3h8g"]
 bg_color = Color(18.892157, 18.892157, 18.892157, 0)
@@ -218,22 +228,12 @@ corner_radius_bottom_left = 15
 corner_detail = 1
 shadow_size = 15
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ulo2v"]
-bg_color = Color(1.0396242e-05, 0.6502552, 0.8922436, 1)
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-corner_detail = 1
-shadow_color = Color(0, 0, 0, 1)
-shadow_size = 11
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1iu4k"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m0x7a"]
-bg_color = Color(1.2513996e-06, 0.5956993, 0.84199774, 1)
+[sub_resource type="LabelSettings" id="LabelSettings_glx4g"]
+font_size = 24
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "UltimateModel", "UltimateAnimPlayer", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "UpgradeUI", "AnimTree", "MyId") groups=["players"]]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "UpgradeUIButton", "UpgradeMenu", "AnimTree", "MyId") groups=["players"]]
 collision_layer = 4
 collision_mask = 15
 floor_max_angle = 1.5707964
@@ -241,19 +241,16 @@ script = ExtResource("1_rpqav")
 _muzzle = NodePath("Muzzle")
 UltimateRadius = 6.0
 UltimateIndicator = NodePath("UltimateIndicator")
-UltimateModel = NodePath("UltimateIndicator/OrcaAnimation")
-UltimateRiseHeight = 0.1
-UltimateAnimPlayer = NodePath("UltimateIndicator/OrcaAnimation/AnimationPlayer")
-UltimateAnimName = "ArmatureAction"
 HUD = NodePath("HUD")
 HpBar = NodePath("HUD/HealthBar")
 XpLabel = NodePath("HUD/XP_ Label")
-UltIcon = NodePath("HUD/Habilities/Ulty")
-UltCDLabel = NodePath("HUD/Habilities/Coldown")
+UltIcon = NodePath("HUD/Habilities/Ult/Ulty")
+UltCDLabel = NodePath("HUD/Habilities/Ult/Coldown")
 DashIcon = NodePath("HUD/Habilities/Slide/Slide")
 DashCDLabel = NodePath("HUD/Habilities/Slide/Coldown2")
 RoundTimer = NodePath("HUD/Timer_Label")
-UpgradeUI = NodePath("HUD/UpGrades")
+UpgradeUIButton = NodePath("HUD/Habilities/Upgrade")
+UpgradeMenu = NodePath("HUD/UpGrades")
 AnimTree = NodePath("AnimationTree")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
@@ -261,9 +258,9 @@ baseSpeed = 5.0
 [node name="FuckingPenguinAnimations2" parent="." unique_id=1900623258 instance=ExtResource("2_yoq75")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
 
-[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1387458358) index="0" unique_id=792688820]
+[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 713580292) index="0" unique_id=2115361650]
 bones/1/rotation = Quaternion(-0.12325293, 0.038744338, -0.6634553, 0.7369768)
-bones/2/rotation = Quaternion(0.003363689, 0.14262055, -0.5010026, 0.8536067)
+bones/2/rotation = Quaternion(0.011353327, 0.12532727, -0.4011064, 0.90734667)
 bones/9/rotation = Quaternion(-0.06805276, 0.036168437, 0.9969895, 0.008532995)
 bones/10/rotation = Quaternion(-0.12672412, -0.042977255, 0.6316057, 0.76365453)
 bones/11/rotation = Quaternion(-0.012576958, 0.0087000895, -0.6321124, 0.77472585)
@@ -277,11 +274,11 @@ bones/21/rotation = Quaternion(0.6767889, -0.14890395, -0.06572424, 0.7179587)
 bones/22/rotation = Quaternion(0.08919531, 0.66119796, 0.72170025, -0.18441887)
 bones/26/rotation = Quaternion(-0.06805032, 0.036168218, 0.9969896, -0.0085330065)
 bones/27/rotation = Quaternion(-0.12325293, -0.038744338, 0.6634553, 0.7369768)
-bones/28/rotation = Quaternion(0.008588443, -0.07632168, 0.5089925, 0.8573378)
+bones/28/rotation = Quaternion(0.02500395, -0.05913224, 0.40369543, 0.91263807)
 bones/31/rotation = Quaternion(-0.0842318, -0.09535109, 0.9539156, -0.27176875)
 bones/32/rotation = Quaternion(-0.060962133, -0.014415726, 0.97727567, -0.2025046)
 bones/33/rotation = Quaternion(-0.070427716, -0.0209309, 0.95163924, -0.29830316)
-bones/36/rotation = Quaternion(6.714767e-08, -2.064186e-09, 0.030726468, 0.9995279)
+bones/36/rotation = Quaternion(6.713288e-08, -2.4998754e-09, 0.037211917, 0.9993074)
 bones/37/rotation = Quaternion(0.71665454, -0.026875671, 0.017527992, 0.6966899)
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1733513987]
@@ -388,59 +385,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Ulty" type="TextureRect" parent="HUD/Habilities" unique_id=694646140]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -223.0
-offset_top = -301.0
-offset_right = -37.0
-offset_bottom = -96.0
-grow_horizontal = 0
-grow_vertical = 0
-texture = ExtResource("5_52ee3")
-expand_mode = 1
-
-[node name="Ulty Key" type="TextureRect" parent="HUD/Habilities" unique_id=717402325]
-self_modulate = Color(0, 0, 0, 1)
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -156.0
-offset_top = -142.0
-offset_right = -116.0
-offset_bottom = -110.0
-grow_horizontal = 0
-grow_vertical = 0
-texture = ExtResource("6_megsn")
-expand_mode = 1
-
-[node name="Coldown" type="Label" parent="HUD/Habilities" unique_id=236211401]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -177.0
-offset_top = -230.0
-offset_right = -101.5
-offset_bottom = -156.75
-grow_horizontal = 0
-grow_vertical = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("6_bhhdu")
-theme_override_font_sizes/font_size = 37
-text = "60"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Slide" type="Control" parent="HUD/Habilities" unique_id=244470777]
 layout_mode = 1
 anchors_preset = 15
@@ -502,17 +446,114 @@ text = "60"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="UpGrades" type="Control" parent="HUD" unique_id=1617456860]
+[node name="Ult" type="Control" parent="HUD/Habilities" unique_id=138964250]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Ulty" type="TextureRect" parent="HUD/Habilities/Ult" unique_id=694646140]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 889.0
+offset_top = 307.0
+offset_right = 1075.0
+offset_bottom = 512.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("5_52ee3")
+expand_mode = 1
+
+[node name="Ulty Key" type="TextureRect" parent="HUD/Habilities/Ult" unique_id=717402325]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 956.0
+offset_top = 466.0
+offset_right = 996.0
+offset_bottom = 498.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("6_megsn")
+expand_mode = 1
+
+[node name="Coldown" type="Label" parent="HUD/Habilities/Ult" unique_id=236211401]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 935.0
+offset_top = 378.0
+offset_right = 1010.5
+offset_bottom = 451.25
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("6_bhhdu")
+theme_override_font_sizes/font_size = 37
+text = "60"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Upgrade" type="Control" parent="HUD/Habilities" unique_id=2039793432]
 visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="HUD/Habilities/Upgrade" unique_id=994666088]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 19.75
+anchor_top = 9.45
+anchor_right = 22.4995
+anchor_bottom = 11.95
+offset_right = 0.019958496
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_glx4g")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="TextureRect2" type="TextureRect" parent="HUD/Habilities/Upgrade" unique_id=1448160053]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 20.000002
+anchor_top = 11.9
+anchor_right = 22.349504
+anchor_bottom = 12.700002
+offset_left = -6.1035156e-05
+offset_right = 0.019897461
+offset_bottom = -3.0517578e-05
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_miouo")
+expand_mode = 1
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
+
+[node name="UpGrades" type="Control" parent="HUD" unique_id=1617456860 node_paths=PackedStringArray("Player", "XPLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("12_lslt6")
+Player = NodePath("../..")
+XPLabel = NodePath("XP Label")
 
 [node name="BG-Slide-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=760471210]
-visible = false
 layout_mode = 0
 offset_left = 64.0
 offset_top = 64.0
@@ -520,13 +561,18 @@ offset_right = 1088.0
 offset_bottom = 576.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ksbbd")
 
-[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=221392318]
+[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=221392318 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 96.0
 offset_top = 128.0
 offset_right = 288.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Frost Burst"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#1" unique_id=609858742]
 layout_mode = 1
@@ -563,7 +609,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#1" unique_id=224304496]
+[node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#1" unique_id=877143517]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -576,28 +622,23 @@ offset_right = 71.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#1/Price_Panel" unique_id=311565237]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
-[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=520988123]
+[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=520988123 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 416.0
 offset_top = 128.0
 offset_right = 608.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Polar Momentum"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button2")
+UpgradeDescription = "Player/Dash/0.5"
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#2" unique_id=392408443]
 layout_mode = 1
@@ -634,41 +675,35 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#2" unique_id=1999962416]
+[node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#2" unique_id=668593900]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -73.0
-offset_top = -55.0
-offset_right = 71.0
+offset_left = -72.0
+offset_top = -58.0
+offset_right = 72.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#2/Price_Panel" unique_id=341875632]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
-[node name="Upgrade#3" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=1124513524]
+[node name="Upgrade#3" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=1124513524 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 736.0
 offset_top = 128.0
 offset_right = 928.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Quick Chill"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button3")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#3" unique_id=1962743670]
 layout_mode = 1
@@ -705,33 +740,22 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#3" unique_id=11824252]
+[node name="Price_Button3" type="Button" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#3" unique_id=945933107]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -73.0
-offset_top = -55.0
-offset_right = 71.0
+offset_left = -71.0
+offset_top = -58.0
+offset_right = 73.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#3/Price_Panel" unique_id=744016019]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
 [node name="Name" type="Label" parent="HUD/UpGrades/BG-Slide-Upgrades" unique_id=1763252652]
 layout_mode = 1
@@ -768,13 +792,18 @@ offset_right = 1088.0
 offset_bottom = 576.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ksbbd")
 
-[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=1145670053]
+[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=1145670053 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 96.0
 offset_top = 128.0
 offset_right = 288.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Blizzard Reset"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#1" unique_id=559882744]
 layout_mode = 1
@@ -811,7 +840,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#1" unique_id=2146915119]
+[node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#1" unique_id=45414124]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -824,28 +853,22 @@ offset_right = 71.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#1/Price_Panel" unique_id=125506130]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
-[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=1154710290]
+[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=1154710290 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 416.0
 offset_top = 128.0
 offset_right = 608.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Avalanche Spread"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button2")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#2" unique_id=813020892]
 layout_mode = 1
@@ -882,41 +905,35 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#2" unique_id=1564869638]
+[node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#2" unique_id=1558127799]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -73.0
-offset_top = -55.0
-offset_right = 71.0
+offset_left = -72.0
+offset_top = -58.0
+offset_right = 72.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#2/Price_Panel" unique_id=856980117]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
-[node name="Upgrade#3" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=1013374554]
+[node name="Upgrade#3" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=1013374554 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 736.0
 offset_top = 128.0
 offset_right = 928.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Absolute Zero"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button3")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#3" unique_id=416577223]
 layout_mode = 1
@@ -953,7 +970,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#3" unique_id=1143405481]
+[node name="Price_Button3" type="Button" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#3" unique_id=309786243]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -961,25 +978,14 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -73.0
-offset_top = -55.0
+offset_top = -58.0
 offset_right = 71.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#3/Price_Panel" unique_id=1122116239]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
 [node name="Name" type="Label" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades" unique_id=336110896]
 layout_mode = 1
@@ -1016,13 +1022,18 @@ offset_right = 1088.0
 offset_bottom = 576.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ksbbd")
 
-[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades" unique_id=1683693912]
+[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades" unique_id=1683693912 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 192.0
 offset_top = 128.0
 offset_right = 384.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Packed Ice"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#1" unique_id=1648709626]
 layout_mode = 1
@@ -1059,7 +1070,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#1" unique_id=948677625]
+[node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#1" unique_id=1209267749]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -1072,28 +1083,22 @@ offset_right = 71.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#1/Price_Panel" unique_id=1460971104]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
-[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades" unique_id=1918748066]
+[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades" unique_id=1918748066 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 640.0
 offset_top = 128.0
 offset_right = 832.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Rapid Toss"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button2")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#2" unique_id=874401548]
 layout_mode = 1
@@ -1130,33 +1135,22 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#2" unique_id=410012760]
+[node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#2" unique_id=1179729562]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -73.0
-offset_top = -55.0
-offset_right = 71.0
+offset_left = -71.0
+offset_top = -58.0
+offset_right = 73.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#2/Price_Panel" unique_id=239570732]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
 [node name="Name" type="Label" parent="HUD/UpGrades/BG-Snow-Upgrades" unique_id=1255079668]
 layout_mode = 1
@@ -1185,6 +1179,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_lslt6")
 text = "x"
 
 [node name="BG-Base-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=115443853]
+visible = false
 layout_mode = 0
 offset_left = 64.0
 offset_top = 64.0
@@ -1192,13 +1187,18 @@ offset_right = 1088.0
 offset_bottom = 576.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_ksbbd")
 
-[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades" unique_id=843637031]
+[node name="Upgrade#1" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades" unique_id=843637031 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 192.0
 offset_top = 128.0
 offset_right = 384.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Frost Regeneration"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#1" unique_id=1188013891]
 layout_mode = 1
@@ -1235,7 +1235,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#1" unique_id=1700354042]
+[node name="Price_Button" type="Button" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#1" unique_id=1967921399]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -1248,28 +1248,22 @@ offset_right = 71.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#1/Price_Panel" unique_id=1982133397]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
-[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades" unique_id=462948722]
+[node name="Upgrade#2" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades" unique_id=462948722 node_paths=PackedStringArray("NameLabel", "UpgradeButton")]
 layout_mode = 0
 offset_left = 640.0
 offset_top = 128.0
 offset_right = 832.0
 offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
+script = ExtResource("13_ulo2v")
+UpgradeName = "Ice Cannons"
+Cost = 10
+NameLabel = NodePath("Panel/Label")
+UpgradeButton = NodePath("Price_Button2")
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#2" unique_id=2055900087]
 layout_mode = 1
@@ -1306,7 +1300,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1e7my")
 
-[node name="Price_Panel" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#2" unique_id=544043669]
+[node name="Price_Button2" type="Button" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#2" unique_id=998584581]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -1314,25 +1308,14 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -73.0
-offset_top = -55.0
+offset_top = -58.0
 offset_right = 71.0
 offset_bottom = -15.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_arntx")
-
-[node name="Label" type="Label" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#2/Price_Panel" unique_id=1624507238]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 27
-text = "XP: 50000"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+text = "XP: 5000"
 
 [node name="Name" type="Label" parent="HUD/UpGrades/BG-Base-Upgrades" unique_id=1091525728]
 layout_mode = 1
@@ -1360,7 +1343,7 @@ theme_override_font_sizes/font_size = 42
 theme_override_styles/normal = SubResource("StyleBoxFlat_lslt6")
 text = "x"
 
-[node name="Ultimate" type="Button" parent="HUD/UpGrades" unique_id=1748932334]
+[node name="Ultimate" type="Button" parent="HUD/UpGrades" unique_id=546463765]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -1371,9 +1354,10 @@ offset_right = 541.0
 offset_bottom = -49.0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
-theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_1iu4k")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_m0x7a")
+theme_override_styles/normal = ExtResource("15_1iu4k")
+theme_override_styles/pressed = ExtResource("16_m0x7a")
+toggle_mode = true
+button_group = ExtResource("17_5v66d")
 text = "ULTIMATE UPGRADE"
 
 [node name="SnowBall" type="Button" parent="HUD/UpGrades" unique_id=93461215]
@@ -1388,8 +1372,10 @@ offset_bottom = -49.0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_m0x7a")
+theme_override_styles/normal = ExtResource("15_1iu4k")
+theme_override_styles/pressed = ExtResource("16_m0x7a")
+toggle_mode = true
+button_group = ExtResource("17_5v66d")
 text = "SNOW-BALL UPGRADE"
 
 [node name="Dash" type="Button" parent="HUD/UpGrades" unique_id=984966951]
@@ -1403,8 +1389,10 @@ offset_right = 324.0
 offset_bottom = -49.0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_m0x7a")
+theme_override_styles/normal = ExtResource("15_1iu4k")
+theme_override_styles/pressed = ExtResource("16_m0x7a")
+toggle_mode = true
+button_group = ExtResource("17_5v66d")
 text = "DASH UPGRADE"
 
 [node name="Base" type="Button" parent="HUD/UpGrades" unique_id=1035165651]
@@ -1418,10 +1406,25 @@ offset_right = 1012.0
 offset_bottom = -49.0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_ulo2v")
+theme_override_styles/normal = ExtResource("15_1iu4k")
 theme_override_styles/normal_mirrored = SubResource("StyleBoxFlat_1iu4k")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_m0x7a")
+theme_override_styles/pressed = ExtResource("16_m0x7a")
+toggle_mode = true
+button_group = ExtResource("17_5v66d")
 text = "BASE UPGRADE"
+
+[node name="XP Label" type="Label" parent="HUD/UpGrades" unique_id=1690545458]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.035
+anchor_bottom = 0.035
+offset_left = 447.0
+offset_top = 518.0
+offset_right = 672.68
+offset_bottom = 529.32
+text = "XP"
+label_settings = SubResource("LabelSettings_glx4g")
+horizontal_alignment = 1
 
 [node name="Timer_Label" type="Label" parent="HUD" unique_id=1861699097]
 anchors_preset = 5
@@ -1436,6 +1439,11 @@ theme_override_colors/font_outline_color = Color(0.66560394, 1.961328e-06, 4.331
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 40
 text = "TIME LEFT: 30:00"
+
+[connection signal="toggled" from="HUD/UpGrades/Ultimate" to="HUD/UpGrades/BG-ULTIMATE-Upgrades" method="set_visible"]
+[connection signal="toggled" from="HUD/UpGrades/SnowBall" to="HUD/UpGrades/BG-Snow-Upgrades" method="set_visible"]
+[connection signal="toggled" from="HUD/UpGrades/Dash" to="HUD/UpGrades/BG-Slide-Upgrades" method="set_visible"]
+[connection signal="toggled" from="HUD/UpGrades/Base" to="HUD/UpGrades/BG-Base-Upgrades" method="set_visible"]
 
 [editable path="FuckingPenguinAnimations2"]
 [editable path="UltimateIndicator"]

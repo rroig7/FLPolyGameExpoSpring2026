@@ -41,12 +41,12 @@ public partial class Player : BaseNetworkedPlayer
 	private int   _xp        = 0;
 	private bool  _isDead    = false;
 	public Base PlayerBase;
-	public bool inBase = true;
+	[Export] public bool inBase = true;
 
 	// --- Dash Settings ---
 	[ExportGroup("Dash Settings")]
 	[Export] float dashSpeed    = 15f;
-	[Export] float dashDuration = 0.10f;
+	[Export] public float dashDuration = 0.10f;
 	[Export] float dashCooldown = 3.0f;
 
 	float _dashCooldownTimer = 0f;
@@ -97,7 +97,8 @@ public partial class Player : BaseNetworkedPlayer
 	[Export] TextureRect DashIcon;
 	[Export] Label DashCDLabel;
 	[Export] Label RoundTimer;
-	[Export] Control UpgradeUI;
+	[Export] Control UpgradeUIButton;
+	[Export] Upgrades UpgradeMenu;
 
 	[ExportGroup("Animation")]
 	[Export] public AnimationTree AnimTree;
@@ -147,6 +148,7 @@ public partial class Player : BaseNetworkedPlayer
 		UpdateXpLabel();
 		UpdateUltimateHud();
 		UpdateDashHud();
+		GameMaster.Instance.SuddenDeathTrigger += ExitBase;
 	}
 
 	private void TryAssignCamera()
@@ -298,7 +300,7 @@ public partial class Player : BaseNetworkedPlayer
 			return;
 		}
 
-		if (Input.IsActionJustPressed("shoot") && shootTimer <= 0f)
+		if (Input.IsActionJustPressed("shoot") && shootTimer <= 0f && !UpgradeMenu.Visible)
 		{
 			Vector3 aimPoint = GetCrosshairAimPoint();
 			Vector3 aimDir   = _muzzle.GlobalPosition.DirectionTo(aimPoint).Normalized();
@@ -316,6 +318,22 @@ public partial class Player : BaseNetworkedPlayer
 		else if (Input.IsActionJustPressed("ultimate"))
 		{
 			GD.Print($"Ultimate: on cooldown, timer={_ultimateTimer}");
+		}
+
+		// ── Upgrade Menu ──────────────────────────────
+		if(Input.IsActionJustPressed("Upgrade") && inBase && !_isAimingUltimate)
+		{
+			UpgradeMenu.Visible = !UpgradeMenu.Visible;
+			(UpgradeUIButton.GetParent() as Control).Visible = !UpgradeMenu.Visible;
+			HpBar.Visible = !UpgradeMenu.Visible;
+			XpLabel.Visible = !UpgradeMenu.Visible;
+			
+			if(UpgradeMenu.Visible)
+				Input.MouseMode = Input.MouseModeEnum.Confined;
+			else
+				Input.MouseMode = Input.MouseModeEnum.Captured;
+
+			GD.Print($"Opening Menu: ");
 		}
 	}
 
@@ -358,9 +376,33 @@ public partial class Player : BaseNetworkedPlayer
 		}
 	}
 
-	public void EnteredBase() => inBase = true;
-	public void ExitBase()    => inBase = false;
+	[Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void EnteredBase()
+	{
+		if(!isLocal) return;
+		else UpgradeUIButton.Show();
+	}
 
+	[Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void ExitBase()
+	{
+		if(!isLocal) return;
+		else
+		{
+			UpgradeUIButton.Hide();
+			UpgradeMenu.Hide();
+			Input.MouseMode = Input.MouseModeEnum.Captured;
+			
+			foreach(Control menu in UpgradeMenu.GetChildren())
+			{
+				if(menu.Name.ToString().Contains("Upgrades")) menu.Visible = false;
+			}
+
+			(UpgradeUIButton.GetParent() as Control).Visible = true;
+			HpBar.Visible = true;
+			XpLabel.Visible = true;			
+		}
+	}
 	// -------------------------------------------------------
 	//  Server-side RPC receivers (AnyPeer → server only)
 	// -------------------------------------------------------

@@ -47,7 +47,7 @@ public partial class CameraFollow : Camera3D
 
 	public override void _Input(InputEvent @event)
 	{
-		if (@event is InputEventMouseMotion mouseMove && IsInstanceValid(Target))
+		if (@event is InputEventMouseMotion mouseMove && IsInstanceValid(Target) && Input.MouseMode == Input.MouseModeEnum.Captured)
 		{
 			swivelAngle = ((swivelAngle + mouseMove.Relative.X * swivelSpeed) % 360f + 360f) % 360f;
 			pitchAngle  = Mathf.Clamp(pitchAngle + mouseMove.Relative.Y * pitchSpeed, pitchMin, pitchMax);
