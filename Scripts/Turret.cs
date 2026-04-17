@@ -14,7 +14,7 @@ public partial class Turret : Node3D
 	[Export] public Area3D TurretFOV;
 	
 	/// <summary>Peer ID of the player who placed this turret. Set before the turret enters the tree.</summary>
-	[Export] public int OwnerPeerId = 0;
+	[Export] public int OwnerPeerId = -2;
 
 	[Signal] public delegate void BulletSpawnRequestedEventHandler(Vector3 origin, Quaternion rotation, int bulletId, int shooterId);
 

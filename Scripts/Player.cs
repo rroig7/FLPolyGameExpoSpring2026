@@ -559,7 +559,7 @@ public partial class Player : BaseNetworkedPlayer
 	private void ClientSyncRoundTimer(float t)
 	{
 		if (!isLocal) return;
-		RoundTimer.Text = t < 0.1f ? "SUDDEN DEATH" : $"{t:F1}";
+		RoundTimer.Text = t < 0.1f ? "SUDDEN DEATH" : $"{(int)(t / 60)}:{t % 60:00}";
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
