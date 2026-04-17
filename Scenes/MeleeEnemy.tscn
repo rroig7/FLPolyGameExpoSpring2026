@@ -29,6 +29,9 @@ properties/6/replication_mode = 1
 properties/7/path = NodePath(".:SyncedVelocity")
 properties/7/spawn = true
 properties/7/replication_mode = 1
+properties/8/path = NodePath(".:CurrentHp")
+properties/8/spawn = true
+properties/8/replication_mode = 2
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpr8r"]
 radius = 0.2939453
@@ -38,7 +41,28 @@ height = 1.7695465
 radius = 0.26464844
 height = 1.0481415
 
-[node name="MeleeEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "myAnimation", "patrolPoints") groups=["enemies"]]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1blns"]
+bg_color = Color(0, 0, 0, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mjdfb"]
+bg_color = Color(1, 0, 0, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_kjirb"]
+viewport_path = NodePath("SubViewport")
+
+[node name="MeleeEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "myAnimation", "HealthBar", "patrolPoints") groups=["enemies"]]
 collision_layer = 16
 collision_mask = 15
 wall_min_slide_angle = 0.34906584
@@ -46,6 +70,7 @@ floor_max_angle = 1.0471976
 script = ExtResource("1_1blns")
 myId = NodePath("MultiplayerSynchronizer")
 myAnimation = NodePath("Sketchfab_Scene/AnimationPlayer")
+HealthBar = NodePath("SubViewport/Control/HealthBar")
 patrolPoints = []
 chaseRange = 5.0
 returnRange = 10.0
@@ -225,5 +250,45 @@ shape = SubResource("CapsuleShape3D_kpr8r")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=87330323]
 transform = Transform3D(0.7776619, 0.6286827, 0, -0.6286827, 0.7776619, 0, 0, 0, 1, 0.84267044, 0.3552913, 0)
 shape = SubResource("CapsuleShape3D_1blns")
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1247903365]
+transparent_bg = true
+
+[node name="Control" type="Control" parent="SubViewport" unique_id=828658082]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="ProgressBar" parent="SubViewport/Control" unique_id=121062137]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -169.0
+offset_top = -13.5
+offset_right = 169.0
+offset_bottom = 13.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_1blns")
+theme_override_styles/fill = SubResource("StyleBoxFlat_mjdfb")
+value = 90.0
+show_percentage = false
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=233850282]
+transform = Transform3D(-2.1855694e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.1855694e-08, 0, 0.97751325, 0)
+billboard = 2
+texture = SubResource("ViewportTexture_kjirb")
 
 [editable path="Sketchfab_Scene"]

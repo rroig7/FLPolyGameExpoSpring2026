@@ -6,6 +6,7 @@ public partial class MeleeEnemy : CharacterBody3D
 {
 	[Export] public NetID myId;
 	[Export] public AnimationPlayer myAnimation;
+	[Export] ProgressBar HealthBar;
 
 	[Export] private Marker3D[] patrolPoints;
 	[Export] public float chaseRange = 10.0f;
@@ -17,7 +18,16 @@ public partial class MeleeEnemy : CharacterBody3D
 	[Export] public float knockbackForce = 6.0f;
 	
 	[Export] public float MaxHp = 100f;
-	[Export] public float CurrentHp = 100f;
+	private float _currentHp = 100f;
+	[Export] public float CurrentHp
+	{
+		get => _currentHp;
+		set
+		{
+			_currentHp = value;
+			UpdateHealthBar();
+		}
+	}
 	[Export] public int XP_Value = 10;
 
 	private float _attackTimer = 0f;
@@ -56,6 +66,7 @@ public partial class MeleeEnemy : CharacterBody3D
 			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
 
 		ChoosePatrolPoint();
+		UpdateHealthBar();
 		GameMaster.Instance.SuddenDeathTrigger += Die;
 	}
 
@@ -173,6 +184,14 @@ public partial class MeleeEnemy : CharacterBody3D
 			myAnimation.Play("seal_idle_flutter");
 		else
 			myAnimation.Play("seal_hop_slow");
+	}
+
+	private void UpdateHealthBar()
+	{
+		if (HealthBar == null) return;
+		HealthBar.MaxValue = MaxHp;
+		HealthBar.Value = _currentHp;
+		HealthBar.Visible = _currentHp < MaxHp; // optional: hide at full HP
 	}
 
 	private void ScanForPlayers()
