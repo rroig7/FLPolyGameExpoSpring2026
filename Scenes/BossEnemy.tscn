@@ -29,6 +29,9 @@ properties/6/replication_mode = 1
 properties/7/path = NodePath(".:SyncedVelocity")
 properties/7/spawn = true
 properties/7/replication_mode = 1
+properties/8/path = NodePath(".:CurrentHp")
+properties/8/spawn = true
+properties/8/replication_mode = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7j2nt"]
 radius = 13.064
@@ -37,11 +40,33 @@ radius = 13.064
 radius = 1.90625
 height = 8.793823
 
-[node name="BossEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "Muzzle") groups=["boss"]]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jfpgj"]
+bg_color = Color(0, 0, 0, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lj6qe"]
+bg_color = Color(1, 0, 0, 1)
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7sgnn"]
+viewport_path = NodePath("SubViewport")
+
+[node name="BossEnemy" type="CharacterBody3D" unique_id=842654904 node_paths=PackedStringArray("myId", "HealthBar", "Muzzle") groups=["boss"]]
 collision_layer = 16
 collision_mask = 15
 script = ExtResource("1_jfpgj")
 myId = NodePath("MultiplayerSynchronizer")
+HealthBar = NodePath("SubViewport/Control/HealthBar")
 BulletSpeed = 0.4
 MeleeDamage = 40.0
 CollisionMask = 3
@@ -60,8 +85,93 @@ monitorable = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BossFOV" unique_id=1968873893]
 shape = SubResource("SphereShape3D_7j2nt")
 
-[node name="Sketchfab_Scene" parent="." unique_id=929004655 instance=ExtResource("3_jfpgj")]
+[node name="Sketchfab_Scene" parent="." unique_id=1149522079 instance=ExtResource("3_jfpgj")]
 transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0" parent_id_path=PackedInt32Array(1149522079, 797596005) index="0" unique_id=162652365]
+bones/2/rotation = Quaternion(-0.06447641, 0, 0, 0.99791926)
+bones/3/rotation = Quaternion(-0.033902097, 0, 0, 0.9994252)
+bones/4/rotation = Quaternion(0.0016271479, 0, 0, 0.9999987)
+bones/6/rotation = Quaternion(0.2151372, 1.1641789e-07, 2.564635e-08, 0.97658384)
+bones/7/rotation = Quaternion(0.07682263, -2.064553e-10, 1.8303751e-08, 0.9970448)
+bones/13/rotation = Quaternion(-0.23190595, -0.34964883, 0.8900772, -0.17812338)
+bones/25/rotation = Quaternion(-0.10604715, 0.79283065, 0.5823122, -0.14521039)
+bones/27/rotation = Quaternion(-0.53183186, -0.34583217, -0.25222838, 0.7307092)
+bones/28/rotation = Quaternion(-0.28400657, 0.68360645, -0.5906495, 0.3211786)
+bones/29/rotation = Quaternion(0.15810037, -0.079430275, 0.04624744, 0.98313594)
+bones/30/rotation = Quaternion(-0.031991214, 0.007579359, 0.04249869, 0.9985555)
+bones/32/rotation = Quaternion(0.2237359, 0.047253802, -0.014497034, 0.9733957)
+bones/33/rotation = Quaternion(0.23198792, 0.005304479, -0.011070422, 0.9726412)
+bones/34/rotation = Quaternion(0.29980388, 0.023439093, -0.0118491165, 0.95363927)
+bones/35/rotation = Quaternion(0.10957588, 0.62182415, 0.40506673, 0.66124797)
+bones/36/rotation = Quaternion(0.28973967, 0.04033188, 0.11350699, 0.94949484)
+bones/39/rotation = Quaternion(0.24062322, 0.050202273, -0.02731485, 0.96893454)
+bones/40/rotation = Quaternion(0.256216, -0.024420628, 0.004773152, 0.96629924)
+bones/41/rotation = Quaternion(0.29995066, -0.0061494503, -0.026181752, 0.95357555)
+bones/43/rotation = Quaternion(0.28045157, 0.007783721, -0.011597983, 0.95976657)
+bones/44/rotation = Quaternion(0.3664221, -0.01035907, -0.010096579, 0.93033636)
+bones/45/rotation = Quaternion(0.283319, -0.03602719, 0.0029764087, 0.95834416)
+bones/47/rotation = Quaternion(0.17977862, -0.0868097, 0.02754704, 0.97948205)
+bones/48/rotation = Quaternion(0.38582483, -0.0043184278, -0.0138097275, 0.9224586)
+bones/49/rotation = Quaternion(0.42569512, -0.024429237, 0.0047641047, 0.9045243)
+bones/50/rotation = Quaternion(-0.53183186, 0.34583217, 0.25222835, 0.73070925)
+bones/51/rotation = Quaternion(0.2840697, 0.68299747, -0.59107023, -0.32164413)
+bones/52/rotation = Quaternion(0.15811755, 0.07777885, -0.04602804, 0.98327553)
+bones/53/rotation = Quaternion(-0.032039247, -0.0072082216, -0.042458504, 0.9985584)
+bones/55/rotation = Quaternion(0.34646565, 0.02656795, -0.041939534, 0.93674797)
+bones/56/rotation = Quaternion(0.39759037, -0.0045944257, 0.015362826, 0.9174229)
+bones/57/rotation = Quaternion(0.42156008, -0.020558393, 0.012506659, 0.90648115)
+bones/58/rotation = Quaternion(0.17751648, -0.4981103, -0.38003758, 0.7589107)
+bones/59/rotation = Quaternion(0.28200537, -0.077187106, 0.010937108, 0.9562403)
+bones/62/rotation = Quaternion(0.36872104, -0.024630394, -0.050415102, 0.92784506)
+bones/63/rotation = Quaternion(0.45928207, 0.021399507, -0.006412663, 0.88800955)
+bones/64/rotation = Quaternion(0.12991188, 0.0030061412, 0.024748173, 0.99121207)
+bones/66/rotation = Quaternion(0.44290492, -0.004690436, -0.03163612, 0.895998)
+bones/67/rotation = Quaternion(0.28394723, 0.009574498, 0.010911258, 0.9587301)
+bones/68/rotation = Quaternion(0.3248518, 0.036018193, -0.004584569, 0.9450677)
+bones/70/rotation = Quaternion(0.30191606, 0.084257856, -0.08188414, 0.94606674)
+bones/71/rotation = Quaternion(0.34522235, 0.003774998, 0.01397183, 0.9384093)
+bones/72/rotation = Quaternion(0.4647427, 0.024167012, -0.005803012, 0.8850969)
+bones/73/rotation = Quaternion(0.97709894, 0.043591946, -0.0015469644, 0.20826666)
+bones/74/rotation = Quaternion(0.052904375, -1.9838013e-10, -3.7308445e-09, 0.9985996)
+bones/75/rotation = Quaternion(-0.37396395, -0.03730772, 0.023228405, 0.92640144)
+bones/77/rotation = Quaternion(0.9883445, 0.0103146015, 0.13011803, 0.078347035)
+bones/78/rotation = Quaternion(0.052904375, 1.4151138e-08, 5.093918e-08, 0.9985996)
+bones/79/rotation = Quaternion(-0.49187112, 3.7309886e-07, -2.084247e-07, 0.87066805)
+bones/80/rotation = Quaternion(1.5817265e-07, 0.93191504, -0.36267662, 2.9695377e-07)
+
+[node name="spine_001_76" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="1" unique_id=1742449586]
+transform = Transform3D(1, 0, 0, 0, 0.9924123, -0.12295365, 0, 0.122953676, 0.9924123, 0, 1.1573, -0.017200012)
+
+[node name="spine_002_74" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="2" unique_id=1451172315]
+transform = Transform3D(1, 0, 0, 0, 0.9984629, -0.055419974, 0, 0.05541999, 0.99846303, 0, 1.2928998, -0.00040002726)
+
+[node name="upper_arm_L_45" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="3" unique_id=2133083945]
+transform = Transform3D(-0.9414587, 0.33291245, 0.05315139, -0.33055836, -0.88059145, -0.3395428, -0.06623332, -0.33723518, 0.9390874, 0.26015264, 1.6637306, -0.038879484)
+
+[node name="forearm_L_43" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="4" unique_id=872082422]
+transform = Transform3D(-0.89456147, 0.44023532, 0.07715686, -0.4409287, -0.8974994, 0.008726656, 0.07309006, -0.026214182, 0.9969808, 0.34633076, 1.4357799, -0.12617652)
+
+[node name="upper_arm_R_70" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="5" unique_id=85898913]
+transform = Transform3D(-0.9414633, -0.33284977, -0.053458847, 0.3307166, -0.88115597, -0.33791992, 0.06537098, -0.33581895, 0.9396552, -0.2601526, 1.6637307, -0.038879573)
+
+[node name="forearm_R_68" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="6" unique_id=717841453]
+transform = Transform3D(-0.89518684, -0.4394108, -0.074556276, 0.44000536, -0.89794827, 0.009137869, -0.070962995, -0.024625003, 0.9971746, -0.3463144, 1.4356339, -0.12580991)
+
+[node name="thigh_L_83" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="7" unique_id=1305737428]
+transform = Transform3D(0.9961947, 0.08583168, 0.015134489, 0.087153696, -0.98222363, -0.1662576, 0.0005952809, 0.1669433, -0.98597044, 0.1257207, 1.072, -0.012399968)
+
+[node name="shin_L_81" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="8" unique_id=292041126]
+transform = Transform3D(0.9961947, 0.08695033, 0.005980745, 0.0871537, -0.99429214, -0.061544627, 0.0005952797, 0.06183058, -0.9980907, 0.16785999, 0.5897745, 0.06956132)
+
+[node name="thigh_R_90" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="9" unique_id=827433405]
+transform = Transform3D(0.96592605, 3.72529e-08, 0.25882018, -0.024318092, -0.99557614, 0.09075686, 0.25767413, -0.09395802, -0.96165687, -0.12572068, 1.072, -0.012399998)
+
+[node name="shin_R_88" parent="Sketchfab_Scene/Sketchfab_model/root/GLTF_SceneRootNode/metarig_99/GLTF_created_0/Skeleton3D" index="10" unique_id=574306063]
+transform = Transform3D(0.96592605, 0.027347026, 0.25737143, -0.024318196, -0.9804136, 0.19544199, 0.25767416, -0.1950413, -0.94634616, -0.12572068, 0.5832192, -0.058528945)
+
+[node name="AnimationPlayer" parent="Sketchfab_Scene" index="1" unique_id=592978490]
+autoplay = &"metarigAction"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1868736931]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.4054565, 0)
@@ -69,3 +179,45 @@ shape = SubResource("CapsuleShape3D_lj6qe")
 
 [node name="BossMuzzle" type="Marker3D" parent="." unique_id=8249607]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1560183, 4.9381, 1.2015911)
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=497079390]
+transparent_bg = true
+
+[node name="Control" type="Control" parent="SubViewport" unique_id=1810561240]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HealthBar" type="ProgressBar" parent="SubViewport/Control" unique_id=1707638899]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -169.0
+offset_top = -13.5
+offset_right = 169.0
+offset_bottom = 13.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_jfpgj")
+theme_override_styles/fill = SubResource("StyleBoxFlat_lj6qe")
+value = 90.0
+show_percentage = false
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=536000987]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 9.306771, 0)
+billboard = 2
+texture = SubResource("ViewportTexture_7sgnn")
+
+[editable path="Sketchfab_Scene"]
