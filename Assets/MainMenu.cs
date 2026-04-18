@@ -3,6 +3,7 @@ using System;
 
 public partial class MainMenu : Node
 {
+	[Export] public Control TutorialPage;
 	[Export] public float RotationSpeed = 10f;
 
 	private Camera3D camera;
@@ -31,5 +32,10 @@ public partial class MainMenu : Node
 	private void OnPlayButtonPressed()
 	{
 		GetTree().ChangeSceneToFile("res://NetworkCore/WanLobbySystem/generic_lobby_system.tscn");
+	}
+	
+	private void OnTutorialButtonPressed()
+	{
+		TutorialPage.Visible = true;
 	}
 }

@@ -19,6 +19,8 @@ transform = Transform3D(-0.024220055, 0, 1.7498324, 0, 2, 0, -1.4998564, 0, -0.0
 
 [node name="Igloo" parent="." unique_id=2106285624 node_paths=PackedStringArray("_turretSpawnLeft", "_turretSpawnRight") instance=ExtResource("2_yam4p")]
 transform = Transform3D(-1.5298986e-07, 0, 3.5, 0, 3.5, 0, -3.5, 0, -1.5298986e-07, 0, 0.1237185, 0)
+MaxHp = 1500
+CurrentHp = 1500.0
 _turretSpawnLeft = NodePath("../TurretSpawnLeft")
 _turretSpawnRight = NodePath("../TurretSpawnRight")
 

@@ -58,7 +58,7 @@ public partial class MeleeEnemy : CharacterBody3D
 		navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
 		navAgent.PathPostprocessing = NavigationPathQueryParameters3D.PathPostProcessing.Edgecentered;
 
-		_walkSfx = SoundFx.MakeLooped(this, SoundFx.MeleeEnemyWalk, -25f);
+		_walkSfx = SoundFx.MakeLooped(this, SoundFx.MeleeEnemyWalk, -20f);
 
 		if (patrolPoints == null || patrolPoints.Length == 0)
 		{

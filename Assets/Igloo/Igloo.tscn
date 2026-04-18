@@ -100,7 +100,6 @@ collision_layer = 8
 collision_mask = 0
 script = ExtResource("4_3bx3q")
 HealthBar = NodePath("SubViewport/Control/HealthBar")
-MaxHp = 25
 MyID = NodePath("MultiplayerSynchronizer")
 Spawnpoint = NodePath("SpawnPoint")
 Inside = NodePath("Area3D")

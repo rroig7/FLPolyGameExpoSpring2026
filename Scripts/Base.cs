@@ -19,6 +19,8 @@ public partial class Base : StaticBody3D
 	[Export] public Node3D Spawnpoint {get; private set;}
 	[Export] Area3D Inside;
 
+	bool _destroyed;
+
 	
 	// --- Turret Variables ---
 	[Export] public Marker3D _turretSpawnLeft;
@@ -54,9 +56,18 @@ public partial class Base : StaticBody3D
 
 	void BaseDestroyed()
 	{
+		if (_destroyed) return;
+		_destroyed = true;
+		GameMaster.Instance.SuddenDeathTrigger -= BaseDestroyed;
 		Rpc(MethodName.ClientPlayDestroyedSfx, GlobalPosition);
 		GenericCore.Instance.MainNetworkCore.NetDestroyObject(MyID);
 		//Rpc(MethodName.SelfDestruct);
+	}
+
+	public override void _ExitTree()
+	{
+		if (GenericCore.Instance.IsServer && !_destroyed)
+			GameMaster.Instance.SuddenDeathTrigger -= BaseDestroyed;
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
