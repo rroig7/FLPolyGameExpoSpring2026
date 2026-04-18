@@ -574,7 +574,7 @@ public partial class Player : BaseNetworkedPlayer
 		_pendingActionAnim = animName;
 
 		if (animName == "Dash")          _slideSfx = SoundFx.PlayOn(this, SoundFx.PlayerSlide, -20f);
-		else if (animName == "SnowBall") SoundFx.PlayOn(_muzzle ?? (Node3D)this, SoundFx.ThrowSnowball, -10f);
+		else if (animName == "SnowBall") SoundFx.PlayOn(_muzzle ?? (Node3D)this, SoundFx.ThrowSnowball, -15f);
 	}
 
 	/// <summary>Broadcasts authoritative round-timer value to all clients.</summary>
@@ -606,6 +606,8 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		if (!isLocal || HitMarker == null) return;
 
+		SoundFx.PlayLocal(this, SoundFx.HitMarker, -20f);
+
 		if (_hitMarkerTween != null && _hitMarkerTween.IsValid())
 			_hitMarkerTween.Kill();
 
@@ -635,7 +637,7 @@ public partial class Player : BaseNetworkedPlayer
 		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void ClientOnDamaged()
 	{
-		SoundFx.PlayOn(this, SoundFx.PlayerDamaged, -10f);
+		SoundFx.PlayOn(this, SoundFx.PlayerDamaged, -15f);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,

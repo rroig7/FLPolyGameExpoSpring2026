@@ -17,6 +17,7 @@ public static class SoundFx
 	public const string PlayerUpgrade    = Root + "PlayerUpgrade.wav";
 	public const string PlayerWalk       = Root + "PlayerWalk.wav";
 	public const string ThrowSnowball    = Root + "ThrowSnowball.mp3";
+	public const string HitMarker        = Root + "Hitmarker.mp3";
 	public const string InGameMusic      = "res://Assets/Music/InGameMusic.mp3";
 	public const string BlizzardSound    = "res://Assets/Music/Blizzard Sound.mp3";
 
