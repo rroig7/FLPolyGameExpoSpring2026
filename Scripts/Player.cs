@@ -606,7 +606,7 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		if (!isLocal || HitMarker == null) return;
 
-		SoundFx.PlayLocal(this, SoundFx.HitMarker, -20f);
+		SoundFx.PlayLocal(this, SoundFx.HitMarker, -15f);
 
 		if (_hitMarkerTween != null && _hitMarkerTween.IsValid())
 			_hitMarkerTween.Kill();
