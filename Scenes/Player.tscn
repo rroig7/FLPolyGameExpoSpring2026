@@ -465,13 +465,9 @@ baseSpeed = 5.0
 [node name="FuckingPenguinAnimations2" parent="." unique_id=1900623258 instance=ExtResource("2_yoq75")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
 
-[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1387458358) index="0" unique_id=792688820]
+[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1510584324) index="0" unique_id=145004877]
 bones/1/rotation = Quaternion(-0.12325293, 0.038744338, -0.6634553, 0.7369768)
-<<<<<<< Updated upstream
 bones/2/rotation = Quaternion(0.010657596, 0.12691261, -0.41009313, 0.9031076)
-=======
-bones/2/rotation = Quaternion(0.004231669, 0.14083771, -0.49049735, 0.8599763)
->>>>>>> Stashed changes
 bones/9/rotation = Quaternion(-0.06805276, 0.036168437, 0.9969895, 0.008532995)
 bones/10/rotation = Quaternion(-0.12672412, -0.042977255, 0.6316057, 0.76365453)
 bones/11/rotation = Quaternion(-0.012576958, 0.0087000895, -0.6321124, 0.77472585)
@@ -485,19 +481,11 @@ bones/21/rotation = Quaternion(0.6767889, -0.14890395, -0.06572424, 0.7179587)
 bones/22/rotation = Quaternion(0.08919531, 0.66119796, 0.72170025, -0.18441887)
 bones/26/rotation = Quaternion(-0.06805032, 0.036168218, 0.9969896, -0.0085330065)
 bones/27/rotation = Quaternion(-0.12325293, -0.038744338, 0.6634553, 0.7369768)
-<<<<<<< Updated upstream
 bones/28/rotation = Quaternion(0.023455294, -0.06080804, 0.4139872, 0.9079466)
 bones/31/rotation = Quaternion(-0.0842318, -0.09535109, 0.9539156, -0.27176875)
 bones/32/rotation = Quaternion(-0.060962133, -0.014415726, 0.97727567, -0.2025046)
 bones/33/rotation = Quaternion(-0.070427716, -0.0209309, 0.95163924, -0.29830316)
 bones/36/rotation = Quaternion(6.712245e-08, -2.7654732e-09, 0.04116547, 0.9991524)
-=======
-bones/28/rotation = Quaternion(0.0102811, -0.0746071, 0.49851763, 0.86360186)
-bones/31/rotation = Quaternion(-0.0842318, -0.09535109, 0.9539156, -0.27176875)
-bones/32/rotation = Quaternion(-0.060962133, -0.014415726, 0.97727567, -0.2025046)
-bones/33/rotation = Quaternion(-0.070427716, -0.0209309, 0.95163924, -0.29830316)
-bones/36/rotation = Quaternion(6.716857e-08, -1.2059321e-09, 0.017950922, 0.9998389)
->>>>>>> Stashed changes
 bones/37/rotation = Quaternion(0.71665454, -0.026875671, 0.017527992, 0.6966899)
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1733513987]
@@ -841,7 +829,6 @@ stretch_mode = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="UpGrades" type="Control" parent="HUD" unique_id=1617456860 node_paths=PackedStringArray("Player", "XPLabel")]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -853,7 +840,6 @@ Player = NodePath("../..")
 XPLabel = NodePath("XP Label")
 
 [node name="BG-Slide-Upgrades" type="Panel" parent="HUD/UpGrades" unique_id=760471210]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
