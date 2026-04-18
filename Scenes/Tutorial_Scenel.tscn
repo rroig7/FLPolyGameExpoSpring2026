@@ -204,9 +204,9 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 text = "What to do:
 - Protect your base (Your Igloo)
-- Kill everything than move.
+- Kill everything that moves
 - Upgrade your Skills at your base
 - Survive the meltdown and be the last one Standing
 
-PD: Be carefull of Dr. Towler Bear he is really dangerus. If you see him run for your life or KILL HIM!"
+PS: Be careful of Dr. Towler Bear, he is very dangerous. If you see him, run for your life or KILL HIM!"
 autowrap_mode = 2
