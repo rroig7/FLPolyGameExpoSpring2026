@@ -49,11 +49,17 @@ public partial class Upgrades : Control
 		{
 			var upgrade = GetNode<UpgradeInfo>(path);
 
-			
+			if(upgrade.PurchaseCount >= upgrade.MaxPurchases)
+			{
+				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f, "");
+				GD.Print($"Player {id} failed to purchase {upgrade.UpgradeName} (max purchases reached)");
+				return;
+			}
+
 			if(upgrade.UpgradeDescription.ToLower().Contains("health") && Player.PlayerBase._currentHp == Player.PlayerBase.MaxHp)
 			{
 				//Refund if trying to upgrade health at max
-				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f);
+				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f, "");
 				GD.Print($"Player {id} failed to purchase {upgrade.UpgradeName} (health already at max)");
 				return;
 			}
@@ -62,14 +68,15 @@ public partial class Upgrades : Control
 			if(Player.XP >= upgrade.Cost)
 			{
 				Player.XP -= upgrade.Cost;
+				upgrade.IncrementPurchaseCount();
 				ApplyUpgrade(upgrade.UpgradeDescription, upgrade.modifier, upgrade.minValue);
 
-				RpcId(id, MethodName.PurchaseComplete, true, upgrade.UpgradeDescription, upgrade.modifier, upgrade.minValue);
+				RpcId(id, MethodName.PurchaseComplete, true, upgrade.UpgradeDescription, upgrade.modifier, upgrade.minValue, path.ToString());
 				GD.Print($"Player {id} purchased {upgrade.UpgradeName}");
 			}
 			else
 			{
-				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f);
+				RpcId(id, MethodName.PurchaseComplete, false, "", 0f, -1f, "");
 				GD.Print($"Player {id} failed to purchase {upgrade.UpgradeName}");
 			}
 		}
@@ -77,13 +84,17 @@ public partial class Upgrades : Control
 
 	//Server -> Client
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	void PurchaseComplete(bool success, string description, float modifier, float min)
+	void PurchaseComplete(bool success, string description, float modifier, float min, string upgradePath)
 	{
 		processingPurchase = false;
 		RefreshXpLabel();
 		// Skip on host: server already applied in ApplyPurchase and shares the same node
 		if (success && !string.IsNullOrEmpty(description) && !GenericCore.Instance.IsServer)
+		{
 			ApplyUpgrade(description, modifier, min);
+			if (!string.IsNullOrEmpty(upgradePath))
+				GetNode<UpgradeInfo>(upgradePath)?.IncrementPurchaseCount();
+		}
 	}
 
 	public void RefreshXpLabel()
