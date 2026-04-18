@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://2kmjs8w06u4f" path="res://Assets/UI Images/Keys/shift.png" id="7_vueim"]
 [ext_resource type="Texture2D" uid="uid://l2wyeejcyvak" path="res://Assets/UI Images/Keys/letter-q.png" id="8_dwjft"]
 [ext_resource type="Texture2D" uid="uid://bxc5hyeb6co0g" path="res://Assets/UI Images/Keys/left.png" id="9_8vfdq"]
+[ext_resource type="Texture2D" uid="uid://bggtshm525jvl" path="res://Assets/UI Images/Keys/target.png" id="10_x15vo"]
 
 [node name="Tutorial" type="Control" unique_id=1462516669]
 layout_mode = 3
@@ -177,3 +178,35 @@ offset_bottom = 42.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 text = "SNOW BALL ATTACK"
+
+[node name="GOAL" type="TextureRect" parent="." unique_id=21202229]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -112.0
+offset_top = -204.0
+offset_right = -72.0
+offset_bottom = -164.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_x15vo")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="GOAL" unique_id=268749601]
+layout_mode = 0
+offset_left = 48.0
+offset_right = 596.0
+offset_bottom = 447.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "What to do:
+- Protect your base (Your Igloo)
+- Kill everything than move.
+- Upgrade your Skills at your base
+- Survive the meltdown and be the last one Standing
+
+PD: Be carefull of Dr. Towler Bear he is really dangerus. If you see him run for your life or KILL HIM!"
+autowrap_mode = 2
