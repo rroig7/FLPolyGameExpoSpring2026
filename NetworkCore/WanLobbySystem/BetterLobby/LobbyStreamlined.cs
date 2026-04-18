@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -133,8 +134,11 @@ public partial class LobbyStreamlined : Node
 		// Get the container where agents are spawned
 		Node spawnRoot = GetNode(AgentSpawner.GetPath() + "/" + AgentSpawner.SpawnPath);
 
-		foreach (Node child in spawnRoot.GetChildren())
+		// Snapshot the child list — QueueFree() and re-emit can shift it mid-iteration.
+		var children = spawnRoot.GetChildren().ToArray();
+		foreach (Node child in children)
 		{
+			if (!IsInstanceValid(child)) continue;
 			if (child.GetMultiplayerAuthority() == id)
 			{
 				GD.Print($"Freeing agent owned by {id}");

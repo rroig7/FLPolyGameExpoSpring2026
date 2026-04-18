@@ -72,6 +72,10 @@ public partial class SnowBullet : RigidBody3D
 		// Resolved on server only.
 		if (!Multiplayer.IsServer()) return;
 
+		// Close reentrancy window: multiple bodies can enter in the same physics
+		// frame before MarkDeadAndFree runs at the bottom of this method.
+		_dead = true;
+
 		GD.Print($"SnowBullet: Area hit '{body.Name}' (type={body.GetType().Name})");
 
 		bool validHit = false;
@@ -124,7 +128,7 @@ public partial class SnowBullet : RigidBody3D
 				break;
 		}
 
-		if (validHit && ShooterId != -1)
+		if (validHit && ShooterId != -1 && GameMaster.Instance != null)
 			GameMaster.Instance.NotifyHit(ShooterId);
 
 		// Confirm hit to all clients via RPC.

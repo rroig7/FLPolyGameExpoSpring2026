@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 [GlobalClass]
@@ -152,13 +153,17 @@ public partial class NetworkCore : MultiplayerSpawner
 				//Avoid a problem whenever possible.
 				return;
 			}
-			foreach (var i in GenericCore.Instance._netObjects.Keys)
+			// Snapshot keys before iteration — Remove() inside the loop would
+			// otherwise invalidate the Dictionary enumerator.
+			var keys = GenericCore.Instance._netObjects.Keys.ToArray();
+			foreach (var i in keys)
 			{
 				try
 				{
-					if (GenericCore.Instance._netObjects[i] != netId) continue;
-						GenericCore.Instance._netObjects[i].GetParent().QueueFree();
-						GenericCore.Instance._netObjects.Remove(i);
+					if (!GenericCore.Instance._netObjects.TryGetValue(i, out var found)) continue;
+					if (found != netId) continue;
+					found.GetParent().QueueFree();
+					GenericCore.Instance._netObjects.Remove(i);
 				}
 				catch
 				{

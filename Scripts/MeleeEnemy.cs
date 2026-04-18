@@ -273,11 +273,17 @@ public partial class MeleeEnemy : CharacterBody3D
 
 		if (CurrentHp > 0f) return;
 
-		var Players = GetTree().GetNodesInGroup("players").ToArray().Cast<Player>();
+		// Commit to death before XP award / Die() so a same-frame second bullet
+		// can't re-award XP or re-enter Die().
+		_isDying = true;
 
-		var player = Players.First(p => p.MyId.OwnerId == id);
-		player.XP += XP_Value;
-		GD.Print($"{player.Name} gained {XP_Value} XP, total XP={player.XP}");
+		var Players = GetTree().GetNodesInGroup("players").ToArray().Cast<Player>();
+		var player = Players.FirstOrDefault(p => p.MyId.OwnerId == id);
+		if (player != null)
+		{
+			player.XP += XP_Value;
+			GD.Print($"{player.Name} gained {XP_Value} XP, total XP={player.XP}");
+		}
 
 		Die();
 	}

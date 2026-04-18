@@ -44,12 +44,10 @@ public partial class NetworkPlayerManager : Control
 			_readyButton.Pressed  += () => Rpc("OnReadyPressed");
 		}
 
-		if(GenericCore.Instance.IsServer && GameMaster.Instance != null)
+		if (GenericCore.Instance.IsServer)
 		{
-			if(!GameMaster.Instance.Players.Contains(this))
-			{
-				GameMaster.Instance.AddPlayer(this);
-			}
+			// AddPlayer is now idempotent — safe to call unconditionally.
+			GameMaster.Instance?.AddPlayer(this);
 		}
 
 		_readyButton.Modulate = Colors.White;

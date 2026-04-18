@@ -118,15 +118,11 @@ public partial class NetID : MultiplayerSynchronizer
 			IsLocal = true;
 	}
 
-	~NetID()
-	{
-
-		if (Multiplayer.IsServer())
-		{
-			GD.Print("Destroying a network object from the destructor. "+Name);
-			_myNetworkCore.NetDestroyObject(this);
-		}
-	}
+	// Finalizer intentionally removed: C# finalizers run on the GC thread, but
+	// Multiplayer.IsServer() and NetDestroyObject mutate Godot/network state and
+	// must run on the main thread. Cleanup is driven by explicit paths:
+	// NetworkCore.NetDestroyObject(NetID), NetworkCore.NetDestroyObject(peerId),
+	// and the ManualDelete RPC.
 
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]

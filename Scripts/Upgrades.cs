@@ -38,6 +38,17 @@ public partial class Upgrades : Control
 		processingPurchase = true;
 
 		RpcId(1, MethodName.ApplyPurchase, Player.MyId.OwnerId, upgrade.GetPath());
+
+		// Fallback: if the server ACK (PurchaseComplete) never arrives — peer lag,
+		// packet loss, or server-side error before reply — don't permanently lock
+		// the upgrade UI.
+		if (GlobalTimers.Instance != null)
+		{
+			GlobalTimers.Instance.OneShotTimer(3f).Timeout += () =>
+			{
+				if (processingPurchase) processingPurchase = false;
+			};
+		}
 	}
 
 
@@ -105,7 +116,10 @@ public partial class Upgrades : Control
 
 	void ApplyUpgrade(string description, float modifier, float min = -1)
 	{
-		if (Player != null && Player.MyId != null && Player.MyId.IsLocal)
+		// RPC may arrive after the target Player was freed.
+		if (Player == null || !IsInstanceValid(Player)) return;
+
+		if (Player.MyId != null && Player.MyId.IsLocal)
 			SoundFx.PlayLocal(this, SoundFx.PlayerUpgrade, -15f);
 
 		var parts = description.Split("/");
@@ -195,8 +209,11 @@ public partial class Upgrades : Control
 	void SyncTurretDamage()
 	{
 		if (!GenericCore.Instance.IsServer) return;
-		foreach (Node node in GetTree().GetNodesInGroup("turrets"))
+		// Snapshot — a turret may be freed mid-iteration.
+		var turrets = GetTree().GetNodesInGroup("turrets").ToArray();
+		foreach (Node node in turrets)
 		{
+			if (!IsInstanceValid(node)) continue;
 			if (node is Turret turret && turret.OwnerPeerId == (int)Player.MyId.OwnerId)
 				turret.BulletDamage = Player.BulletDamage;
 		}

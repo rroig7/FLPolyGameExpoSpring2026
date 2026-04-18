@@ -6,11 +6,11 @@ public partial class GlobalTimers : Node
 	public static GlobalTimers Instance {get; private set;}
 	
 
-	public async override void _Ready() {		
-		while(!GenericCore.Instance.IsGenericCoreConnected) await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
-		if(Instance != this && Instance != null) { QueueFree(); return; }
-
-		Instance ??= this;		
+	public override void _Ready() {
+		// Claim the singleton synchronously before any await — two instances
+		// awaiting in parallel would otherwise both pass a post-await null check.
+		if (Instance != null && Instance != this) { QueueFree(); return; }
+		Instance = this;
 	}
 
 	public Timer OneShotTimer(float t)

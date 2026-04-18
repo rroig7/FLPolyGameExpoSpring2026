@@ -55,13 +55,20 @@ public partial class MapShrink : Node
 		// Skip those — we only want to react to bodies that legitimately left.
 		if (!IsInstanceValid(obj) || obj.IsQueuedForDeletion()) return;
 
-		var parent = (Node3D)obj.GetParent();
-		//GD.Print($"{obj.Name} fell off the map");
-		var tween =GetTree().CreateTween()
+		var parent = obj.GetParent() as Node3D;
+		if (parent == null) return;
+
+		var tween = GetTree().CreateTween()
 			.SetEase(Tween.EaseType.In)
 			.SetTrans(Tween.TransitionType.Back)
-			.TweenProperty(obj.GetParent(), "position:y", parent.GlobalPosition.Y - parent.Scale.Y, 5);
+			.TweenProperty(parent, "position:y", parent.GlobalPosition.Y - parent.Scale.Y, 5);
 
-		tween.Finished += () => parent.QueueFree();
+		// Re-check validity when the tween finishes — parent may have been freed
+		// by another system during the 5s animation.
+		tween.Finished += () =>
+		{
+			if (IsInstanceValid(parent) && !parent.IsQueuedForDeletion())
+				parent.QueueFree();
+		};
 	}
 }

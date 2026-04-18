@@ -46,6 +46,7 @@ public partial class Base : StaticBody3D
 	
 	public void Hit(int owner, float dmg)
 	{
+		if (_destroyed) return;
 		GD.PushWarning($"Player Base {MyID.OwnerId} was hit by {owner}");
 
 		if(owner == MyID.OwnerId) { return; }

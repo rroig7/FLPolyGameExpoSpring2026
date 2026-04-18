@@ -191,11 +191,13 @@ public partial class BossEnemy : CharacterBody3D
 		Node3D closest = null;
 		float  minDist = float.MaxValue;
 
-		for (int i = _targetsInFOV.Count - 1; i >= 0; i--)
+		// Snapshot before iteration: OnBodyExited can fire synchronously during
+		// a physics step and mutate _targetsInFOV, shifting indices mid-loop.
+		var snapshot = _targetsInFOV.ToArray();
+		foreach (var body in snapshot)
 		{
-			Node3D body = _targetsInFOV[i];
-			if (!IsInstanceValid(body)) { _targetsInFOV.RemoveAt(i); continue; }
-			if (body is Player p && p.IsDead) { _targetsInFOV.RemoveAt(i); continue; }
+			if (!IsInstanceValid(body)) { _targetsInFOV.Remove(body); continue; }
+			if (body is Player p && p.IsDead) { _targetsInFOV.Remove(body); continue; }
 
 			float d = GlobalPosition.DistanceSquaredTo(body.GlobalPosition);
 			if (d < minDist) { minDist = d; closest = body; }
@@ -374,6 +376,10 @@ public partial class BossEnemy : CharacterBody3D
 		GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
 
 		if (CurrentHp > 0f) return;
+
+		// Commit to death before XP award / Die() so a same-frame second bullet
+		// can't re-award XP or re-enter Die().
+		_isDying = true;
 
 		if (shooter != null)
 		{

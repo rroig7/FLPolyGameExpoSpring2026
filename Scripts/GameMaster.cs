@@ -124,8 +124,9 @@ public partial class GameMaster : Node
 	/// </summary>
 	private void ConnectObjectSignals()
 	{
-		// Connect Player Snowball signals
-		foreach (Node node in GetTree().GetNodesInGroup("players"))
+		// Snapshot group iterations — nodes can be added/freed during signal wiring.
+		var players = GetTree().GetNodesInGroup("players").ToArray();
+		foreach (Node node in players)
 		{
 			if (node is Player player)
 			{
@@ -136,7 +137,8 @@ public partial class GameMaster : Node
 			}
 		}
 
-		foreach (Node node in GetTree().GetNodesInGroup("PlayerBase"))
+		var bases = GetTree().GetNodesInGroup("PlayerBase").ToArray();
+		foreach (Node node in bases)
 		{
 			if (node is Base playerBase)
 			{
@@ -292,6 +294,10 @@ public partial class GameMaster : Node
 
 	public void AddPlayer(NetworkPlayerManager npm)
 	{
+		if (npm == null) return;
+		// Idempotent: callers may race on NPM registration or re-invoke on
+		// NetIDReady; keep this the single source of truth for add-if-absent.
+		if (Players.Contains(npm)) return;
 		Players.Add(npm);
 		PlayerReady();
 	}

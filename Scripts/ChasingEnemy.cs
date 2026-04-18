@@ -59,7 +59,9 @@ public partial class ChasingEnemy : BaseNetworkedEnemy
 
     public override void EnemyNaviagationNotFinished()
     {
-        if(currentState == EnemyStates.CHASING)
+        // Target can be nulled by StopChase between the state check and this
+        // navigation callback; guard against a freed or null reference.
+        if (currentState == EnemyStates.CHASING && Target != null && IsInstanceValid(Target))
 			NavAgent.TargetPosition = Target.GlobalPosition;
     }
 
