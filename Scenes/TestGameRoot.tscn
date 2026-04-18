@@ -17,8 +17,6 @@ font_size = 64
 
 [node name="TestGameRoot" type="Node" unique_id=1127935270 node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_ul1ws")
-PublicIP = "127.0.0.1"
-PrivateIP = "127.0.0.1"
 MainNetworkCore = NodePath("Main Spawner")
 _portMaximum = 7000
 _portMinimum = 7010
@@ -29,12 +27,10 @@ _maxConnections = 4
 [node name="GameMaster" type="Node" parent="." unique_id=1902878242 node_paths=PackedStringArray("MainSpawner", "EndScreen")]
 script = ExtResource("2_bousw")
 MainSpawner = NodePath("../Main Spawner")
-TotalRoundLength = 6.0
-BossSpawn = 0.1
+TotalRoundLength = 5.0
+BossSpawn = 2.5
 EndScreenDuration = 8.0
 EndScreen = NodePath("../CanvasLayer/Victory")
-MusicVolumeDb = -35.0
-BlizzardVolumeDb = -40.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=328034693]
 layer = 0
@@ -75,6 +71,7 @@ texture = ExtResource("4_5ftxa")
 expand_mode = 1
 
 [node name="Buttons" type="Control" parent="CanvasLayer/Lobby UI" unique_id=1725437401]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
