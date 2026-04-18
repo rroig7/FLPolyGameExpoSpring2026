@@ -13,6 +13,21 @@ public partial class Turret : Node3D
 	[Export] public Node3D TurretHead;
 	[Export] public Node3D Muzzle;
 	[Export] public Area3D TurretFOV;
+	[Export] ProgressBar HealthBar;
+
+	[Export] public float MaxHp = 200f;
+	private float _currentHp = 200f;
+	[Export] public float CurrentHp
+	{
+		get => _currentHp;
+		set
+		{
+			_currentHp = value;
+			UpdateHealthBar();
+		}
+	}
+
+	private bool _isDying = false;
 	
 	/// <summary>Peer ID of the player who placed this turret. Set before the turret enters the tree.</summary>
 	[Export] public int OwnerPeerId = -2;
@@ -34,10 +49,34 @@ public partial class Turret : Node3D
 		TurretFOV.BodyExited  += OnBodyExited;
 
 		GameMaster.Instance?.RegisterTurret(this);
-		
+
 		GD.Print($"[Turret] OwnerPeerId set to {OwnerPeerId}");
-		
+
 		GameMaster.Instance.SuddenDeathTrigger += RemoveTurret;
+
+		UpdateHealthBar();
+	}
+
+	private void UpdateHealthBar()
+	{
+		if (HealthBar == null) return;
+		HealthBar.MaxValue = MaxHp;
+		HealthBar.Value = _currentHp;
+		HealthBar.Visible = _currentHp < MaxHp;
+	}
+
+	public void OnHitByBullet(int id, float dmg)
+	{
+		if (!GenericCore.Instance.IsServer) return;
+		if (_isDying) return;
+		if (id == OwnerPeerId) return;
+
+		CurrentHp -= dmg;
+		GD.Print($"{Name} took damage, HP={CurrentHp}/{MaxHp}");
+
+		if (CurrentHp > 0f) return;
+
+		RemoveTurret();
 	}
 
 	public override void _Process(double delta)
@@ -167,6 +206,9 @@ public partial class Turret : Node3D
 
 	public void RemoveTurret()
 	{
+		if (_isDying) return;
+		_isDying = true;
+
 		if (MyID == null)
 			MyID = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
 

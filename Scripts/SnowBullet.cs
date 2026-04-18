@@ -111,6 +111,14 @@ public partial class SnowBullet : RigidBody3D
 				}
 				break;
 
+			case Turret turret:
+				if (ShooterId != turret.OwnerPeerId)
+				{
+					turret.OnHitByBullet(ShooterId, Damage);
+					validHit = true;
+				}
+				break;
+
 			default:
 				GD.Print("SnowBullet: Area hit geometry or unhandled type");
 				break;
