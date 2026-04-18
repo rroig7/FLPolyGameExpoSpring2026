@@ -4,6 +4,7 @@ using System;
 public partial class MainMenu : Node
 {
 	[Export] public Control TutorialPage;
+	[Export] public Control MainMenuPage;
 	[Export] public float RotationSpeed = 10f;
 
 	private Camera3D camera;
@@ -36,6 +37,13 @@ public partial class MainMenu : Node
 	
 	private void OnTutorialButtonPressed()
 	{
+		MainMenuPage.Visible = false;
 		TutorialPage.Visible = true;
+	}
+	
+	private void OnTutorialPageClosed()
+	{
+		TutorialPage.Visible = false;
+		MainMenuPage.Visible = true;
 	}
 }

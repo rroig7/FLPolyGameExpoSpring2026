@@ -34,8 +34,10 @@ shadow_size = 6
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rmbjf"]
 
-[node name="MainMenu" type="Node" unique_id=129802216]
+[node name="MainMenu" type="Node" unique_id=129802216 node_paths=PackedStringArray("TutorialPage", "MainMenuPage")]
 script = ExtResource("1_00u4r")
+TutorialPage = NodePath("Tutorial")
+MainMenuPage = NodePath("Control")
 
 [node name="Node3D" parent="." unique_id=1443708347 instance=ExtResource("2_00u4r")]
 
@@ -167,4 +169,7 @@ autoplay = true
 parameters/looping = true
 
 [connection signal="pressed" from="Control/PlayButton" to="." method="_on_Start_pressed"]
-[connection signal="pressed" from="Control/TutorialButton" to="." method="_on_Start_pressed"]
+[connection signal="pressed" from="Control/TutorialButton" to="." method="OnTutorialButtonPressed"]
+[connection signal="pressed" from="Tutorial/Button" to="." method="OnTutorialPageClosed"]
+
+[editable path="Tutorial"]
