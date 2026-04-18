@@ -9,11 +9,12 @@ public partial class MapShrink : Node
 	[Export] CylinderShape3D DissapearCollider;
 	[Export] float minSize;
 	[Export] float curSize
-	{	
+	{
 		get { return _curSize; }
-		set { 			
-				Floor.TopRadius = Floor.BottomRadius = value;
-				FloorCollider.Radius = DissapearCollider.Radius = value;
+		set {
+				if (Floor != null) Floor.TopRadius = Floor.BottomRadius = value;
+				if (FloorCollider != null) FloorCollider.Radius = value;
+				if (DissapearCollider != null) DissapearCollider.Radius = value;
 				_curSize = value;
 			}
 	}
