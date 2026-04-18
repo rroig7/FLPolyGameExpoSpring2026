@@ -11,6 +11,36 @@
 [ext_resource type="Texture2D" uid="uid://bxc5hyeb6co0g" path="res://Assets/UI Images/Keys/left.png" id="9_8vfdq"]
 [ext_resource type="Texture2D" uid="uid://bggtshm525jvl" path="res://Assets/UI Images/Keys/target.png" id="10_x15vo"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x15vo"]
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+corner_detail = 1
+shadow_size = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0c5lp"]
+bg_color = Color(1, 0.3977014, 0.3292555, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+corner_detail = 1
+shadow_size = 9
+
 [node name="Tutorial" type="Control" unique_id=1462516669]
 layout_mode = 3
 anchors_preset = 15
@@ -210,3 +240,13 @@ text = "What to do:
 
 PS: Be careful of Dr. Towler Bear, he is very dangerous. If you see him, run for your life or KILL HIM!"
 autowrap_mode = 2
+
+[node name="Button" type="Button" parent="." unique_id=1382828745]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_x15vo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_0c5lp")
+text = "x"
