@@ -39,6 +39,8 @@ public partial class Turret : Node3D
 		GameMaster.Instance?.RegisterTurret(this);
 		
 		GD.Print($"[Turret] OwnerPeerId set to {OwnerPeerId}");
+		
+		GameMaster.Instance.SuddenDeathTrigger += RemoveTurret;
 	}
 
 	public override void _Process(double delta)
@@ -165,4 +167,22 @@ public partial class Turret : Node3D
 	}
 
 	private void OnBodyExited(Node3D body) => _targetsInFOV.Remove(body);
+
+	public void RemoveTurret()
+	{
+		if (MyID == null)
+			MyID = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
+
+		if (MyID != null && IsInstanceValid(MyID))
+		{
+			MyID.ProcessMode = ProcessModeEnum.Disabled;
+			try { MyID.ReplicationConfig = null; } catch { }
+			MyID.Rpc(NetID.MethodName.ManualDelete);
+		}
+		else
+		{
+			GD.PushWarning("BossEnemy.Die: no valid NetID found, freeing locally only.");
+			QueueFree();
+		}
+	}
 }
