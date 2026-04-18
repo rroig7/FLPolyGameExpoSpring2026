@@ -118,6 +118,9 @@ public partial class Player : BaseNetworkedPlayer
 	private Vector3 _serverLastInput   = Vector3.Zero;
 	private float   _lastSentYaw       = float.MaxValue;
 
+	private AudioStreamPlayer3D _walkSfx;
+	private AudioStreamPlayer3D _slideSfx;
+
 	// -------------------------------------------------------
 	//  Lifecycle
 	// -------------------------------------------------------
@@ -136,6 +139,8 @@ public partial class Player : BaseNetworkedPlayer
 
 		UpdatePName(); // show whatever we have initially
 		MyId.NetIDReady += SlowStart;
+
+		_walkSfx = SoundFx.MakeLooped(this, SoundFx.PlayerWalk, -30f);
 	}
 
 	public void SlowStart()
@@ -256,6 +261,7 @@ public partial class Player : BaseNetworkedPlayer
 
 		bool isMoving = new Vector2(Velocity.X, Velocity.Z).LengthSquared() > 0.05f;
 		UpdateAnimation(isMoving);
+		SoundFx.SetLoopActive(_walkSfx, isMoving && IsOnFloor() && !_isDead);
 
 		// Check if player fell out of map, if they did, then kill them.
 		if (GlobalPosition.Y < -20f)
@@ -566,6 +572,9 @@ public partial class Player : BaseNetworkedPlayer
 	private void ClientPlayActionAnim(string animName)
 	{
 		_pendingActionAnim = animName;
+
+		if (animName == "Dash")          _slideSfx = SoundFx.PlayOn(this, SoundFx.PlayerSlide, -20f);
+		else if (animName == "SnowBall") SoundFx.PlayOn(_muzzle ?? (Node3D)this, SoundFx.ThrowSnowball, -10f);
 	}
 
 	/// <summary>Broadcasts authoritative round-timer value to all clients.</summary>
@@ -583,6 +592,8 @@ public partial class Player : BaseNetworkedPlayer
 	{
 		GD.Print($"Ultimate effect at {center}");
 		_pendingActionAnim = "SnowBall";
+
+		SoundFx.PlayAt(GetTree().CurrentScene, center, SoundFx.PlayerUltimate, -25f);
 
 		// Caster already played the effect locally in ConfirmUltimate; skip to avoid double-play.
 		if (!isLocal)
@@ -613,8 +624,18 @@ public partial class Player : BaseNetworkedPlayer
 		_isDead = true;
 		Visible = false;
 
+		SoundFx.PlayAt(GetTree().CurrentScene, GlobalPosition, SoundFx.PlayerDeath, -10f);
+		SoundFx.SetLoopActive(_walkSfx, false);
+
 		if (isLocal && HUD != null)
 			HUD.Visible = false;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
+		 TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientOnDamaged()
+	{
+		SoundFx.PlayOn(this, SoundFx.PlayerDamaged, -10f);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true,
@@ -648,6 +669,7 @@ public partial class Player : BaseNetworkedPlayer
 		GD.Print($"{Name} took {amount} damage, HP={CurrentHp}/{MaxHp}");
 
 		if (CurrentHp <= 0f) Die(attacker);
+		else Rpc(MethodName.ClientOnDamaged);
 	}
 
 	private void Die(Player killer = null)
@@ -814,6 +836,12 @@ public partial class Player : BaseNetworkedPlayer
 		StringName currentState = StateMachine.GetCurrentNode();
 		if (currentState == "Dash" || currentState == "SnowBall")
 			return;
+
+		if (_slideSfx != null && GodotObject.IsInstanceValid(_slideSfx) && _slideSfx.Playing)
+		{
+			_slideSfx.Stop();
+			_slideSfx = null;
+		}
 
 		if (!IsOnFloor())
 			StateMachine.Travel("Jump");

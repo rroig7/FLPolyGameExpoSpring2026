@@ -105,6 +105,9 @@ public partial class Upgrades : Control
 
 	void ApplyUpgrade(string description, float modifier, float min = -1)
 	{
+		if (Player != null && Player.MyId != null && Player.MyId.IsLocal)
+			SoundFx.PlayLocal(this, SoundFx.PlayerUpgrade, -15f);
+
 		var parts = description.Split("/");
 		var target = parts[0];
 

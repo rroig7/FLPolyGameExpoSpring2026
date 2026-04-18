@@ -51,10 +51,14 @@ public partial class MeleeEnemy : CharacterBody3D
 
 	private bool _isDying = false;
 
+	private AudioStreamPlayer3D _walkSfx;
+
 	public override void _Ready()
 	{
 		navAgent = GetNode<NavigationAgent3D>("NavigationAgent3D");
 		navAgent.PathPostprocessing = NavigationPathQueryParameters3D.PathPostProcessing.Edgecentered;
+
+		_walkSfx = SoundFx.MakeLooped(this, SoundFx.MeleeEnemyWalk, -25f);
 
 		if (patrolPoints == null || patrolPoints.Length == 0)
 		{
@@ -156,6 +160,8 @@ public partial class MeleeEnemy : CharacterBody3D
 
 		if (!GenericCore.Instance.IsServer)
 			UpdateAnimation();
+
+		SoundFx.SetLoopActive(_walkSfx, SyncedIsMoving && !_isDying);
 	}
 
 	private void TryAttackPlayer(Player player)
@@ -163,6 +169,8 @@ public partial class MeleeEnemy : CharacterBody3D
 		if (_attackTimer > 0f) return;
 
 		_attackTimer = attackCooldown;
+
+		Rpc(MethodName.ClientPlayAttackSfx);
 
 		// Get horizontal direction from enemy to player, normalize while flat
 		Vector3 knockbackDir = (player.GlobalPosition - GlobalPosition);
@@ -274,10 +282,17 @@ public partial class MeleeEnemy : CharacterBody3D
 		Die();
 	}
 	
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientPlayAttackSfx()
+	{
+		SoundFx.PlayOn(this, SoundFx.MeleeEnemyAttack, -6f);
+	}
+
 	public  void Die()
 	{
 		if (_isDying) return;
 		_isDying = true;
+		SoundFx.SetLoopActive(_walkSfx, false);
 
 		if (myId == null)
 			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");

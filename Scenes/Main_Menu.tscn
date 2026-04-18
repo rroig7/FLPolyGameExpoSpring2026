@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://tbfwxwumpemj" path="res://Assets/UI Images/LongSnow.png" id="4_00u4r"]
 [ext_resource type="Texture2D" uid="uid://cmgb6433d4wtt" path="res://Assets/UI Images/CornerSnow.png" id="5_anlgx"]
 [ext_resource type="PackedScene" uid="uid://dbatqgebrq3gi" path="res://Scenes/Tutorial_Scenel.tscn" id="6_xvotp"]
+[ext_resource type="AudioStream" uid="uid://dbo6t3mdhb4tn" path="res://Assets/Music/MainMenuMusic.mp3" id="7_1edw4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_00u4r"]
 bg_color = Color(0.23705456, 0.24262893, 1, 1)
@@ -158,6 +159,12 @@ vertical_alignment = 1
 
 [node name="Tutorial" parent="." unique_id=1462516669 instance=ExtResource("6_xvotp")]
 visible = false
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1061615075]
+stream = ExtResource("7_1edw4")
+volume_db = -30.0
+autoplay = true
+parameters/looping = true
 
 [connection signal="pressed" from="Control/PlayButton" to="." method="_on_Start_pressed"]
 [connection signal="pressed" from="Control/TutorialButton" to="." method="_on_Start_pressed"]

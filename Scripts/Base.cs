@@ -54,8 +54,15 @@ public partial class Base : StaticBody3D
 
 	void BaseDestroyed()
 	{
+		Rpc(MethodName.ClientPlayDestroyedSfx, GlobalPosition);
 		GenericCore.Instance.MainNetworkCore.NetDestroyObject(MyID);
-		//Rpc(MethodName.SelfDestruct);	
+		//Rpc(MethodName.SelfDestruct);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientPlayDestroyedSfx(Vector3 pos)
+	{
+		SoundFx.PlayAt(GetTree().CurrentScene, pos, SoundFx.BaseDestroyed, -10f);
 	}
 
 	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
