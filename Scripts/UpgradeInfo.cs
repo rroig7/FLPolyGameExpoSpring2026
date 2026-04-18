@@ -12,6 +12,9 @@ public partial class UpgradeInfo : Node
     [Export] Button UpgradeButton;
     [Export] public string UpgradeDescription;
 
+    [Export] public int MaxPurchases = 10;
+    public int PurchaseCount { get; private set; } = 0;
+
     [Signal] public delegate void UpgradeSelectedEventHandler(UpgradeInfo upgrade);
 
     public override void _Ready() {
@@ -21,5 +24,14 @@ public partial class UpgradeInfo : Node
         AddToGroup("Upgrade");
     }
 
+    public void IncrementPurchaseCount()
+    {
+        PurchaseCount++;
+        if (PurchaseCount >= MaxPurchases)
+        {
+            UpgradeButton.Disabled = true;
+            UpgradeButton.Text = "MAX";
+        }
+    }
 
 }

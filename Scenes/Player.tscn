@@ -296,9 +296,9 @@ baseSpeed = 5.0
 [node name="FuckingPenguinAnimations2" parent="." unique_id=1900623258 instance=ExtResource("2_yoq75")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
 
-[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1387458358) index="0" unique_id=792688820]
+[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1510584324) index="0" unique_id=145004877]
 bones/1/rotation = Quaternion(-0.12325293, 0.038744338, -0.6634553, 0.7369768)
-bones/2/rotation = Quaternion(0.0034637728, 0.14241615, -0.49979547, 0.8543478)
+bones/2/rotation = Quaternion(0.0044469032, 0.140392, -0.48787928, 0.86153597)
 bones/9/rotation = Quaternion(-0.06805276, 0.036168437, 0.9969895, 0.008532995)
 bones/10/rotation = Quaternion(-0.12672412, -0.042977255, 0.6316057, 0.76365453)
 bones/11/rotation = Quaternion(-0.012576958, 0.0087000895, -0.6321124, 0.77472585)
@@ -312,11 +312,11 @@ bones/21/rotation = Quaternion(0.6767889, -0.14890395, -0.06572424, 0.7179587)
 bones/22/rotation = Quaternion(0.08919531, 0.66119796, 0.72170025, -0.18441887)
 bones/26/rotation = Quaternion(-0.06805032, 0.036168218, 0.9969896, -0.0085330065)
 bones/27/rotation = Quaternion(-0.12325293, -0.038744338, 0.6634553, 0.7369768)
-bones/28/rotation = Quaternion(0.008782319, -0.07612596, 0.50779706, 0.8580617)
+bones/28/rotation = Quaternion(0.0106947925, -0.07418605, 0.4959443, 0.86511344)
 bones/31/rotation = Quaternion(-0.0842318, -0.09535109, 0.9539156, -0.27176875)
 bones/32/rotation = Quaternion(-0.060962133, -0.014415726, 0.97727567, -0.2025046)
 bones/33/rotation = Quaternion(-0.070427716, -0.0209309, 0.95163924, -0.29830316)
-bones/36/rotation = Quaternion(6.715097e-08, -1.9540156e-09, 0.029086528, 0.9995769)
+bones/36/rotation = Quaternion(6.7137286e-08, -2.3785367e-09, 0.035405733, 0.9993731)
 bones/37/rotation = Quaternion(0.71665454, -0.026875671, 0.017527992, 0.6966899)
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1733513987]
@@ -701,6 +701,7 @@ modifier = 0.02
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button")
 UpgradeDescription = "Player/Dash/Speed"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#1" unique_id=609858742]
 layout_mode = 1
@@ -786,6 +787,7 @@ modifier = 0.05
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button2")
 UpgradeDescription = "Player/Dash/Duration"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#2" unique_id=392408443]
 layout_mode = 1
@@ -873,6 +875,7 @@ minValue = 0.5
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button3")
 UpgradeDescription = "Player/Dash/Cooldown"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Slide-Upgrades/Upgrade#3" unique_id=1962743670]
 layout_mode = 1
@@ -980,12 +983,13 @@ offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
 script = ExtResource("13_ulo2v")
 UpgradeName = "Faster Lure"
-Cost = 10
+Cost = 50
 modifier = 0.2
 minValue = 10.0
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button")
 UpgradeDescription = "Player/Ult/Cooldown"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#1" unique_id=559882744]
 layout_mode = 1
@@ -1067,11 +1071,12 @@ offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
 script = ExtResource("13_ulo2v")
 UpgradeName = "Larger Bite"
-Cost = 10
+Cost = 30
 modifier = 10.0
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button2")
 UpgradeDescription = "Player/Ult/Radius"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#2" unique_id=813020892]
 layout_mode = 1
@@ -1153,11 +1158,12 @@ offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
 script = ExtResource("13_ulo2v")
 UpgradeName = "Stronger Jaws"
-Cost = 10
+Cost = 30
 modifier = 5.0
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button3")
 UpgradeDescription = "Player/Ult/Damage"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-ULTIMATE-Upgrades/Upgrade#3" unique_id=416577223]
 layout_mode = 1
@@ -1265,11 +1271,12 @@ offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
 script = ExtResource("13_ulo2v")
 UpgradeName = "Packed Ice"
-Cost = 10
+Cost = 30
 modifier = 2.0
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button")
 UpgradeDescription = "Player/Shoot/Damage"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#1" unique_id=1648709626]
 layout_mode = 1
@@ -1351,12 +1358,13 @@ offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
 script = ExtResource("13_ulo2v")
 UpgradeName = "Rapid Toss"
-Cost = 10
+Cost = 20
 modifier = 0.15
 minValue = 0.05
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button2")
 UpgradeDescription = "Player/Shoot/Cooldown"
+MaxPurchases = 5
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Snow-Upgrades/Upgrade#2" unique_id=874401548]
 layout_mode = 1
@@ -1464,7 +1472,7 @@ offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
 script = ExtResource("13_ulo2v")
 UpgradeName = "Structural Repair"
-Cost = 10
+Cost = 20
 modifier = 10.0
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button")
@@ -1549,10 +1557,11 @@ offset_bottom = 448.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_glx4g")
 script = ExtResource("13_ulo2v")
 UpgradeName = "Ice Cannons"
-Cost = 10
+Cost = 100
 NameLabel = NodePath("Panel/Label")
 UpgradeButton = NodePath("Price_Button2")
 UpgradeDescription = "Player/Base/Turret"
+MaxPurchases = 1
 
 [node name="Panel" type="Panel" parent="HUD/UpGrades/BG-Base-Upgrades/Upgrade#2" unique_id=2055900087]
 layout_mode = 1

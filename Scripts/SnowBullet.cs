@@ -95,8 +95,11 @@ public partial class SnowBullet : RigidBody3D
 				break;
 
 			case Base playerBase:
-				playerBase.Hit(ShooterId, Damage);
-				validHit = true;
+				if (ShooterId != -1)
+				{
+					playerBase.Hit(ShooterId, Damage);
+					validHit = true;
+				}
 				break;
 
 			case BossEnemy boss:
