@@ -265,7 +265,7 @@ _data = {
 [sub_resource type="ViewportTexture" id="ViewportTexture_lslt6"]
 viewport_path = NodePath("SubViewport")
 
-[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "HUD", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "MyId") groups=["players"]]
+[node name="Player" type="CharacterBody3D" unique_id=617917819 node_paths=PackedStringArray("_muzzle", "UltimateIndicator", "UltimateModel", "UltimateAnimPlayer", "HUD", "NameLabel", "HitMarker", "HpBar", "XpLabel", "UltIcon", "UltCDLabel", "DashIcon", "DashCDLabel", "RoundTimer", "UpgradeUIButton", "UpgradeMenu", "AnimTree", "MyId") groups=["players"]]
 collision_layer = 4
 collision_mask = 15
 floor_max_angle = 1.5707964
@@ -274,7 +274,12 @@ _muzzle = NodePath("Muzzle")
 UltimateRadius = 6.0
 UltimateDamage = 60.0
 UltimateIndicator = NodePath("UltimateIndicator")
+UltimateModel = NodePath("UltimateIndicator/OrcaAnimation")
+UltimateAnimPlayer = NodePath("UltimateIndicator/OrcaAnimation/AnimationPlayer")
+UltimateAnimName = "ArmatureAction"
 HUD = NodePath("HUD")
+NameLabel = NodePath("SubViewport/Control/NameLabel")
+HitMarker = NodePath("HUD/HitMarker")
 HpBar = NodePath("HUD/HealthBar")
 XpLabel = NodePath("HUD/XP_ Label")
 UltIcon = NodePath("HUD/Habilities/Ult/Ulty")
@@ -282,15 +287,18 @@ UltCDLabel = NodePath("HUD/Habilities/Ult/Coldown")
 DashIcon = NodePath("HUD/Habilities/Slide/Slide")
 DashCDLabel = NodePath("HUD/Habilities/Slide/Coldown2")
 RoundTimer = NodePath("HUD/Timer_Label")
+UpgradeUIButton = NodePath("HUD/Habilities/Upgrade")
+UpgradeMenu = NodePath("HUD/UpGrades")
+AnimTree = NodePath("AnimationTree")
 MyId = NodePath("MultiplayerSynchronizer")
 baseSpeed = 5.0
 
 [node name="FuckingPenguinAnimations2" parent="." unique_id=1900623258 instance=ExtResource("2_yoq75")]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
 
-[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 10623430) index="0" unique_id=1614765438]
+[node name="Skeleton3D" parent="FuckingPenguinAnimations2/Armature" parent_id_path=PackedInt32Array(1900623258, 1387458358) index="0" unique_id=792688820]
 bones/1/rotation = Quaternion(-0.12325293, 0.038744338, -0.6634553, 0.7369768)
-bones/2/rotation = Quaternion(0.0042263605, 0.14084868, -0.49056184, 0.8599377)
+bones/2/rotation = Quaternion(0.008593726, 0.13152556, -0.43642625, 0.8900334)
 bones/9/rotation = Quaternion(-0.06805276, 0.036168437, 0.9969895, 0.008532995)
 bones/10/rotation = Quaternion(-0.12672412, -0.042977255, 0.6316057, 0.76365453)
 bones/11/rotation = Quaternion(-0.012576958, 0.0087000895, -0.6321124, 0.77472585)
@@ -304,11 +312,11 @@ bones/21/rotation = Quaternion(0.6767889, -0.14890395, -0.06572424, 0.7179587)
 bones/22/rotation = Quaternion(0.08919531, 0.66119796, 0.72170025, -0.18441887)
 bones/26/rotation = Quaternion(-0.06805032, 0.036168218, 0.9969896, -0.0085330065)
 bones/27/rotation = Quaternion(-0.12325293, -0.038744338, 0.6634553, 0.7369768)
-bones/28/rotation = Quaternion(0.0102707, -0.07461768, 0.49858233, 0.8635639)
+bones/28/rotation = Quaternion(0.019102884, -0.06545672, 0.44250774, 0.8941686)
 bones/31/rotation = Quaternion(-0.0842318, -0.09535109, 0.9539156, -0.27176875)
 bones/32/rotation = Quaternion(-0.060962133, -0.014415726, 0.97727567, -0.2025046)
 bones/33/rotation = Quaternion(-0.070427716, -0.0209309, 0.95163924, -0.29830316)
-bones/36/rotation = Quaternion(6.7168486e-08, -1.2107885e-09, 0.018023212, 0.99983764)
+bones/36/rotation = Quaternion(6.717575e-08, 7.0105577e-10, -0.010435582, 0.99994564)
 bones/37/rotation = Quaternion(0.71665454, -0.026875671, 0.017527992, 0.6966899)
 
 [node name="AnimationTree" type="AnimationTree" parent="." unique_id=1733513987]
