@@ -126,6 +126,8 @@ viewport_path = NodePath("SubViewport")
 
 [node name="Turret" type="CharacterBody3D" unique_id=1336070727 node_paths=PackedStringArray("MyID", "TurretHead", "Muzzle", "TurretFOV", "HealthBar") groups=["turrets"]]
 transform = Transform3D(-8.742278e-08, 0, -2, 0, 2, 0, 2, 0, -8.742278e-08, 0, 0, 0)
+collision_layer = 8
+collision_mask = 0
 script = ExtResource("1_i4wwf")
 BulletSpeed = 1.0
 MyID = NodePath("MultiplayerSynchronizer")
