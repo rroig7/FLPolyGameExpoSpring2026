@@ -29,9 +29,6 @@ public partial class Turret : Node3D
 
 	public override void _Ready()
 	{
-		TurretHead ??= GetNode<Node3D>("TurretHead");
-		Muzzle     ??= GetNode<Node3D>("TurretHead/Muzzle");
-		TurretFOV  ??= GetNode<Area3D>("TurretFOV");
 
 		TurretFOV.BodyEntered += OnBodyEntered;
 		TurretFOV.BodyExited  += OnBodyExited;
@@ -139,7 +136,7 @@ public partial class Turret : Node3D
 		if (toTarget.IsZeroApprox())
 			return;
 
-		Basis lookBasis   = Basis.LookingAt(toTarget, Vector3.Up);
+		Basis lookBasis   = Basis.LookingAt(-toTarget, Vector3.Up);
 		Basis parentBasis = TurretHead.GetParentNode3D().GlobalBasis.Orthonormalized();
 		Basis localLook   = parentBasis.Inverse() * lookBasis;
 
