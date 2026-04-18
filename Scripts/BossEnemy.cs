@@ -69,10 +69,14 @@ public partial class BossEnemy : CharacterBody3D
 	
 	private bool _isDying = false;
 
+	private AudioStreamPlayer3D _walkSfx;
+
 	public override void _Ready()
 	{
 		_spawnPosition = GlobalPosition;
 		CurrentHp = MaxHp;
+
+		_walkSfx = SoundFx.MakeLooped(this, SoundFx.BossWalk, -10f);
 
 		if (myId == null)
 			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");
@@ -155,6 +159,8 @@ public partial class BossEnemy : CharacterBody3D
 		// ── Clients only update visuals ───────────────────────────────────────
 		if (!GenericCore.Instance.IsServer)
 			UpdateAnimation();
+
+		SoundFx.SetLoopActive(_walkSfx, SyncedIsMoving && !_isDying);
 	}
 
 	// ── State selection ───────────────────────────────────────────────────────
@@ -259,10 +265,24 @@ public partial class BossEnemy : CharacterBody3D
 	{
 		_meleeCooldown = MeleeCooldown;
 
+		Rpc(MethodName.ClientPlayMeleeSfx);
+
 		if (_currentTarget is Player playerTarget)
 			playerTarget.TakeDamage(MeleeDamage);
 		else if (_currentTarget != null && _currentTarget.HasMethod("TakeDamage"))
 			_currentTarget.Call("TakeDamage", MeleeDamage);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientPlayMeleeSfx()
+	{
+		SoundFx.PlayOn(this, SoundFx.BossMeleeAttack, -10f);
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void ClientPlayDeathSfx(Vector3 pos)
+	{
+		SoundFx.PlayAt(GetTree().CurrentScene, pos, SoundFx.BossDeath, -10f);
 	}
 
 	// ── Firing ────────────────────────────────────────────────────────────────
@@ -368,6 +388,8 @@ public partial class BossEnemy : CharacterBody3D
 	{
 		if (_isDying) return;
 		_isDying = true;
+		SoundFx.SetLoopActive(_walkSfx, false);
+		Rpc(MethodName.ClientPlayDeathSfx, GlobalPosition);
 
 		if (myId == null)
 			myId = GetNodeOrNull<NetID>("MultiplayerSynchronizer");

@@ -25,6 +25,11 @@ public partial class GameMaster : Node
 	public Timer RoundTimer;
 	float Eliminations = 0;
 
+	[Export] public float MusicVolumeDb = -20f;
+	[Export] public float BlizzardVolumeDb = -30f;
+	private AudioStreamPlayer _musicPlayer;
+	private AudioStreamPlayer _blizzardPlayer;
+
 	[Signal]
 	public delegate void GameStartTriggerEventHandler();
 
@@ -51,6 +56,22 @@ public partial class GameMaster : Node
 		}
 
 		Instance = this;
+
+		var musicStream = GD.Load<AudioStream>(SoundFx.InGameMusic);
+		if (musicStream != null)
+		{
+			musicStream.Set("loop", true);
+			_musicPlayer = new AudioStreamPlayer { Stream = musicStream, Bus = "Master", VolumeDb = MusicVolumeDb };
+			AddChild(_musicPlayer);
+		}
+
+		var blizzardStream = GD.Load<AudioStream>(SoundFx.BlizzardSound);
+		if (blizzardStream != null)
+		{
+			blizzardStream.Set("loop", true);
+			_blizzardPlayer = new AudioStreamPlayer { Stream = blizzardStream, Bus = "Master", VolumeDb = BlizzardVolumeDb };
+			AddChild(_blizzardPlayer);
+		}
 	}
 
 	void PlayerDC(long id)
@@ -68,6 +89,9 @@ public partial class GameMaster : Node
 	{
 		EmitSignal(SignalName.GameStartTrigger);
 		GameActive = true;
+
+		if (_musicPlayer != null && !_musicPlayer.Playing) _musicPlayer.Play();
+		if (_blizzardPlayer != null && !_blizzardPlayer.Playing) _blizzardPlayer.Play();
 
 		if (!GenericCore.Instance.IsServer) return;
 
@@ -118,7 +142,7 @@ public partial class GameMaster : Node
 			{
 				// Ensure we don't double-connect if this is called multiple times
 				if (!playerBase.IsConnected("TurretSpawnRequested",
-					    Callable.From<Vector3, Quaternion, int>(OnTurretSpawnRequested)))
+						Callable.From<Vector3, Quaternion, int>(OnTurretSpawnRequested)))
 					playerBase.TurretSpawnRequested += OnTurretSpawnRequested;
 			}
 		}
@@ -187,6 +211,8 @@ public partial class GameMaster : Node
 	async void GameEnd(string winnerName)
 	{
 		GameActive = false;
+		if (_musicPlayer != null && _musicPlayer.Playing) _musicPlayer.Stop();
+		if (_blizzardPlayer != null && _blizzardPlayer.Playing) _blizzardPlayer.Stop();
 		var winnerLabel = EndScreen?.GetNodeOrNull<Label>("Panel/Player Name");
 		if (winnerLabel != null) winnerLabel.Text = winnerName;
 		EmitSignal(SignalName.GameEndTrigger);
